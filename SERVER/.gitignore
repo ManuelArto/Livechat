@@ -1,0 +1,9 @@
+# Files
+.env.prod*
+firebase_config.py
+credentials.json
+
+# Directories
+venv
+__pycache__
+.vscode
