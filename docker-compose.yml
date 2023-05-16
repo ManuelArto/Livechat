@@ -1,14 +1,16 @@
 version: '3.7'
 services:
-    postgres:
-        image: postgres:latest
-        restart: always
-        environment:
-          - POSTGRES_USER=postgres
-          - POSTGRES_PASSWORD=postgres
-        logging:
-          options:
-            max-size: 10m
-            max-file: "3"
-        ports:
-          - '5432:5432'
+
+  mongodb:
+    restart: always
+    image: mongo:latest
+    ports:
+      - 27017:27017
+
+  # mongo_seed:
+  #   image: mongo:latest
+  #   links:
+  #     - mongodb
+  #   volumes:
+  #     - ./data/mongo-seed:/mongo-seed/
+  #   command: /mongo-seed/mongoimport.sh

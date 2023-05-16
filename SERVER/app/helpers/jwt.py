@@ -1,50 +1,40 @@
-from flask import jsonify, request
-from app import app
-import datetime
 from functools import wraps
+import datetime
+from typing import Annotated
+from fastapi import HTTPException, Header
 import jwt
+
+from app.config import settings
 
 EXP_TOKEN = datetime.timedelta(minutes=30)
 EXP_REFRESH_TOKEN = datetime.timedelta(hours=4)
 
-def token_required(f):
-	@wraps(f)
-	def decorator(*args, **kwargs):
-		
-		token = request.headers['x-access-tokens'] if 'x-access-tokens' in request.headers else None
 
-		if not token:	
-			return jsonify({'error': 'a valid token is missing'})
-		try:
-			data = jwt.decode(token, app.config["SECRET_KEY"])
-		except jwt.ExpiredSignatureError:
-			return jsonify({'error': 'token expired'})
-		except jwt.DecodeError:
-			return jsonify({"error": "token is invalid"})
-	
-		return f(data, *args, **kwargs)
-	
-	return decorator
-
-def get_data(token, verify):
+def get_current_user(x_access_token: Annotated[str | None, Header()] = None) -> dict:
 	try:
-		data = jwt.decode(token, app.config["SECRET_KEY"], verify=verify, algorithms=["HS256"])
-		return data["username"], f"https://firebasestorage.googleapis.com/v0/b/livechat-e7db8.appspot.com/o/profileIcons%2F{data['uid']}.jpg?alt=media"
-	except Exception as e:
-		print(e)
-		return None, None
+		if not x_access_token:
+			raise HTTPException(status_code=401, detail="A valid token is missing")
+
+		data = jwt.decode(x_access_token, settings.SECRET_KEY, verify=True, algorithms=["HS256"])
+
+		return data
 	
-def generate_token(user):
+	except jwt.ExpiredSignatureError:
+		raise HTTPException(status_code=401, detail="Token expired")
+	except jwt.DecodeError:
+		raise HTTPException(status_code=401, detail="Token is invalid")
+	
+def generate_token(id, username) -> tuple[str, int]:
 	return jwt.encode({
-		'uid': user.uid,
-		"username": user.username,
+		'id': id,
+		"username": username,
 		"iat": datetime.datetime.utcnow(),
 		'exp': datetime.datetime.utcnow() + EXP_TOKEN},
-		app.config['SECRET_KEY']), EXP_TOKEN.seconds 
+		settings.SECRET_KEY), EXP_TOKEN.seconds 
 
-def generate_refresh_token(user):
+def generate_refresh_token(id) -> tuple[str, int]:
 	return jwt.encode({
-		'uid': user.uid,
+		'id': id,
 		"iat": datetime.datetime.utcnow(),
 		'exp': datetime.datetime.utcnow() + EXP_REFRESH_TOKEN},
-		app.config['SECRET_KEY'], algorithm="HS256"), EXP_REFRESH_TOKEN.seconds
+		settings.SECRET_KEY, algorithm="HS256"), EXP_REFRESH_TOKEN.seconds

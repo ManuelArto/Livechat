@@ -1,6 +1,20 @@
-import os
+from pydantic import BaseSettings
 
-SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
-SECRET_KEY = os.environ.get("SECRET_KEY")
-SQLALCHEMY_TRACK_MODIFICATIONS = False
-DEBUG = bool(os.getenv("DEBUG"))
+
+class Settings(BaseSettings):
+    DATABASE_URL: str
+    MONGO_INITDB_DATABASE: str
+
+    CLIENT_ORIGIN: str
+
+    DEBUG_MODE: bool
+    SECRET_KEY: str
+
+    FIREBASE_IMAGE_URL: str
+
+
+    class Config:
+        env_file = './.env'
+
+
+settings = Settings()
