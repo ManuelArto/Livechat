@@ -63,7 +63,7 @@ class AuthFormState extends State<AuthForm>
           _authData["password"],
           base64Encode(kIsWeb || _defaultPhoto
               ? _authData["imageFile"]
-              : _authData["imageFile"].readAsBytesSync()),
+              : (_authData["imageFile"] as File).readAsBytesSync()),
         );
       }
     } catch (error) {

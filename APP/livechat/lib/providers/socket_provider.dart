@@ -23,10 +23,12 @@ class SocketProvider with ChangeNotifier {
   void init() async {
     if (!kIsWeb) await getFromMemory(); 
 
-    _socketIO = io(SERVER_URL, <String, dynamic>{
-      'transports': ['websocket', "polling"],
-      'query': "token=${auth.token}"
-    });
+    _socketIO = io(SERVER_URL,
+      OptionBuilder()
+          .setTransports(['websocket', 'polling'])
+          .setAuth({"x-access-token": auth.token})
+          .build()
+    );
 
     _initListener();
   }
@@ -94,7 +96,6 @@ class SocketProvider with ChangeNotifier {
   void sendMessage(String message, String receiver) {
     debugPrint("Sending $message to $receiver");
     final data = json.encode({
-      "token": auth.token,
       "message": message,
       "receiver": receiver,
     });

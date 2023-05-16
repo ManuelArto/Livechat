@@ -107,7 +107,7 @@ class Auth with ChangeNotifier {
     _token = responseData["token"];
     _refreshToken = responseData["refreshToken"];
     _username = responseData["username"];
-    _userId = responseData["uid"];
+    _userId = responseData["id"];
     _imageUrl = responseData["imageUrl"];
     _expToken =
         DateTime.now().add(Duration(seconds: responseData["expInToken"]));
@@ -139,6 +139,7 @@ class Auth with ChangeNotifier {
     final response = await http.post(
       Uri.parse(url),
       body: json.encode(body),
+      headers: {"Content-Type": "application/json"}
     );
 
     final responseData = json.decode(response.body) as Map<String, dynamic>;
@@ -159,7 +160,7 @@ class Auth with ChangeNotifier {
     while (true) {
       try {
         final response = await http.post(Uri.parse(URL_AUTH_REFRESH_TOKEN),
-            headers: {"x-access-tokens": _refreshToken!});
+            headers: {"x-access-token": _refreshToken!});
         final responseData = json.decode(response.body) as Map<String, dynamic>;
         if (responseData.containsKey("error")) {
           logout();
