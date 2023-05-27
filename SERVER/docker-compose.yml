@@ -1,6 +1,13 @@
 version: '3.7'
 services:
 
+  livechat_api:
+    build: ./
+    ports:
+      - 8000:80
+    depends_on:
+      - mongodb
+
   mongodb:
     restart: always
     image: mongo:latest
