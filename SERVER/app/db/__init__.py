@@ -18,7 +18,7 @@ class MongoDB():
 		db = self.client[settings.MONGO_INITDB_DATABASE]
 		self.User = db.users
 	
-		self.User.create_index([('email', pymongo.ASCENDING), ('username', pymongo.ASCENDING)], unique=True)
+		self.User.create_index([('email', pymongo.ASCENDING)], unique=True)
 		self.User.create_index([('username', pymongo.ASCENDING)], unique=True)
 
 db = MongoDB()

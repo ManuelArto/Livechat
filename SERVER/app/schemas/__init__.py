@@ -1,20 +1,21 @@
-# import uuid
-from bson import ObjectId
-from pydantic import BaseModel, EmailStr, Field, constr
+from pydantic import BaseModel, EmailStr, constr, Field
 from datetime import datetime
 
 # HTTP SCHEMAS
 
 class UserSchema(BaseModel):
-    username: str
+    username: constr(min_length=8)
     email: EmailStr
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    _created_at: datetime = datetime.utcnow()
+    _updated_at: datetime = datetime.utcnow()
 
 
 class UserCreateSchema(UserSchema):
     password: constr(min_length=8)
-    imageFile: str
+    imageFile: str = Field(exclude=True)
+
+    class Config:
+        exclude = {"imageFile"}
 
 
 class UserLoginSchema(BaseModel):
@@ -32,6 +33,6 @@ class UserResponse(UserSchema):
 
 # MONGO SCHEMAS
 
-class UserDB(UserSchema):
+class UserDocument(UserSchema):
     id: str
     password: str

@@ -19,8 +19,12 @@ async def register(body: UserCreateSchema, request: Request) -> UserResponse:
 		fb_images_upload.upload_image(
 		    user.id, base64.decodebytes(body.imageFile.encode())
 		)
-	except DuplicateKeyError:
-		raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
+	except DuplicateKeyError as e:
+		duplicate_fields = e.details['keyPattern'].keys()
+		raise HTTPException(
+			status_code=status.HTTP_409_CONFLICT, 
+			detail=f"User already exists, duplicate {', '.join(duplicate_fields)}"
+		)
 
 	return user
 

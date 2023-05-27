@@ -1,7 +1,5 @@
-from datetime import datetime
-
 from app.config import settings
-from app.schemas import UserCreateSchema, UserDB, UserLoginSchema, UserResponse
+from app.schemas import UserCreateSchema, UserDocument, UserLoginSchema, UserResponse
 from app.helpers import hashing, jwt
 from app.db import db
 
@@ -10,31 +8,31 @@ class UserService:
     def save(user: UserCreateSchema) -> UserResponse:
         # STORE USER
         user.password = hashing.hash_password(user.password)
-        user.created_at = datetime.utcnow()
-        user.updated_at = user.created_at
 
-        id = db.User.insert_one(dict(user)).inserted_id
+        document_user = user.dict() | {"created_at": user._created_at, "updated_at": user._updated_at}
 
-        return UserService.createUserResponse(UserDB(id = str(id), **dict(user)))
+        id = db.User.insert_one(document_user).inserted_id
+
+        return UserService.createUserResponse(UserDocument(id = str(id), **user.dict()))
 
     @staticmethod
-    def retrieveUser(user: UserLoginSchema) -> UserDB:
+    def retrieveUser(user: UserLoginSchema) -> UserDocument:
         user = db.User.find_one(filter={"email":user.email})
         if not user:
             return None
         
-        return UserDB(id = str(user["_id"]), **user)
+        return UserDocument(id = str(user["_id"]), **user)
 
     @staticmethod
-    def retrieveUserByUsername(username: str) -> UserDB:
+    def retrieveUserByUsername(username: str) -> UserDocument:
         user = db.User.find_one(filter={"username": username})
         if not user:
             return None
         
-        return UserDB(id = str(user["_id"]), **user)
+        return UserDocument(id = str(user["_id"]), **user)
     
     @staticmethod
-    def createUserResponse(user: UserDB) -> UserResponse:
+    def createUserResponse(user: UserDocument) -> UserResponse:
 		# GENERATE TOKENS
         token, expInToken = jwt.generate_token(user.id, user.username)
         refreshToken, expInRefreshToken = jwt.generate_refresh_token(user.id)
