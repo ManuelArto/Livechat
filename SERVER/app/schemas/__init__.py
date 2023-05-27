@@ -4,7 +4,7 @@ from datetime import datetime
 # HTTP SCHEMAS
 
 class UserSchema(BaseModel):
-    username: constr(min_length=8)
+    username: constr(min_length=6, max_length=30)
     email: EmailStr
     _created_at: datetime = datetime.utcnow()
     _updated_at: datetime = datetime.utcnow()
