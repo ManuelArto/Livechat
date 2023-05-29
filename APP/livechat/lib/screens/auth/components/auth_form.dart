@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:livechat/providers/auth_provider.dart';
-import 'package:livechat/widgets/auth/user_image_picker.dart';
-import 'package:livechat/widgets/auth/user_default_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:livechat/screens/auth/components/user_default_image_picker.dart';
+import 'package:livechat/screens/auth/components/user_image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AuthForm extends StatefulWidget {

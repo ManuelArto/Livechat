@@ -1,6 +1,6 @@
 import 'package:livechat/providers/socket_provider.dart';
-import 'package:livechat/screens/chat_screen.dart';
-import 'package:livechat/widgets/profile_icon.dart';
+import 'package:livechat/screens/chat/components/profile_icon.dart';
+import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +35,7 @@ class ActiveUsers extends StatelessWidget {
                   onTap: () {
                     socketProvider.readChat(user.username);
                     Navigator.of(context)
-                        .pushNamed(ChatScreen.routeName,
+                        .pushNamed(SingleChatScreen.routeName,
                             arguments: user.username)
                         .then((_) => socketProvider.currentChat = "");
                   },

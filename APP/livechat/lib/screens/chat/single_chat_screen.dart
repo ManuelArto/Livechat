@@ -1,21 +1,23 @@
 import 'package:livechat/providers/socket_provider.dart';
-import 'package:livechat/widgets/messages/messages.dart';
-import 'package:livechat/widgets/messages/new_message.dart';
-import 'package:livechat/widgets/profile_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ChatScreen extends StatefulWidget {
+import 'components/messages/messages.dart';
+import 'components/messages/send_message.dart';
+import 'components/profile_icon.dart';
+
+class SingleChatScreen extends StatefulWidget {
   static const routeName = "/chatScreen";
   final String chatName;
 
-  const ChatScreen(this.chatName, {super.key});
+  const SingleChatScreen(this.chatName, {super.key});
 
   @override
-  ChatScreenState createState() => ChatScreenState();
+
+  SingleChatScreenState createState() => SingleChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+class SingleChatScreenState extends State<SingleChatScreen> {
   @override
   Widget build(BuildContext context) {
     final socketProvider = Provider.of<SocketProvider>(context, listen: false);
@@ -45,7 +47,7 @@ class ChatScreenState extends State<ChatScreen> {
               child: Messages(widget.chatName),
             ),
           ),
-          NewMessage(widget.chatName),
+          SendMessage(widget.chatName),
         ],
       ),
     );

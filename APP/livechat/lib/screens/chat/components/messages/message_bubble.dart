@@ -1,4 +1,4 @@
-import 'package:livechat/screens/chat_screen.dart';
+import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -73,7 +73,7 @@ class MessageBubble extends StatelessWidget {
                 onTap: isMe
                     ? () {}
                     : () => Navigator.of(context).pushReplacementNamed(
-                        ChatScreen.routeName,
+                        SingleChatScreen.routeName,
                         arguments: username),
                 child: CircleAvatar(
                   backgroundImage: NetworkImage(imageUrL),

@@ -3,16 +3,16 @@ import 'package:livechat/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NewMessage extends StatefulWidget {
+class SendMessage extends StatefulWidget {
   final String chatName;
 
-  const NewMessage(this.chatName, {super.key});
+  const SendMessage(this.chatName, {super.key});
 
   @override
-  NewMessageState createState() => NewMessageState();
+  SendMessageState createState() => SendMessageState();
 }
 
-class NewMessageState extends State<NewMessage> {
+class SendMessageState extends State<SendMessage> {
   final _controller = TextEditingController();
   late SocketProvider chatProvider;
   String? username;

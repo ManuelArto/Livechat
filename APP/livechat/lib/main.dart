@@ -1,11 +1,11 @@
-import 'package:livechat/providers/auth_provider.dart';
-import 'package:livechat/providers/socket_provider.dart';
-import 'package:livechat/screens/auth_screen.dart';
-import 'package:livechat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import './screens/home_screen.dart';
+
+import 'package:livechat/screens/app_screen.dart';
+import 'package:livechat/providers/auth_provider.dart';
+import 'package:livechat/providers/socket_provider.dart';
+import 'package:livechat/screens/auth/auth_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         ),
         home: Consumer<Auth>(
           builder: (context, auth, _) => auth.isAuth
-              ? const HomeScreen()
+              ? const AppScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (context, snapshot) =>
@@ -44,17 +44,6 @@ class MyApp extends StatelessWidget {
                           : const AuthScreen(),
                 ),
         ),
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case AuthScreen.routeName:
-              return MaterialPageRoute(builder: (context) => const AuthScreen());
-            case ChatScreen.routeName:
-              return MaterialPageRoute(builder: (context) => ChatScreen(settings.arguments as String),);
-            case HomeScreen.routeName:
-            default:
-              return MaterialPageRoute(builder: (context) => const HomeScreen());
-          }
-        },
       ),
     );
   }

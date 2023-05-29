@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:livechat/helpers/db_helper.dart';
+import 'package:livechat/services/db_helper.dart';
 import 'package:livechat/models/user.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart';

@@ -1,5 +1,5 @@
 import 'package:livechat/providers/socket_provider.dart';
-import 'package:livechat/screens/chat_screen.dart';
+import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,7 @@ class ChatsList extends StatelessWidget {
             socketProvider.readChat(chats[index]["chatName"]);
             Navigator.of(context)
                 .pushNamed(
-                  ChatScreen.routeName,
+                  SingleChatScreen.routeName,
                   arguments: chats[index]["chatName"],
                 )
                 .then((_) => socketProvider.currentChat = "");

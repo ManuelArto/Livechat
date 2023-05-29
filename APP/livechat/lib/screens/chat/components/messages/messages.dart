@@ -1,8 +1,9 @@
 import 'package:livechat/providers/auth_provider.dart';
 import 'package:livechat/providers/socket_provider.dart';
-import 'package:livechat/widgets/messages/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'message_bubble.dart';
 
 class Messages extends StatefulWidget {
   final String chatName;

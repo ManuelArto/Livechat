@@ -144,7 +144,7 @@ class Auth with ChangeNotifier {
 
     final responseData = json.decode(response.body) as Map<String, dynamic>;
     if (responseData.containsKey("error")) {
-      throw HttpException(responseData["error"]);
+      throw HttpException(responseData["error"], response.statusCode);
     }
 
     _saveData(responseData);
@@ -159,7 +159,7 @@ class Auth with ChangeNotifier {
     debugPrint("GETTING NEW TOKEN");
     while (true) {
       try {
-        final response = await http.post(Uri.parse(URL_AUTH_REFRESH_TOKEN),
+        final response = await http.get(Uri.parse(URL_AUTH_REFRESH_TOKEN),
             headers: {"x-access-token": _refreshToken!});
         final responseData = json.decode(response.body) as Map<String, dynamic>;
         if (responseData.containsKey("error")) {

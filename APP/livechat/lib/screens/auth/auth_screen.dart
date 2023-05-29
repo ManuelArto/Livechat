@@ -1,6 +1,7 @@
-import 'package:livechat/widgets/auth/auth_form.dart';
-import 'package:livechat/widgets/gradient_background.dart';
 import 'package:flutter/material.dart';
+
+import '../../widgets/gradient_background.dart';
+import 'components/auth_form.dart';
 
 class AuthScreen extends StatelessWidget {
   static const routeName = "/auth";
