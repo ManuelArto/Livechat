@@ -1,18 +1,18 @@
-import 'package:livechat/models/sections.dart';
+import 'package:livechat/models/chat/sections.dart';
 import 'package:flutter/material.dart';
 
 import 'chats_list.dart';
 
-class SectionsChats extends StatefulWidget {
-  const SectionsChats(this.screenSize, {super.key});
+class ChatsSection extends StatefulWidget {
+  const ChatsSection(this.screenSize, {super.key});
 
   final Size screenSize;
 
   @override
-  SectionsChatsState createState() => SectionsChatsState();
+  ChatsSectionState createState() => ChatsSectionState();
 }
 
-class SectionsChatsState extends State<SectionsChats> {
+class ChatsSectionState extends State<ChatsSection> {
   final PageController _pageController = PageController(initialPage: 0);
   int _currentSection = 0;
 

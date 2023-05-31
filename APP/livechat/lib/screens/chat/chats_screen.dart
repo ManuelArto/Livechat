@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../widgets/gradient_background.dart';
 import 'components/active_users.dart';
-import 'components/sections_chats.dart';
+import 'components/chats_section.dart';
 
 class ChatsScreen extends StatefulWidget {
   static const routeName = "/chats";
@@ -26,7 +26,7 @@ class ChatsScreenState extends State<ChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Auth>(context, listen: false);
+    final auth = Provider.of<AuthProvider>(context, listen: false);
     final screenSize = MediaQuery.of(context).size;
     return Stack(
       children: [
@@ -69,7 +69,7 @@ class ChatsScreenState extends State<ChatsScreen> {
                 ),
               ),
               ActiveUsers(screenSize),
-              SectionsChats(screenSize),
+              ChatsSection(screenSize),
             ],
           ),
         ),

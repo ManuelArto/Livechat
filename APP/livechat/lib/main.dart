@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => Auth(),
+          create: (context) => AuthProvider(),
         ),
-        ChangeNotifierProxyProvider<Auth, SocketProvider>(
+        ChangeNotifierProxyProvider<AuthProvider, SocketProvider>(
           create: (context) => SocketProvider(),
           update: (context, auth, chatProvider) => chatProvider!..update(auth),
         ),
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.teal).copyWith(secondary: Colors.orangeAccent),
         ),
-        home: Consumer<Auth>(
+        home: Consumer<AuthProvider>(
           builder: (context, auth, _) => auth.isAuth
               ? const AppScreen()
               : FutureBuilder(

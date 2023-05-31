@@ -27,7 +27,7 @@ class AppScreen extends StatelessWidget {
       builder: (context, child) => Scaffold(
         bottomNavigationBar: const BottomBar(),
         body: IndexedStack(
-          index: context.watch<BottomBarNotifier>().tabIndex,
+          index: Provider.of<BottomBarNotifier>(context).tabIndex,
           children: _tabScreens,
         ),
       ),

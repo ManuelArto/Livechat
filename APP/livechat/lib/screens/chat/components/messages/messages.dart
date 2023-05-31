@@ -25,7 +25,7 @@ class MessagesState extends State<Messages> {
   @override
   void initState() {
     super.initState();
-    username = Provider.of<Auth>(context, listen: false).username;
+    username = Provider.of<AuthProvider>(context, listen: false).authUser?.username;
   }
 
   @override

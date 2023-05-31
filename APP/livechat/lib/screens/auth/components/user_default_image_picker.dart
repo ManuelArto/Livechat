@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show ByteData, rootBundle;
 
 class UserDefaultPicker extends StatefulWidget {
-  final Function pickedImageWeb;
+  final Future<void> Function(Uint8List imageBytes) setUserImage;
 
-  const UserDefaultPicker(this.pickedImageWeb, {super.key});
+  const UserDefaultPicker(this.setUserImage, {super.key});
 
   @override
   UserDefaultPickerState createState() => UserDefaultPickerState();
@@ -12,32 +15,38 @@ class UserDefaultPicker extends StatefulWidget {
 class UserDefaultPickerState extends State<UserDefaultPicker> {
   int active = -1;
 
+  void setDefaultImage(String path) async{
+    ByteData bytes = await rootBundle.load(path);
+    widget.setUserImage(bytes.buffer.asUint8List());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: buildButton(
-              context, Icons.tag_faces, "profile_icon_male.jpg", "Male"),
+              context, Icons.tag_faces, "profile_icon_male.jpg", "Male Image", 0),
         ),
+        const SizedBox(width: 4.0),
         Expanded(
           child: buildButton(
-              context, Icons.face, "profile_icon_female.png", "Female"),
+              context, Icons.face_4, "profile_icon_female.png", "Female Image", 1),
         ),
       ],
     );
   }
 
-  TextButton buildButton(BuildContext context, IconData icon, String imagePath, String type) {
+  TextButton buildButton(BuildContext context, IconData icon, String imagePath, String type, int activeValue) {
     return TextButton(
       style: TextButton.styleFrom(
-          backgroundColor: active == (type == "Male" ? 1 : 0)
+          backgroundColor: active == activeValue
               ? Theme.of(context).colorScheme.secondary
               : Colors.grey[300]),
       onPressed: () {
         setState(() {
-          active = (type == "Male" ? 1 : 0);
-          widget.pickedImageWeb("assets/images/$imagePath");
+          active = activeValue;
+          setDefaultImage("assets/images/$imagePath");
         });
       },
       child: Row(

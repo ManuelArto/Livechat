@@ -1,19 +1,21 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserImagePicker extends StatefulWidget {
-  final Function imagePickFn;
-  File? _pickedImage;
-  UserImagePicker(this.imagePickFn, this._pickedImage, {super.key});
+  final Future<void> Function(Uint8List imageBytes) setUserImage;
+
+  const UserImagePicker(this.setUserImage, {super.key});
 
   @override
   UserImagePickerState createState() => UserImagePickerState();
 }
 
 class UserImagePickerState extends State<UserImagePicker> {
-  
+  File? _pickedImage;
+
   void _pickImage() async {
     final ImagePicker picker = ImagePicker();
 
@@ -26,9 +28,9 @@ class UserImagePickerState extends State<UserImagePicker> {
       );
       if (image != null) {
         setState(() {
-          widget._pickedImage = File(image.path);
+          _pickedImage = File(image.path);
         });
-        widget.imagePickFn(widget._pickedImage);
+        widget.setUserImage(_pickedImage!.readAsBytesSync());
       }
     }
   }
@@ -36,23 +38,23 @@ class UserImagePickerState extends State<UserImagePicker> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         CircleAvatar(
           radius: 40,
-          backgroundImage: widget._pickedImage != null
-              ? FileImage(File(widget._pickedImage!.path))
-              : null,
+          backgroundImage:
+              _pickedImage != null ? FileImage(File(_pickedImage!.path)) : null,
           child: Text(
-            widget._pickedImage != null ? "" : "Select\nimage",
+            _pickedImage != null ? "" : "No\nimage",
+            textAlign: TextAlign.center,
           ),
         ),
         TextButton.icon(
           style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).primaryColor
-          ),
+              foregroundColor: Theme.of(context).primaryColor),
           onPressed: _pickImage,
           icon: const Icon(Icons.image),
-          label: const Text("add image"),
+          label: const Text("Add an image"),
         ),
       ],
     );
@@ -63,29 +65,29 @@ class UserImagePickerState extends State<UserImagePicker> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          title: const Text("Pick an image"),
           contentPadding: const EdgeInsets.all(16.0),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(ImageSource.camera),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.camera),
-                    Text("CAMERA"),
-                  ],
+              ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Colors.white,
                 ),
+                icon: const Icon(Icons.camera),
+                label: const Text("Camera"),
               ),
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(ImageSource.gallery),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.camera),
-                    Text("ALBUM"),
-                  ],
+              ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Colors.white,
                 ),
+                icon: const Icon(Icons.image),
+                label: const Text("Album"),
               ),
             ],
           ),

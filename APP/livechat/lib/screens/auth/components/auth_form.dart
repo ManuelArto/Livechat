@@ -1,13 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-import 'package:livechat/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
-import 'package:livechat/screens/auth/components/user_default_image_picker.dart';
-import 'package:livechat/screens/auth/components/user_image_picker.dart';
+
 import 'package:provider/provider.dart';
+
+import 'package:livechat/providers/auth_provider.dart';
+import 'package:livechat/screens/auth/components/user_image_section.dart';
+
+import '../../../models/auth/auth_request.dart';
 
 class AuthForm extends StatefulWidget {
   const AuthForm({super.key});
@@ -20,20 +18,16 @@ class AuthFormState extends State<AuthForm>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
-  var _isLogin = false;
-  var _defaultPhoto = true;
+
   var _isLoading = false;
-  final Map<String, dynamic> _authData = {
-    "email": "",
-    "username": "",
-    "password": "",
-    "imageFile": null,
-  };
+
+  final AuthRequest _authRequest = AuthRequest();
 
   Future<void> _submitForm() async {
     FocusScope.of(context).unfocus();
 
-    if (!_isLogin && _authData["imageFile"] == null) {
+    // Check if the user picked an image
+    if (!_authRequest.userPickedImage) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Text("Please pick an Image"),
         backgroundColor: Theme.of(context).colorScheme.error,
@@ -50,65 +44,17 @@ class AuthFormState extends State<AuthForm>
     });
 
     try {
-      if (_isLogin) {
-        await Provider.of<Auth>(context, listen: false).signin(
-          _authData["email"],
-          _authData["password"],
-        );
-      } else {
-        await Provider.of<Auth>(context, listen: false).signup(
-          _authData["email"],
-          _authData["username"],
-          _authData["password"],
-          base64Encode(kIsWeb || _defaultPhoto
-              ? _authData["imageFile"]
-              : (_authData["imageFile"] as File).readAsBytesSync()),
-        );
-      }
+        await Provider.of<AuthProvider>(context, listen: false).authenticate(_authRequest);
     } catch (error) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(error.toString()),
+        content: Text("Error: ${error.toString()}"),
       ));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  void _pickedImage(File image) {
-    _authData["imageFile"] = image;
-  }
-
-  Future<void> _pickedDefaultImage(String path) async {
-    ByteData bytes = await rootBundle.load(path);
-    _authData["imageFile"] = bytes.buffer.asUint8List();
-  }
-
-  List<Widget> imageForm() {
-    return [
-      if (!kIsWeb)
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              _authData["imageFile"] = null;
-              setState(() => _defaultPhoto = !_defaultPhoto);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Text("Switch Image"),
-                Icon(Icons.switch_camera),
-              ],
-            ),
-          ),
-        ),
-      if (!_defaultPhoto) UserImagePicker(_pickedImage, _authData["imageFile"]),
-      if (kIsWeb || _defaultPhoto)
-        UserDefaultPicker(_pickedDefaultImage)
-    ];
   }
 
   @override
@@ -132,22 +78,22 @@ class AuthFormState extends State<AuthForm>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (!_isLogin) ...[
-                        ...imageForm(),
+                      if (!_authRequest.isLogin) ...[
+                        UserImageSection(_authRequest),
                         TextFormField(
                           autocorrect: false,
                           textCapitalization: TextCapitalization.words,
                           enableSuggestions: false,
                           key: const ValueKey("username"),
                           onSaved: (newValue) =>
-                              _authData["username"] = newValue?.trim(),
+                              _authRequest.username = newValue?.trim(),
                           validator: (value) {
                             return value == null || value.isEmpty
                                 ? "Username must not be empty"
                                 : value.contains(" ")
                                     ? "Username must no contain spaces"
                                     : value.length < 6 || value.length > 30
-                                        ? "Username must be at 6-30 characters long"
+                                        ? "Username must be 6-30 characters long"
                                         : null;
                           },
                           decoration:
@@ -160,7 +106,7 @@ class AuthFormState extends State<AuthForm>
                         enableSuggestions: false,
                         key: const ValueKey("email"),
                         onSaved: (newValue) =>
-                            _authData["email"] = newValue?.trim(),
+                            _authRequest.email = newValue?.trim(),
                         validator: (value) => value != null &&
                                 (!RegExp(
                                         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -175,7 +121,7 @@ class AuthFormState extends State<AuthForm>
                         controller: _passwordController,
                         key: const ValueKey("password"),
                         onSaved: (newValue) =>
-                            _authData["password"] = newValue?.trim(),
+                            _authRequest.password = newValue?.trim(),
                         validator: (value) {
                           return value == null || value.isEmpty
                               ? "Password must not be empty"
@@ -189,7 +135,7 @@ class AuthFormState extends State<AuthForm>
                             const InputDecoration(labelText: "Password"),
                         obscureText: true,
                       ),
-                      if (!_isLogin)
+                      if (!_authRequest.isLogin)
                         TextFormField(
                           key: const ValueKey("Confirm password"),
                           validator: (value) =>
@@ -212,13 +158,13 @@ class AuthFormState extends State<AuthForm>
                                 .withOpacity(0.8),
                           ),
                           onPressed: _submitForm,
-                          child: Text(_isLogin ? "Login" : "SignUp"),
+                          child: Text(_authRequest.isLogin ? "Login" : "Sign Up"),
                         ),
                         TextButton(
-                          child: Text(_isLogin
+                          child: Text(_authRequest.isLogin
                               ? "Create new Account"
                               : "I already have an account"),
-                          onPressed: () => setState(() => _isLogin = !_isLogin),
+                          onPressed: () => setState(() => _authRequest.isLogin = !_authRequest.isLogin),
                         ),
                       ],
                       if (_isLoading)

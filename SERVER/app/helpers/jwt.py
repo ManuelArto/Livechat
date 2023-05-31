@@ -1,4 +1,3 @@
-from functools import wraps
 import datetime
 from typing import Annotated
 from fastapi import HTTPException, Header
@@ -28,9 +27,9 @@ def generate_token(id, username) -> tuple[str, int]:
 	return jwt.encode({
 		'id': id,
 		"username": username,
-		"iat": datetime.datetime.utcnow(),
-		'exp': datetime.datetime.utcnow() + EXP_TOKEN},
-		settings.SECRET_KEY), EXP_TOKEN.seconds 
+		"iat": datetime.datetime.utcnow(),},
+		# 'exp': datetime.datetime.utcnow() + EXP_TOKEN},
+		settings.SECRET_KEY), EXP_TOKEN.seconds
 
 def generate_refresh_token(id) -> tuple[str, int]:
 	return jwt.encode({

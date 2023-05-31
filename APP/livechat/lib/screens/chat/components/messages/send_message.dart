@@ -21,7 +21,7 @@ class SendMessageState extends State<SendMessage> {
   void initState() {
     super.initState();
     chatProvider = Provider.of<SocketProvider>(context, listen: false);
-    username = Provider.of<Auth>(context, listen: false).username;
+    username = Provider.of<AuthProvider>(context, listen: false).authUser?.username;
   }
 
   void _sendMessage() {

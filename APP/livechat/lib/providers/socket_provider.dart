@@ -7,9 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import 'package:livechat/providers/auth_provider.dart';
-import 'package:livechat/models/message.dart';
+import 'package:livechat/models/chat/message.dart';
 import 'package:uuid/uuid.dart';
 import '../constants.dart';
+import '../models/auth/auth_user.dart';
 
 class SocketProvider with ChangeNotifier {
   final Map<String, User> _users = {};
@@ -18,7 +19,7 @@ class SocketProvider with ChangeNotifier {
   };
   String currentChat = "";
   late Socket _socketIO;
-  late Auth auth;
+  late AuthUser authUser;
 
   void init() async {
     if (!kIsWeb) await getFromMemory(); 
@@ -26,16 +27,16 @@ class SocketProvider with ChangeNotifier {
     _socketIO = io(SERVER_URL,
       OptionBuilder()
           .setTransports(['websocket', 'polling'])
-          .setAuth({"x-access-token": auth.token})
+          .setAuth({"x-access-token": authUser.token})
           .build()
     );
 
     _initListener();
   }
 
-  void update(Auth auth) {
-    this.auth = auth;
-    auth.disconnect = _destroy;
+  void update(AuthProvider auth) {
+    authUser = auth.authUser!;
+    auth.closeSocket = _destroy;
   }
 
   // PRIVATE METHODS
@@ -53,7 +54,7 @@ class SocketProvider with ChangeNotifier {
     addMessage(
       jsonData["message"],
       jsonData["sender"],
-      auth.username == jsonData["receiver"]
+      authUser.username == jsonData["receiver"]
           ? jsonData["sender"]
           : jsonData["receiver"],
     );
@@ -63,7 +64,7 @@ class SocketProvider with ChangeNotifier {
     debugPrint("UPDATE USERS CONNECTED");
 
     jsonData.forEach((username, data) {
-      if (username != auth.username) {
+      if (username != authUser.username) {
         if (!_users.containsKey(username)) {
           _users[username] = User(
             username: username,
@@ -102,7 +103,7 @@ class SocketProvider with ChangeNotifier {
 
     _socketIO.emit("send_message", data);
     
-    addMessage(message, auth.username, receiver);
+    addMessage(message, authUser.username, receiver);
   }
 
   void _destroy() {
@@ -115,12 +116,12 @@ class SocketProvider with ChangeNotifier {
 
   Future<void> getFromMemory() async {
     debugPrint("FETCHING FROM MEMORY");
-    final usersList = await DBHelper.getData(auth.userId!, "USERS");
+    final usersList = await DBHelper.getData(authUser.id!, "USERS");
     for (var data in usersList) {
       _users[data["username"]] = User.fromJson(data);
     }
 
-    final messagesList = await DBHelper.getData(auth.userId!, "MESSAGES");
+    final messagesList = await DBHelper.getData(authUser.id!, "MESSAGES");
     for (var data in messagesList) {
       if (!_messages.containsKey(data["chatName"])) {
         _messages[data["chatName"]] = {"toRead": 0, "list": []};
@@ -131,7 +132,7 @@ class SocketProvider with ChangeNotifier {
 
   Future<void> storeInMemory(String table, Map<String, dynamic> data) async {
     debugPrint("STORING $data in $table");
-    DBHelper.insert(auth.userId!, table, data);
+    DBHelper.insert(authUser.id!, table, data);
   }
 
   // Messages
@@ -191,8 +192,8 @@ class SocketProvider with ChangeNotifier {
   }
 
   String getImageUrl(String username) {
-    return auth.username == username ?
-      auth.imageUrl! : _users[username]!.imageUrl;
+    return authUser.username == username ?
+      authUser.imageUrl! : _users[username]!.imageUrl;
   }
 
   bool userIsOnline(String username) {
