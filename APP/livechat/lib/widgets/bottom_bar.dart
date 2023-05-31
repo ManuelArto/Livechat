@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:livechat/models/tab_item.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/bottom_bar_notifier.dart';
+import '../providers/navbar_notifier.dart';
 
 class BottomBar extends StatelessWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomBarNotifier = Provider.of<BottomBarNotifier>(context);
+    final bottomBarNotifier = Provider.of<NavbarNotifier>(context);
 
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,

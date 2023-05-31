@@ -15,7 +15,7 @@ class GradienBackGround extends StatelessWidget {
             Theme.of(context).primaryColor,
             Theme.of(context).colorScheme.secondary,
           ],
-          begin: Alignment.topLeft,
+          begin: Alignment.topRight,
           end: Alignment.bottomRight,
           stops: const [0, 1],
         ),

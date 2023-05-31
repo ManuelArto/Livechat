@@ -11,6 +11,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
     return AppBar(
       title: Image.asset('assets/images/logo_nobg.png', height: 50),
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      elevation: 20,
       actions: [
         PopupMenuButton(
           itemBuilder: (context) => [

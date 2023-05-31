@@ -45,7 +45,7 @@ class SendMessageState extends State<SendMessage> {
           textCapitalization: TextCapitalization.sentences,
           enableSuggestions: true,
           controller: _controller,
-          decoration: const InputDecoration(labelText: "Type a message..."),
+          decoration: InputDecoration(labelText: "Type a message...", fillColor: Colors.grey[200], border: InputBorder.none),
           onChanged: (value) => setState(() {}),
         ),
         trailing: Container(

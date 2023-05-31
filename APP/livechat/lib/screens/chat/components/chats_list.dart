@@ -17,7 +17,7 @@ class ChatsList extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             socketProvider.readChat(chats[index]["chatName"]);
-            Navigator.of(context)
+            Navigator.of(context, rootNavigator: false)
                 .pushNamed(
                   SingleChatScreen.routeName,
                   arguments: chats[index]["chatName"],

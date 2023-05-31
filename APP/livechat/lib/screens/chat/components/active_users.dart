@@ -34,7 +34,7 @@ class ActiveUsers extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {
                     socketProvider.readChat(user.username);
-                    Navigator.of(context)
+                    Navigator.of(context, rootNavigator: false)
                         .pushNamed(SingleChatScreen.routeName,
                             arguments: user.username)
                         .then((_) => socketProvider.currentChat = "");

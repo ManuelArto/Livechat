@@ -4,15 +4,13 @@ import '../../widgets/gradient_background.dart';
 import 'components/auth_form.dart';
 
 class AuthScreen extends StatelessWidget {
-  static const routeName = "/auth";
-
   const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Stack(
-        children: const [
+        children: [
           GradienBackGround(double.infinity),
           AuthForm(),
         ],

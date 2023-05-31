@@ -72,7 +72,7 @@ class MessageBubble extends StatelessWidget {
               child: GestureDetector(
                 onTap: isMe
                     ? () {}
-                    : () => Navigator.of(context).pushReplacementNamed(
+                    : () => Navigator.of(context, rootNavigator: false).pushReplacementNamed(
                         SingleChatScreen.routeName,
                         arguments: username),
                 child: CircleAvatar(
