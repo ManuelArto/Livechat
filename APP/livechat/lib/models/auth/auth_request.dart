@@ -3,7 +3,7 @@ class AuthRequest {
   String? password;
   String? email;
   String? imageFile;
-  bool isLogin = false;
+  bool isLogin = true;
 
   bool get userNeedImage => !isLogin && imageFile == null;
 

@@ -48,7 +48,8 @@ class AuthFormState extends State<AuthForm>
     } catch (error) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Error: ${error.toString()}"),
+        content: Text(error.toString()),
+        backgroundColor: Theme.of(context).colorScheme.error,
       ));
     } finally {
       setState(() {
@@ -97,7 +98,7 @@ class AuthFormState extends State<AuthForm>
                                         : null;
                           },
                           decoration:
-                              const InputDecoration(labelText: "Username"),
+                              const InputDecoration(labelText: "Username", fillColor: Colors.white),
                         ),
                       ],
                       TextFormField(
@@ -115,7 +116,7 @@ class AuthFormState extends State<AuthForm>
                             : null,
                         keyboardType: TextInputType.emailAddress,
                         decoration:
-                            const InputDecoration(labelText: "Email address"),
+                            const InputDecoration(labelText: "Email address", fillColor: Colors.white),
                       ),
                       TextFormField(
                         controller: _passwordController,
@@ -132,7 +133,7 @@ class AuthFormState extends State<AuthForm>
                                       : null;
                         },
                         decoration:
-                            const InputDecoration(labelText: "Password"),
+                            const InputDecoration(labelText: "Password", fillColor: Colors.white),
                         obscureText: true,
                       ),
                       if (!_authRequest.isLogin)
@@ -142,8 +143,7 @@ class AuthFormState extends State<AuthForm>
                               (value != _passwordController.text)
                                   ? "Password doesn't match"
                                   : null,
-                          decoration: const InputDecoration(
-                              labelText: "Confirm password"),
+                          decoration: const InputDecoration(labelText: "Confirm password", fillColor: Colors.white),
                           obscureText: true,
                         ),
                       const SizedBox(

@@ -41,7 +41,7 @@ class UserDefaultPickerState extends State<UserDefaultPicker> {
     return TextButton(
       style: TextButton.styleFrom(
           backgroundColor: active == activeValue
-              ? Theme.of(context).colorScheme.secondary
+              ? Theme.of(context).colorScheme.secondary.withOpacity(0.5)
               : Colors.grey[300]),
       onPressed: () {
         setState(() {

@@ -12,8 +12,6 @@ class AuthProvider with ChangeNotifier {
   AuthUser? authUser;
   late Function _closeSocket;
 
-  // GETTERS AND SETTERS
-
   get isAuth => authUser != null;
 
   set closeSocket(Function closeSocket) => _closeSocket = closeSocket;
@@ -42,14 +40,8 @@ class AuthProvider with ChangeNotifier {
       authRequest.isLogin ? URL_AUTH_SIGN_IN : URL_AUTH_SIGN_UP,
     );
 
-    _saveData(data);
-  }
-
-  // PRIVATE METHODS
-
-  void _saveData(Map<String, dynamic> responseData) {
-    authUser = AuthUser.fromMap(responseData);
-    authUser?.save();
+    authUser = AuthUser.fromMap(data);
+    authUser!.save();
 
     notifyListeners();
   }

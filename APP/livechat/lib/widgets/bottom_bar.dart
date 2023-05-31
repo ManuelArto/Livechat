@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:livechat/models/tab_item.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/bottom_bar_provider.dart';
+import '../providers/bottom_bar_notifier.dart';
 
 class BottomBar extends StatelessWidget {
   const BottomBar({Key? key}) : super(key: key);

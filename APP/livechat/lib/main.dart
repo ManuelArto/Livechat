@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -20,19 +21,19 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => AuthProvider(),
+          create: (_) => AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, SocketProvider>(
-          create: (context) => SocketProvider(),
-          update: (context, auth, chatProvider) => chatProvider!..update(auth),
+          create: (_) => SocketProvider(),
+          update: (_, auth, socketProvider) => socketProvider!..update(auth),
         ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'LiveChat',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.teal).copyWith(secondary: Colors.orangeAccent),
-        ),
+        theme: FlexThemeData.light(scheme: FlexScheme.blue),
+        darkTheme: FlexThemeData.dark(scheme: FlexScheme.blue),
+        themeMode: ThemeMode.system,
         home: Consumer<AuthProvider>(
           builder: (context, auth, _) => auth.isAuth
               ? const AppScreen()

@@ -13,13 +13,20 @@ import '../constants.dart';
 import '../models/auth/auth_user.dart';
 
 class SocketProvider with ChangeNotifier {
+  late Socket _socketIO;
+  late AuthUser authUser;
+
   final Map<String, User> _users = {};
   final Map<String, Map<String, dynamic>> _messages = {
     "GLOBAL": {"toRead": 0, "list": []}
   };
   String currentChat = "";
-  late Socket _socketIO;
-  late AuthUser authUser;
+
+  // Called everytime AuthProvider changes
+  void update(AuthProvider auth) {
+    if (auth.isAuth) authUser = auth.authUser!;
+    auth.closeSocket = _destroy;
+  }
 
   void init() async {
     if (!kIsWeb) await getFromMemory(); 
@@ -32,11 +39,6 @@ class SocketProvider with ChangeNotifier {
     );
 
     _initListener();
-  }
-
-  void update(AuthProvider auth) {
-    authUser = auth.authUser!;
-    auth.closeSocket = _destroy;
   }
 
   // PRIVATE METHODS
@@ -109,7 +111,6 @@ class SocketProvider with ChangeNotifier {
   void _destroy() {
     debugPrint("Destroying");
     _socketIO.destroy();
-    SocketProvider();
   }
 
   // persistentData
