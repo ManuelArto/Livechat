@@ -27,7 +27,7 @@ class AuthFormState extends State<AuthForm>
     FocusScope.of(context).unfocus();
 
     // Check if the user picked an image
-    if (!_authRequest.userPickedImage) {
+    if (_authRequest.userNeedImage) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Text("Please pick an Image"),
         backgroundColor: Theme.of(context).colorScheme.error,

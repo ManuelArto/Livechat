@@ -5,16 +5,15 @@ class AuthRequest {
   String? imageFile;
   bool isLogin = false;
 
-  bool get userPickedImage => !isLogin && imageFile != null;
+  bool get userNeedImage => !isLogin && imageFile == null;
 
   Map<String, dynamic> toMap() {
     return {
-      "username": username,
+      "email": email,
       "password": password,
-      if (!isLogin)
-        "email": email,
-        "imageFile": imageFile,
+      if (!isLogin) 
+      "username": username,
+      "imageFile": imageFile,
     };
   }
-
 }
