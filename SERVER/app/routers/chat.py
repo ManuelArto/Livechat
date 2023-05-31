@@ -1,3 +1,4 @@
+import json
 import socketio
 
 from app.config import settings
@@ -49,10 +50,12 @@ async def handle_msg(sid, input_data):
     print(f"[MESSAGE] {input_data}")
     username = (await sio_server.get_session(sid))["username"]
 
+    body = json.loads(input_data)
+
     data = {
         "sender": username,
-        "receiver": input_data["receiver"],
-        "message": input_data["message"],
+        "receiver": body["receiver"],
+        "message": body["message"],
     }
     
     if data["receiver"] == "GLOBAL":
