@@ -3,7 +3,6 @@ import socketio
 
 from app.config import settings
 from app.helpers import jwt
-from app.services.user_service import UserService
 
 sio_server = socketio.AsyncServer(
     async_mode='asgi',
