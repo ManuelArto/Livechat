@@ -60,7 +60,7 @@ async def handle_msg(sid, input_data):
     if data["receiver"] == "GLOBAL":
         await sio_server.emit("receive_message", data=data, skip_sid=True)
     else:
-        sio_server.emit("receive_message", data=data, room=data["receiver"])
+        await sio_server.emit("receive_message", data=data, room=data["receiver"])
 
 
 def data_from_token(token) -> tuple[str, str]:

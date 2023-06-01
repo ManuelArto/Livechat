@@ -8,7 +8,7 @@ import 'message_bubble.dart';
 class Messages extends StatefulWidget {
   final String chatName;
 
-  const Messages(this.chatName, {super.key});
+  const Messages(this.chatName, {Key? key}) : super(key: key);
 
   @override
   MessagesState createState() => MessagesState();

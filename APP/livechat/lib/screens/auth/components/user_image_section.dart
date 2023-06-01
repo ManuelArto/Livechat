@@ -40,10 +40,10 @@ class _UserImageSectionState extends State<UserImageSection> {
                   _authRequest.imageFile = null;
                   setState(() => _pickDefaultImage = !_pickDefaultImage);
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Text("Switch Image"),
                     Icon(Icons.switch_camera),
                   ],

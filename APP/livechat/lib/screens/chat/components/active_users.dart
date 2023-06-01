@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class ActiveUsers extends StatelessWidget {
   final Size screenSize;
 
-  const ActiveUsers(this.screenSize, {super.key});
+  const ActiveUsers(this.screenSize, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +35,10 @@ class ActiveUsers extends StatelessWidget {
                   onTap: () {
                     socketProvider.readChat(user.username);
                     Navigator.of(context, rootNavigator: false)
-                        .pushNamed(SingleChatScreen.routeName,
-                            arguments: user.username)
+                        .pushNamed(
+                          SingleChatScreen.routeName,
+                          arguments: user.username,
+                        )
                         .then((_) => socketProvider.currentChat = "");
                   },
                   child: ProfileIcon(user: user),

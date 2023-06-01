@@ -10,7 +10,7 @@ class SingleChatScreen extends StatefulWidget {
   static const routeName = "/chatScreen";
   final String chatName;
 
-  const SingleChatScreen(this.chatName, {super.key});
+  const SingleChatScreen(this.chatName, {Key? key}) : super(key: key);
 
   @override
 

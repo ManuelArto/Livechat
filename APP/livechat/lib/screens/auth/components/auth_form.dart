@@ -8,7 +8,7 @@ import 'package:livechat/screens/auth/components/user_image_section.dart';
 import '../../../models/auth/auth_request.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({super.key});
+  const AuthForm({Key? key}) : super(key: key);
 
   @override
   AuthFormState createState() => AuthFormState();

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart' show ByteData, rootBundle;
 class UserDefaultPicker extends StatefulWidget {
   final Future<void> Function(Uint8List imageBytes) setUserImage;
 
-  const UserDefaultPicker(this.setUserImage, {super.key});
+  const UserDefaultPicker(this.setUserImage, {Key? key}) : super(key: key);
 
   @override
   UserDefaultPickerState createState() => UserDefaultPickerState();

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'chats_list.dart';
 
 class ChatsSection extends StatefulWidget {
-  const ChatsSection(this.screenSize, {super.key});
+  const ChatsSection(this.screenSize, {Key? key}) : super(key: key);
 
   final Size screenSize;
 

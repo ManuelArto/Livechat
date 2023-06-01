@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:livechat/services/db_helper.dart';
@@ -29,7 +30,7 @@ class SocketProvider with ChangeNotifier {
   }
 
   void init() async {
-    if (!kIsWeb) await getFromMemory(); 
+    if (Platform.isAndroid) await getFromMemory(); 
 
     _socketIO = io(SERVER_URL,
       OptionBuilder()
@@ -78,7 +79,7 @@ class SocketProvider with ChangeNotifier {
         }
 
         if (!_messages.containsKey(username)) {
-          if (!kIsWeb) {
+          if (Platform.isAndroid) {
             storeInMemory("USERS", _users[username]!.toJson());
           }
           _messages[username] = {"toRead": 0, "list": []};
@@ -180,7 +181,7 @@ class SocketProvider with ChangeNotifier {
     _messages[chatName]?["list"].add(newMessage);
     if (currentChat != chatName) _messages[chatName]?["toRead"] += 1;
     notifyListeners();
-    if (!kIsWeb) storeInMemory("MESSAGES", newMessage.toJson());
+    if (Platform.isAndroid) storeInMemory("MESSAGES", newMessage.toJson());
   }
 
   // Users
