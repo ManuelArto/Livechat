@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'LiveChat',
+        title: 'Livechat',
         theme: FlexThemeData.light(scheme: FlexScheme.blue),
         darkTheme: FlexThemeData.dark(scheme: FlexScheme.blue),
         themeMode: ThemeMode.system,
