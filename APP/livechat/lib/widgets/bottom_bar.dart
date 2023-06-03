@@ -17,7 +17,7 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomBarNotifier = Provider.of<NavbarNotifier>(context);
+    final navbarNotifier = Provider.of<NavbarNotifier>(context);
 
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -25,8 +25,14 @@ class BottomBar extends StatelessWidget {
           .map((TabItem item) =>
               BottomNavigationBarItem(label: item.label, icon: Icon(item.icon)))
           .toList(),
-      onTap: (value) => {bottomBarNotifier.tabIndex = value},
-      currentIndex: bottomBarNotifier.tabIndex,
+      onTap: (value) {
+        if (value == navbarNotifier.tabIndex) {
+          navbarNotifier.popAllRoutes(value);
+        } else {
+          navbarNotifier.tabIndex = value;
+        }
+      },
+      currentIndex: navbarNotifier.tabIndex,
     );
   }
 }

@@ -6,9 +6,15 @@ import 'components/active_users.dart';
 import 'components/chat_pages.dart';
 import 'single_chat_screen.dart';
 
-class ChatsScreen extends StatelessWidget {
-  const ChatsScreen({Key? key}) : super(key: key);
+class ChatsScreen extends StatefulWidget {
+  final GlobalKey<NavigatorState> navigatorKey;
+  const ChatsScreen({required this.navigatorKey, Key? key}) : super(key: key);
 
+  @override
+  State<ChatsScreen> createState() => _ChatsScreenState();
+}
+
+class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClientMixin{
   Route<dynamic>? _buildRoute(settings) {
     switch (settings.name) {
       case SingleChatScreen.routeName:
@@ -29,7 +35,7 @@ class ChatsScreen extends StatelessWidget {
       appBar: const TopBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {}, // TODO: navigate to find chat and create group like whatsapp
-        child: const Icon(Icons.chat),
+        child: const Icon(Icons.chat, color: Colors.white),
       ),
       body: Stack(
         children: [
@@ -50,10 +56,15 @@ class ChatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Navigator(
-      key: key,
+      key: widget.navigatorKey,
       initialRoute: '/',
       onGenerateRoute: _buildRoute,
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
