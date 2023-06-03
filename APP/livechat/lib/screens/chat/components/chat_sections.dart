@@ -22,7 +22,7 @@ class _ChatSectionsState extends State<ChatSections> {
   void initState() {
     super.initState();
     widget.pageController.addListener(
-      () => context.read<SectionsProvider>().updateCurrentPage(widget.pageController.page!)
+      () => context.read<SectionsProvider>().updateCurrentSection(widget.pageController.page!)
     );
   }
 

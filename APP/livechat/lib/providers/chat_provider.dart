@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../models/chat/message.dart';
 
 class ChatProvider with ChangeNotifier {
-  final Map<String, Chat> _messages = {
+  final Map<String, Chat> chats = {
     "GLOBAL": Chat(chatName: "GLOBAL", messages: [], toRead: 0),
   };
   String currentChat = "";
@@ -17,12 +17,14 @@ class ChatProvider with ChangeNotifier {
   // GETTERS
 
   List<Message> messages(String chatName) =>
-      _messages.containsKey(chatName) ? _messages[chatName]!.messages : [];
+      chats.containsKey(chatName) ? chats[chatName]!.messages : [];
 
-  List<Chat> chatMessages(String section) => _messages.values.toList();
+  List<Chat> chatsBySection(String section) => chats.values
+      .where((chat) => chat.sections.contains(section))
+      .toList();
 
   void readChat(String chatName) {
-    _messages[chatName]?.toRead = 0;
+    chats[chatName]?.toRead = 0;
     notifyListeners();
   }
 
@@ -37,24 +39,31 @@ class ChatProvider with ChangeNotifier {
       chatName: chatName,
     );
 
-    _messages[chatName]?.messages.add(newMessage);
-    
-    if (currentChat != chatName) _messages[chatName]?.toRead += 1;
-    
+    chats[chatName]?.messages.add(newMessage);
+
+    if (currentChat != chatName) chats[chatName]?.toRead += 1;
+
     notifyListeners();
     // _storeInMemory("MESSAGES", newMessage.toJson());
   }
 
+  void addChatToSection(String section, String chatName) {
+    chats[chatName]?.sections.add(section);
+    notifyListeners();  
+  }
+
+  void updateSelectedSections(Chat chat, List<String> selectedSections) {
+    chat.sections = ["All", ...selectedSections];
+    notifyListeners();
+  }
+
   // TODO: da rimuovere una volta introdotti gli amici
   void newUserChat(Map<String, dynamic> users) {
-    users.forEach(
-      (username, data) {
-        if (!_messages.containsKey(username)) {
-          _messages[username] = Chat(chatName: username, messages: [], toRead: 0);
-        }
+    users.forEach((username, data) {
+      if (!chats.containsKey(username)) {
+        chats[username] = Chat(chatName: username, messages: [], toRead: 0);
       }
-    );
-
+    });
   }
 
   // PERSISTENT DATA
@@ -79,6 +88,5 @@ class ChatProvider with ChangeNotifier {
     debugPrint("STORING $data in $table");
     // DBHelper.insert(authUser.id!, table, data);
   }
-
 
 }

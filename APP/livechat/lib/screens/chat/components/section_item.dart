@@ -38,7 +38,7 @@ class SectionItem extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (sectionsProvider.currentPage == page)
+          if (sectionsProvider.currentSection == page)
             CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.secondary,
               radius: 6.0,

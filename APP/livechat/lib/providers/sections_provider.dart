@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 
 class SectionsProvider with ChangeNotifier {
-  final Map<String, List> _sections = {
-    "All": [],
-    "Friends": [],
-    "Family": [],
-  };
-  double _currentPage = 0;
+  final List<String> _sections = [
+    "All",
+    "Friends",
+    "Family",
+  ];
+  double _currentSection = 0;
 
-  List<String> get sections => _sections.keys.toList();
+  List<String> get sections => _sections;
 
   void addSection(String section) {
-    _sections[section] = [];
-    notifyListeners();  
-  }
-
-  void addChatToSection(String section, String chatName) {
-    _sections[section]!.add(chatName);
+    _sections.add(section);
     notifyListeners();  
   }
 
@@ -25,12 +20,12 @@ class SectionsProvider with ChangeNotifier {
     notifyListeners();  
   }
 
-  double get currentPage => _currentPage;
+  double get currentSection => _currentSection;
 
-  String get currentSectioName => sections[_currentPage.toInt()];
+  String get currentSectioName => sections[_currentSection.toInt()];
 
-  void updateCurrentPage(double section) {
-    _currentPage = section;
+  void updateCurrentSection(double section) {
+    _currentSection = section;
     notifyListeners();
   }
 }
