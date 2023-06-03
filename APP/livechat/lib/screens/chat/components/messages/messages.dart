@@ -1,8 +1,10 @@
-import 'package:livechat/providers/auth_provider.dart';
-import 'package:livechat/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/auth/auth_user.dart';
+import '../../../../providers/auth_provider.dart';
+import '../../../../providers/chat_provider.dart';
+import '../../../../providers/friends_provider.dart';
 import 'message_bubble.dart';
 
 class Messages extends StatefulWidget {
@@ -14,9 +16,9 @@ class Messages extends StatefulWidget {
   MessagesState createState() => MessagesState();
 }
 
-class MessagesState extends State<Messages> {
+class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin{
   final ScrollController _scrollController = ScrollController();
-  String? username;
+  late final AuthUser authUser;
 
   _scrollToBottom() {
     _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
@@ -25,30 +27,37 @@ class MessagesState extends State<Messages> {
   @override
   void initState() {
     super.initState();
-    username = Provider.of<AuthProvider>(context, listen: false).authUser?.username;
+    authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-    final socketProvider = Provider.of<SocketProvider>(context);
-    final messages = socketProvider.messages(widget.chatName);
-    socketProvider.currentChat = widget.chatName;
+
+    final friendsProvider = Provider.of<FriendsProvider>(context);
+    final chatProvider = Provider.of<ChatProvider>(context);
+    final messages = chatProvider.messages(widget.chatName);
+
+    // TODO: probabilmente bisognere fare un ListView builder reverse
     return ListView.builder(
       controller: _scrollController,
       shrinkWrap: true,
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final message = messages[index];
+        final isMe = authUser.username == message.sender;
         return MessageBubble(
-          username: message.sender,
-          isMe: username == message.sender,
+          message: message,
+          isMe: isMe,
+          imageUrl: isMe ? authUser.imageUrl : friendsProvider.getImageUrl(message.sender),
           key: ValueKey(message.id),
-          message: message.content,
-          imageUrL: socketProvider.getImageUrl(message.sender),
-          time: message.time,
         );
       },
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
+  
 }

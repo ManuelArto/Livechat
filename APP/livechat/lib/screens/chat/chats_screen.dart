@@ -1,35 +1,13 @@
-import 'package:livechat/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:livechat/screens/chat/single_chat_screen.dart';
-
-import 'package:provider/provider.dart';
 
 import '../../widgets/gradient_background.dart';
 import '../../widgets/top_bar.dart';
 import 'components/active_users.dart';
-import 'components/chats_section.dart';
+import 'components/chat_pages.dart';
+import 'single_chat_screen.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({Key? key}) : super(key: key);
-
-  Scaffold _buildChatScreen(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: const TopBar(),
-      body: Stack(
-        children: [
-          GradienBackGround(MediaQuery.of(context).size.height * .3),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ActiveUsers(screenSize),
-              ChatsSection(screenSize),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   Route<dynamic>? _buildRoute(settings) {
     switch (settings.name) {
@@ -44,9 +22,34 @@ class ChatsScreen extends StatelessWidget {
     }
   }
 
+  Scaffold _buildChatScreen(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: const TopBar(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {}, // TODO: navigate to find chat and create group like whatsapp
+        child: const Icon(Icons.chat),
+      ),
+      body: Stack(
+        children: [
+          GradienBackGround(MediaQuery.of(context).size.height * .3),
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ActiveUsers(screenSize),
+                ChatPages(screenSize),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Provider.of<SocketProvider>(context, listen: false).init();
     return Navigator(
       key: key,
       initialRoute: '/',

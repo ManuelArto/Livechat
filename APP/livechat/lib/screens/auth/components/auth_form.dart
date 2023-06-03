@@ -69,7 +69,7 @@ class AuthFormState extends State<AuthForm>
           ),
           elevation: 10.0,
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(5),
             child: Form(
               key: _formKey,
               child: AnimatedSize(

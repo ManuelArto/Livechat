@@ -1,15 +1,15 @@
 class Message {
+  final String id;
   final String sender;
   final String content;
   final DateTime time;
-  final String id;
   final String chatName;
 
   Message(
-      {required this.content,
+      {required this.id,
+      required this.content,
       required this.sender,
       required this.time,
-      required this.id,
       required this.chatName});
 
   Map<String, dynamic> toJson() => {
@@ -21,9 +21,10 @@ class Message {
       };
 
   factory Message.fromJson(Map<String, dynamic> data) => Message(
-      sender: data["sender"],
-      content: data["content"],
-      time: DateTime.parse(data["time"]),
-      id: data["id"],
-      chatName: data["chatName"]);
+        id: data["id"],
+        sender: data["sender"],
+        content: data["content"],
+        time: DateTime.parse(data["time"]),
+        chatName: data["chatName"],
+      );
 }

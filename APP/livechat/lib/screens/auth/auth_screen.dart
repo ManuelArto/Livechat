@@ -13,36 +13,35 @@ class AuthScreen extends StatelessWidget {
       body: Stack(
         children: [
           const GradienBackGround(double.infinity),
-          // Add my logo image
           SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: screenSize.height * 0.05,
-                      bottom: screenSize.height * 0.02),
-                  child: Image.asset('assets/images/logo_nobg.png',
-                      height: screenSize.height * 0.15),
-                ),
-                Text(
-                  'Livechat',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryTextTheme.bodyLarge?.color,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.02),
+                    child: Image.asset('assets/images/logo_nobg.png',
+                        height: screenSize.height * 0.12),
                   ),
-                ),
-                // add a container with maximum width
-                Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxWidth: screenSize.width > screenSize.height
-                            ? screenSize.width * 0.4
-                            : double.infinity),
-                    child: const AuthForm(),
+                  Text(
+                    'Livechat',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryTextTheme.bodyLarge?.color,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                )
-              ],
+                  // add a container with maximum width
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: screenSize.width > screenSize.height
+                              ? screenSize.width * 0.4
+                              : double.infinity),
+                      child: const AuthForm(),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],

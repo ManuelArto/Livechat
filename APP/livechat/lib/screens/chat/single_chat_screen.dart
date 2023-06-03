@@ -1,7 +1,9 @@
-import 'package:livechat/providers/socket_provider.dart';
+import 'package:livechat/providers/chat_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:livechat/providers/friends_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/user.dart';
 import 'components/messages/messages.dart';
 import 'components/messages/send_message.dart';
 import 'components/profile_icon.dart';
@@ -18,11 +20,17 @@ class SingleChatScreen extends StatefulWidget {
 }
 
 class SingleChatScreenState extends State<SingleChatScreen> {
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = Provider.of<FriendsProvider>(context, listen: false).getUser(widget.chatName);
+    Provider.of<ChatProvider>(context, listen: false).currentChat = widget.chatName;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final socketProvider = Provider.of<SocketProvider>(context, listen: false);
-    final user = socketProvider.getUser(widget.chatName);
-    socketProvider.currentChat = widget.chatName;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.6),
@@ -35,7 +43,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
             margin: const EdgeInsets.only(right: 10.0),
             child: user == null
                 ? null
-                : ProfileIcon(user: user),
+                : ProfileIcon(user: user!),
           ),
         ],
       ),

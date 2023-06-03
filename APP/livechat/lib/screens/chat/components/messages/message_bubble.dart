@@ -1,20 +1,20 @@
+import 'package:livechat/models/chat/message.dart';
 import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
 class MessageBubble extends StatelessWidget {
-  final String message, username, imageUrL;
-  final DateTime time;
+  final Message message;
+  final String imageUrl;
   final bool isMe;
 
-  const MessageBubble(
-      {required this.message,
-      required this.username,
-      required this.imageUrL,
-      required this.isMe,
-      required this.time,
-      Key? key}) : super(key: key);
+  const MessageBubble({
+    required this.message,
+    required this.isMe,
+    required this.imageUrl,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +33,12 @@ class MessageBubble extends StatelessWidget {
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(20),
                   topRight: const Radius.circular(20),
-                  bottomLeft: !isMe ? const Radius.circular(0) : const Radius.circular(20),
-                  bottomRight: isMe ? const Radius.circular(0) : const Radius.circular(20),
+                  bottomLeft: !isMe
+                      ? const Radius.circular(0)
+                      : const Radius.circular(20),
+                  bottomRight: isMe
+                      ? const Radius.circular(0)
+                      : const Radius.circular(20),
                 ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -47,7 +51,7 @@ class MessageBubble extends StatelessWidget {
                     width: MediaQuery.of(context).size.width * 0.25,
                     alignment: isMe ? Alignment.topRight : Alignment.topLeft,
                     child: Text(
-                      username,
+                      message.sender,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: isMe ? Colors.black : Colors.grey[900],
@@ -56,7 +60,7 @@ class MessageBubble extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    message,
+                    message.content,
                     style: TextStyle(
                       color: isMe ? Colors.white : Colors.black,
                     ),
@@ -72,11 +76,11 @@ class MessageBubble extends StatelessWidget {
               child: GestureDetector(
                 onTap: isMe
                     ? () {}
-                    : () => Navigator.of(context, rootNavigator: false).pushReplacementNamed(
-                        SingleChatScreen.routeName,
-                        arguments: username),
+                    : () => Navigator.of(context, rootNavigator: false)
+                        .pushReplacementNamed(SingleChatScreen.routeName,
+                            arguments: message.sender),
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage(imageUrL),
+                  backgroundImage: NetworkImage(imageUrl),
                 ),
               ),
             ),
@@ -84,7 +88,7 @@ class MessageBubble extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(DateFormat("jm").format(time)),
+          child: Text(DateFormat("jm").format(message.time)),
         ),
       ],
     );

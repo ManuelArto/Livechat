@@ -26,12 +26,12 @@ class UserDefaultPickerState extends State<UserDefaultPicker> {
       children: [
         Expanded(
           child: buildButton(
-              context, Icons.tag_faces, "profile_icon_male.jpg", "Male Image", 0),
+              context, Icons.tag_faces, "profile_icon_male.jpg", "Male", 0),
         ),
         const SizedBox(width: 4.0),
         Expanded(
           child: buildButton(
-              context, Icons.face_4, "profile_icon_female.png", "Female Image", 1),
+              context, Icons.face_4, "profile_icon_female.png", "Female", 1),
         ),
       ],
     );
@@ -56,8 +56,8 @@ class UserDefaultPickerState extends State<UserDefaultPicker> {
             child: Icon(icon),
           ),
           FittedBox(
-            fit: BoxFit.cover,
-            child: Text(type, maxLines: 1),
+            fit: BoxFit.scaleDown,
+            child: Text(type),
           ),
         ],
       ),

@@ -2,19 +2,19 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthUser {
+import '../user.dart';
+
+class AuthUser extends User {
   final String _token;
   final String _id;
-  final String _username;
-  final String _imageUrl;
 
-  AuthUser(this._token, this._id, this._username, this._imageUrl);
+  AuthUser(this._token, this._id, String username, String imageUrl)
+      : super(username: username, imageUrl: imageUrl);
 
   AuthUser.fromMap(Map<String, dynamic> map)
       : _token = map["token"],
         _id = map["id"],
-        _username = map["username"],
-        _imageUrl = map["imageUrl"];
+        super(username: map["username"], imageUrl: map["imageUrl"]);
 
   static Future<AuthUser?> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -31,16 +31,15 @@ class AuthUser {
     prefs.setString("userData", json.encode(toJson()));
   }
 
+  @override
   Map<String, dynamic> toJson() => {
         "token": _token,
         "id": _id,
-        "username": _username,
-        "imageUrl": _imageUrl,
+        "username": username,
+        "imageUrl": imageUrl,
       };
 
   // GETTERS
   get token => _token;
   get id => _id;
-  get username => _username;
-  get imageUrl => _imageUrl;
 }

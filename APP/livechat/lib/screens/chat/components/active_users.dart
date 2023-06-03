@@ -1,8 +1,10 @@
-import 'package:livechat/providers/socket_provider.dart';
+import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/screens/chat/components/profile_icon.dart';
 import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../providers/friends_provider.dart';
 
 class ActiveUsers extends StatelessWidget {
   final Size screenSize;
@@ -11,8 +13,10 @@ class ActiveUsers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final socketProvider = Provider.of<SocketProvider>(context);
-    final activeUsers = socketProvider.onlineUsers;
+    final chatProvider = Provider.of<ChatProvider>(context);
+    final usersProvider = Provider.of<FriendsProvider>(context);
+    final activeUsers = usersProvider.onlineUsers;
+    
     return Container(
       margin: const EdgeInsets.only(left: 30.0, top: 5),
       height: screenSize.height * 0.12,
@@ -33,13 +37,13 @@ class ActiveUsers extends StatelessWidget {
                 final user = activeUsers[index];
                 return GestureDetector(
                   onTap: () {
-                    socketProvider.readChat(user.username);
+                    chatProvider.readChat(user.username);
                     Navigator.of(context, rootNavigator: false)
                         .pushNamed(
                           SingleChatScreen.routeName,
                           arguments: user.username,
                         )
-                        .then((_) => socketProvider.currentChat = "");
+                        .then((_) => chatProvider.currentChat = "");
                   },
                   child: ProfileIcon(user: user),
                 );
