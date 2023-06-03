@@ -17,8 +17,12 @@ class SocketProvider with ChangeNotifier {
 
   // Called everytime AuthProvider changes
   void update(AuthProvider auth) {
-    if (auth.isAuth) authUser = auth.authUser!;
-    auth.closeSocket = _destroy;
+    if (auth.isAuth) {
+      authUser = auth.authUser!;
+      init();
+    } else {
+      _socketIO.dispose();
+    }
   }
 
   void init() {
@@ -26,12 +30,13 @@ class SocketProvider with ChangeNotifier {
       OptionBuilder()
           .setTransports(['websocket', 'polling'])
           .setAuth({"x-access-token": authUser.token})
+          .enableForceNew()
+          // .enableReconnection()
           .build()
     );
 
     _initListeners();
   }
-
   
   void sendMessage(String message, String receiver) {
     debugPrint("Sending $message to $receiver");
@@ -47,6 +52,8 @@ class SocketProvider with ChangeNotifier {
   // PRIVATE METHODS
 
   void _initListeners() {
+    _socketIO.onConnectError((err) => debugPrint(err));
+    _socketIO.onError((err) => debugPrint(err));
     _socketIO.on("connect", (_) => debugPrint('CONNECTED'));
     _socketIO.on("disconnect", (_) => debugPrint('DISCONNECTED'));
     _socketIO.on('receive_message', _receiveMessage);
@@ -79,11 +86,6 @@ class SocketProvider with ChangeNotifier {
   void _userDisconnected(jsonData) {
     debugPrint("${jsonData['username']} DISCONNECTED");
     friendsProvider.usersDisconnected(jsonData["username"]);
-  }
-
-  void _destroy() {
-    debugPrint("Destroying");
-    _socketIO.destroy();
   }
 
 }

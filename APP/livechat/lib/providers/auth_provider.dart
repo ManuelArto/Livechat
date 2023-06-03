@@ -10,11 +10,8 @@ import '../models/auth/auth_user.dart';
 
 class AuthProvider with ChangeNotifier {
   AuthUser? authUser;
-  late Function _closeSocket;
 
   get isAuth => authUser != null;
-
-  set closeSocket(Function closeSocket) => _closeSocket = closeSocket;
 
   Future<bool> tryAutoLogin() async {
     authUser = await AuthUser.load();
@@ -30,7 +27,6 @@ class AuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
 
-    _closeSocket();
     notifyListeners();
   }
 
