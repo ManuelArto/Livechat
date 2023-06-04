@@ -1,9 +1,9 @@
 import 'package:livechat/models/user.dart';
 
-class Group {
-  final String name;
-  List<User>? users;
+import 'chat.dart';
 
-  Group({required this.name});
+class Group extends Chat {
+  List<User> users;
 
+  Group(String chatName, this.users) : super(chatName: chatName, messages: []);
 }

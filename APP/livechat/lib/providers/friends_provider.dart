@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:livechat/services/isar_service.dart';
 
 import '../models/user.dart';
 
 class FriendsProvider with ChangeNotifier {
-final Map<String, User> _users = {};
+  final IsarService isar;
 
-  FriendsProvider() {
-    // _getFromMemory();
+  Map<String, User> _users = {};
+
+  FriendsProvider(this.isar) {
+    _loadFriendsFromMemory();
   }
 
   List<User> get onlineUsers =>
@@ -31,12 +34,20 @@ final Map<String, User> _users = {};
     );
 
     notifyListeners();
+    isar.saveAll<User>(_users.values.toList());
   }
 
   void usersDisconnected(String username) {
     _users[username]?.isOnline = false;
 
     notifyListeners();
+  }
+  
+  void _loadFriendsFromMemory() async {
+    List<User> usersList = await isar.getAll<User>();
+    if (usersList.isNotEmpty) {
+      _users = { for (var user in usersList) user.username : user };
+    }
   }
 
 }

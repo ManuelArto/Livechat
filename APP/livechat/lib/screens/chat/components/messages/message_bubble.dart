@@ -51,7 +51,7 @@ class MessageBubble extends StatelessWidget {
                     width: MediaQuery.of(context).size.width * 0.25,
                     alignment: isMe ? Alignment.topRight : Alignment.topLeft,
                     child: Text(
-                      message.sender,
+                      message.sender!,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: isMe ? Colors.black : Colors.grey[900],
@@ -60,7 +60,7 @@ class MessageBubble extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    message.content,
+                    message.content!,
                     style: TextStyle(
                       color: isMe ? Colors.white : Colors.black,
                     ),
@@ -88,7 +88,7 @@ class MessageBubble extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(DateFormat("jm").format(message.time)),
+          child: Text(DateFormat("jm").format(message.time!)),
         ),
       ],
     );

@@ -3,6 +3,7 @@ import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/providers/navbar_notifier.dart';
 import 'package:livechat/providers/friends_provider.dart';
 import 'package:livechat/screens/profile/profile_screen.dart';
+import 'package:livechat/services/isar_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/socket_provider.dart';
@@ -38,6 +39,7 @@ class _AppScreenState extends State<AppScreen> {
   @override
   Widget build(BuildContext context) {
     final SocketProvider socketProvider = Provider.of<SocketProvider>(context, listen: false);
+    final IsarService isar = IsarService.instance;
 
     return MultiProvider(
       providers: [
@@ -46,14 +48,14 @@ class _AppScreenState extends State<AppScreen> {
         ),
         ChangeNotifierProvider<FriendsProvider>(
           create: (_) {
-              FriendsProvider friendsProvider = FriendsProvider();
+              FriendsProvider friendsProvider = FriendsProvider(isar);
               socketProvider.friendsProvider = friendsProvider;
               return friendsProvider;
             },
         ),
         ChangeNotifierProvider<ChatProvider>(
           create: (_) {
-              ChatProvider chatProvider = ChatProvider();
+              ChatProvider chatProvider = ChatProvider(isar);
               socketProvider.chatProvider = chatProvider;
               return chatProvider;
             },

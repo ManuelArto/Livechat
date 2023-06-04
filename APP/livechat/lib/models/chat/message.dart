@@ -1,22 +1,27 @@
+import 'package:isar/isar.dart';
+
+part 'message.g.dart';
+
+@embedded
 class Message {
-  final String id;
-  final String sender;
-  final String content;
-  final DateTime time;
-  final String chatName;
+  final String? id;
+  final String? sender;
+  final String? content;
+  final DateTime? time;
+  final String? chatName;
 
   Message(
-      {required this.id,
-      required this.content,
-      required this.sender,
-      required this.time,
-      required this.chatName});
+      {this.id,
+      this.content,
+      this.sender,
+      this.time,
+      this.chatName});
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "sender": sender,
         "content": content,
-        "time": time.toIso8601String(),
+        "time": time!.toIso8601String(),
         "chatName": chatName,
       };
 

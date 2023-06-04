@@ -1,7 +1,18 @@
+
+import 'package:isar/isar.dart';
+
+part 'user.g.dart';
+
+@collection
 class User {
+  Id? id;
+
+  @Index(unique: true)
   final String username;
   final String imageUrl;
-  bool isOnline;
+
+  @Ignore()
+  bool isOnline = false;
 
   User({required this.username, required this.imageUrl, this.isOnline = false});
 

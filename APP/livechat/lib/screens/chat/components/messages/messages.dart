@@ -50,7 +50,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin{
         return MessageBubble(
           message: message,
           isMe: isMe,
-          imageUrl: isMe ? authUser.imageUrl : friendsProvider.getImageUrl(message.sender),
+          imageUrl: isMe ? authUser.imageUrl : friendsProvider.getImageUrl(message.sender!),
           key: ValueKey(message.id),
         );
       },

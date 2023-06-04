@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livechat/services/isar_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/sections_provider.dart';
@@ -19,8 +20,10 @@ class ChatPagesState extends State<ChatPages> {
 
   @override
   Widget build(BuildContext context) {
+    final IsarService isar = IsarService.instance;
+
     return ChangeNotifierProvider(
-      create: (_) => SectionsProvider(),
+      create: (_) => SectionsProvider(isar),
       builder: (context, child) {
         SectionsProvider sectionsProvider = context.watch<SectionsProvider>();
         return Column(

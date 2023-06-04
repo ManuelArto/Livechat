@@ -29,7 +29,7 @@ class ChatsList extends StatelessWidget {
               Message? lastMessage =
                   chat.messages.isNotEmpty ? chat.messages.last : null;
               String time = lastMessage?.time != null
-                  ? DateFormat("jm").format(lastMessage!.time)
+                  ? DateFormat("jm").format(lastMessage!.time!)
                   : "";
 
               return GestureDetector(
@@ -84,7 +84,9 @@ class ChatsList extends StatelessWidget {
             .sections
             .where((section) => section != "All")
             .toList();
-    List<String> selectedSections = List.of(chat.sections);
+    List<String> selectedSections = List.of(chat.sections)
+            .where((section) => section != "All")
+            .toList();
 
     return await showDialog<List<String>>(
       context: context,

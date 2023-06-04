@@ -41,5 +41,5 @@ class AuthUser extends User {
 
   // GETTERS
   get token => _token;
-  get id => _id;
+  get userId => _id;
 }
