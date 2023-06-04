@@ -17,8 +17,7 @@ class SectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SectionsProvider sectionsProvider =
-        Provider.of<SectionsProvider>(context, listen: false);
+    final SectionsProvider sectionsProvider = Provider.of<SectionsProvider>(context, listen: false);
     return TextButton(
       onPressed: () => pageController.animateToPage(
         page,
@@ -32,10 +31,6 @@ class SectionItem extends StatelessWidget {
           sectionsProvider.removeSection(section);
         }
       },
-      style: TextButton.styleFrom(
-        shadowColor: Colors.transparent,
-        elevation: 2.0,
-      ),
       child: Row(
         children: [
           if (sectionsProvider.currentSection == page)
