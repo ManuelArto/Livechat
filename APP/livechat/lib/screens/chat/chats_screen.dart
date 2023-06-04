@@ -40,14 +40,12 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
       body: Stack(
         children: [
           GradienBackGround(MediaQuery.of(context).size.height * .3),
-          SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ActiveUsers(screenSize),
-                ChatPages(screenSize),
-              ],
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ActiveUsers(screenSize),
+              Expanded(child: ChatPages(screenSize)),
+            ],
           ),
         ],
       ),
