@@ -43,7 +43,14 @@ const SectionSchema = CollectionSchema(
       ],
     )
   },
-  links: {},
+  links: {
+    r'authUser': LinkSchema(
+      id: 8004089059916937044,
+      name: r'authUser',
+      target: r'AuthUser',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _sectionGetId,
   getLinks: _sectionGetLinks,
@@ -98,15 +105,16 @@ P _sectionDeserializeProp<P>(
 }
 
 Id _sectionGetId(Section object) {
-  return object.id ?? Isar.autoIncrement;
+  return object.id;
 }
 
 List<IsarLinkBase<dynamic>> _sectionGetLinks(Section object) {
-  return [];
+  return [object.authUser];
 }
 
 void _sectionAttach(IsarCollection<dynamic> col, Id id, Section object) {
   object.id = id;
+  object.authUser.attach(col, col.isar.collection<AuthUser>(), r'authUser', id);
 }
 
 extension SectionByIndex on IsarCollection<Section> {
@@ -284,23 +292,7 @@ extension SectionQueryWhere on QueryBuilder<Section, Section, QWhereClause> {
 
 extension SectionQueryFilter
     on QueryBuilder<Section, Section, QFilterCondition> {
-  QueryBuilder<Section, Section, QAfterFilterCondition> idIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'id',
-      ));
-    });
-  }
-
-  QueryBuilder<Section, Section, QAfterFilterCondition> idIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'id',
-      ));
-    });
-  }
-
-  QueryBuilder<Section, Section, QAfterFilterCondition> idEqualTo(Id? value) {
+  QueryBuilder<Section, Section, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -310,7 +302,7 @@ extension SectionQueryFilter
   }
 
   QueryBuilder<Section, Section, QAfterFilterCondition> idGreaterThan(
-    Id? value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -323,7 +315,7 @@ extension SectionQueryFilter
   }
 
   QueryBuilder<Section, Section, QAfterFilterCondition> idLessThan(
-    Id? value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -336,8 +328,8 @@ extension SectionQueryFilter
   }
 
   QueryBuilder<Section, Section, QAfterFilterCondition> idBetween(
-    Id? lower,
-    Id? upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -487,7 +479,20 @@ extension SectionQueryObject
     on QueryBuilder<Section, Section, QFilterCondition> {}
 
 extension SectionQueryLinks
-    on QueryBuilder<Section, Section, QFilterCondition> {}
+    on QueryBuilder<Section, Section, QFilterCondition> {
+  QueryBuilder<Section, Section, QAfterFilterCondition> authUser(
+      FilterQuery<AuthUser> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'authUser');
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterFilterCondition> authUserIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'authUser', 0, true, 0, true);
+    });
+  }
+}
 
 extension SectionQuerySortBy on QueryBuilder<Section, Section, QSortBy> {
   QueryBuilder<Section, Section, QAfterSortBy> sortByName() {

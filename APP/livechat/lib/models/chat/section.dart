@@ -1,6 +1,8 @@
 
 import 'package:isar/isar.dart';
 
+import '../auth/auth_user.dart';
+
 part 'section.g.dart';
 
 @collection
@@ -9,6 +11,8 @@ class Section {
 
   @Index(unique: true)
   String name;
+
+  final authUser = IsarLink<AuthUser>();
 
   Section(this.name);
 

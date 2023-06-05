@@ -2,30 +2,33 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:livechat/services/http_requester.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
 import '../models/auth/auth_request.dart';
 import '../models/auth/auth_user.dart';
+import '../services/isar_service.dart';
 
 class AuthProvider with ChangeNotifier {
+  final IsarService isar;
   AuthUser? authUser;
+
+  AuthProvider(this.isar);
 
   get isAuth => authUser != null;
 
   Future<bool> tryAutoLogin() async {
-    authUser = await AuthUser.load();
+    authUser = await isar.getLoggedUser();
     if (authUser == null) return false;
+
 
     notifyListeners();
     return true;
   }
 
   Future<void> logout() async {
+    authUser!.isLogged = false;
+    isar.insertOrUpdate<AuthUser>(authUser!);
     authUser = null;
-
-    final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
 
     notifyListeners();
   }
@@ -37,7 +40,7 @@ class AuthProvider with ChangeNotifier {
     );
 
     authUser = AuthUser.fromMap(data);
-    authUser!.save();
+    isar.save<AuthUser>(authUser!);
 
     notifyListeners();
   }

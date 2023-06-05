@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'friend.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,13 @@ part of 'user.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetUserCollection on Isar {
-  IsarCollection<User> get users => this.collection();
+extension GetFriendCollection on Isar {
+  IsarCollection<Friend> get friends => this.collection();
 }
 
-const UserSchema = CollectionSchema(
-  name: r'User',
-  id: -7838171048429979076,
+const FriendSchema = CollectionSchema(
+  name: r'Friend',
+  id: -2106945921316824802,
   properties: {
     r'imageUrl': PropertySchema(
       id: 0,
@@ -28,10 +28,10 @@ const UserSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _userEstimateSize,
-  serialize: _userSerialize,
-  deserialize: _userDeserialize,
-  deserializeProp: _userDeserializeProp,
+  estimateSize: _friendEstimateSize,
+  serialize: _friendSerialize,
+  deserialize: _friendDeserialize,
+  deserializeProp: _friendDeserializeProp,
   idName: r'id',
   indexes: {
     r'username': IndexSchema(
@@ -48,16 +48,23 @@ const UserSchema = CollectionSchema(
       ],
     )
   },
-  links: {},
+  links: {
+    r'authUser': LinkSchema(
+      id: 2152536349632925456,
+      name: r'authUser',
+      target: r'AuthUser',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
-  getId: _userGetId,
-  getLinks: _userGetLinks,
-  attach: _userAttach,
+  getId: _friendGetId,
+  getLinks: _friendGetLinks,
+  attach: _friendAttach,
   version: '3.1.0+1',
 );
 
-int _userEstimateSize(
-  User object,
+int _friendEstimateSize(
+  Friend object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -67,8 +74,8 @@ int _userEstimateSize(
   return bytesCount;
 }
 
-void _userSerialize(
-  User object,
+void _friendSerialize(
+  Friend object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -77,13 +84,13 @@ void _userSerialize(
   writer.writeString(offsets[1], object.username);
 }
 
-User _userDeserialize(
+Friend _friendDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = User(
+  final object = Friend(
     imageUrl: reader.readString(offsets[0]),
     username: reader.readString(offsets[1]),
   );
@@ -91,7 +98,7 @@ User _userDeserialize(
   return object;
 }
 
-P _userDeserializeProp<P>(
+P _friendDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -107,24 +114,25 @@ P _userDeserializeProp<P>(
   }
 }
 
-Id _userGetId(User object) {
+Id _friendGetId(Friend object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLinkBase<dynamic>> _userGetLinks(User object) {
-  return [];
+List<IsarLinkBase<dynamic>> _friendGetLinks(Friend object) {
+  return [object.authUser];
 }
 
-void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
+void _friendAttach(IsarCollection<dynamic> col, Id id, Friend object) {
   object.id = id;
+  object.authUser.attach(col, col.isar.collection<AuthUser>(), r'authUser', id);
 }
 
-extension UserByIndex on IsarCollection<User> {
-  Future<User?> getByUsername(String username) {
+extension FriendByIndex on IsarCollection<Friend> {
+  Future<Friend?> getByUsername(String username) {
     return getByIndex(r'username', [username]);
   }
 
-  User? getByUsernameSync(String username) {
+  Friend? getByUsernameSync(String username) {
     return getByIndexSync(r'username', [username]);
   }
 
@@ -136,12 +144,12 @@ extension UserByIndex on IsarCollection<User> {
     return deleteByIndexSync(r'username', [username]);
   }
 
-  Future<List<User?>> getAllByUsername(List<String> usernameValues) {
+  Future<List<Friend?>> getAllByUsername(List<String> usernameValues) {
     final values = usernameValues.map((e) => [e]).toList();
     return getAllByIndex(r'username', values);
   }
 
-  List<User?> getAllByUsernameSync(List<String> usernameValues) {
+  List<Friend?> getAllByUsernameSync(List<String> usernameValues) {
     final values = usernameValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'username', values);
   }
@@ -156,33 +164,33 @@ extension UserByIndex on IsarCollection<User> {
     return deleteAllByIndexSync(r'username', values);
   }
 
-  Future<Id> putByUsername(User object) {
+  Future<Id> putByUsername(Friend object) {
     return putByIndex(r'username', object);
   }
 
-  Id putByUsernameSync(User object, {bool saveLinks = true}) {
+  Id putByUsernameSync(Friend object, {bool saveLinks = true}) {
     return putByIndexSync(r'username', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByUsername(List<User> objects) {
+  Future<List<Id>> putAllByUsername(List<Friend> objects) {
     return putAllByIndex(r'username', objects);
   }
 
-  List<Id> putAllByUsernameSync(List<User> objects, {bool saveLinks = true}) {
+  List<Id> putAllByUsernameSync(List<Friend> objects, {bool saveLinks = true}) {
     return putAllByIndexSync(r'username', objects, saveLinks: saveLinks);
   }
 }
 
-extension UserQueryWhereSort on QueryBuilder<User, User, QWhere> {
-  QueryBuilder<User, User, QAfterWhere> anyId() {
+extension FriendQueryWhereSort on QueryBuilder<Friend, Friend, QWhere> {
+  QueryBuilder<Friend, Friend, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
-  QueryBuilder<User, User, QAfterWhereClause> idEqualTo(Id id) {
+extension FriendQueryWhere on QueryBuilder<Friend, Friend, QWhereClause> {
+  QueryBuilder<Friend, Friend, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -191,7 +199,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<Friend, Friend, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -213,7 +221,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<Friend, Friend, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -222,7 +230,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<Friend, Friend, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -231,7 +239,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> idBetween(
+  QueryBuilder<Friend, Friend, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -247,7 +255,8 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> usernameEqualTo(String username) {
+  QueryBuilder<Friend, Friend, QAfterWhereClause> usernameEqualTo(
+      String username) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'username',
@@ -256,7 +265,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
-  QueryBuilder<User, User, QAfterWhereClause> usernameNotEqualTo(
+  QueryBuilder<Friend, Friend, QAfterWhereClause> usernameNotEqualTo(
       String username) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -292,8 +301,8 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
   }
 }
 
-extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
-  QueryBuilder<User, User, QAfterFilterCondition> idIsNull() {
+extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'id',
@@ -301,7 +310,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idIsNotNull() {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'id',
@@ -309,7 +318,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idEqualTo(Id? value) {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -318,7 +327,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idGreaterThan(
     Id? value, {
     bool include = false,
   }) {
@@ -331,7 +340,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idLessThan(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idLessThan(
     Id? value, {
     bool include = false,
   }) {
@@ -344,7 +353,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> idBetween(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idBetween(
     Id? lower,
     Id? upper, {
     bool includeLower = true,
@@ -361,7 +370,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlEqualTo(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -374,7 +383,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlGreaterThan(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -389,7 +398,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlLessThan(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -404,7 +413,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlBetween(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -423,7 +432,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlStartsWith(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -436,7 +445,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlEndsWith(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -449,7 +458,8 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlContains(String value,
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlContains(
+      String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -460,7 +470,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlMatches(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -472,7 +482,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlIsEmpty() {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'imageUrl',
@@ -481,7 +491,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> imageUrlIsNotEmpty() {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> imageUrlIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'imageUrl',
@@ -490,7 +500,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameEqualTo(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -503,7 +513,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameGreaterThan(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -518,7 +528,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameLessThan(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -533,7 +543,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameBetween(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -552,7 +562,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameStartsWith(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -565,7 +575,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameEndsWith(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -578,7 +588,8 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameContains(String value,
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameContains(
+      String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -589,7 +600,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameMatches(
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -601,7 +612,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameIsEmpty() {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'username',
@@ -610,7 +621,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> usernameIsNotEmpty() {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> usernameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'username',
@@ -620,83 +631,96 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 }
 
-extension UserQueryObject on QueryBuilder<User, User, QFilterCondition> {}
+extension FriendQueryObject on QueryBuilder<Friend, Friend, QFilterCondition> {}
 
-extension UserQueryLinks on QueryBuilder<User, User, QFilterCondition> {}
+extension FriendQueryLinks on QueryBuilder<Friend, Friend, QFilterCondition> {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> authUser(
+      FilterQuery<AuthUser> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'authUser');
+    });
+  }
 
-extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
-  QueryBuilder<User, User, QAfterSortBy> sortByImageUrl() {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> authUserIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'authUser', 0, true, 0, true);
+    });
+  }
+}
+
+extension FriendQuerySortBy on QueryBuilder<Friend, Friend, QSortBy> {
+  QueryBuilder<Friend, Friend, QAfterSortBy> sortByImageUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'imageUrl', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> sortByImageUrlDesc() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> sortByImageUrlDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'imageUrl', Sort.desc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> sortByUsername() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> sortByUsername() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> sortByUsernameDesc() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> sortByUsernameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.desc);
     });
   }
 }
 
-extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
-  QueryBuilder<User, User, QAfterSortBy> thenById() {
+extension FriendQuerySortThenBy on QueryBuilder<Friend, Friend, QSortThenBy> {
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByImageUrl() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenByImageUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'imageUrl', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByImageUrlDesc() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenByImageUrlDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'imageUrl', Sort.desc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByUsername() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenByUsername() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.asc);
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByUsernameDesc() {
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenByUsernameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.desc);
     });
   }
 }
 
-extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
-  QueryBuilder<User, User, QDistinct> distinctByImageUrl(
+extension FriendQueryWhereDistinct on QueryBuilder<Friend, Friend, QDistinct> {
+  QueryBuilder<Friend, Friend, QDistinct> distinctByImageUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'imageUrl', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<User, User, QDistinct> distinctByUsername(
+  QueryBuilder<Friend, Friend, QDistinct> distinctByUsername(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'username', caseSensitive: caseSensitive);
@@ -704,20 +728,20 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
   }
 }
 
-extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
-  QueryBuilder<User, int, QQueryOperations> idProperty() {
+extension FriendQueryProperty on QueryBuilder<Friend, Friend, QQueryProperty> {
+  QueryBuilder<Friend, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<User, String, QQueryOperations> imageUrlProperty() {
+  QueryBuilder<Friend, String, QQueryOperations> imageUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'imageUrl');
     });
   }
 
-  QueryBuilder<User, String, QQueryOperations> usernameProperty() {
+  QueryBuilder<Friend, String, QQueryOperations> usernameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'username');
     });

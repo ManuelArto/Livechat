@@ -1,45 +1,28 @@
-import 'dart:convert';
+import 'package:isar/isar.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+part 'auth_user.g.dart';
 
-import '../user.dart';
+@collection
+class AuthUser {
+  Id? id;
+  final String userId;
+  final String token;
+  final String username;
+  final String imageUrl;
+  bool isLogged = true;
 
-class AuthUser extends User {
-  final String _token;
-  final String _id;
-
-  AuthUser(this._token, this._id, String username, String imageUrl)
-      : super(username: username, imageUrl: imageUrl);
+  AuthUser(this.token, this.userId, this.username, this.imageUrl);
 
   AuthUser.fromMap(Map<String, dynamic> map)
-      : _token = map["token"],
-        _id = map["id"],
-        super(username: map["username"], imageUrl: map["imageUrl"]);
+      : token = map["token"],
+        userId = map["id"],
+        username = map["username"],
+        imageUrl = map["imageUrl"];
 
-  static Future<AuthUser?> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey("userData")) return null;
-
-    final Map<String, dynamic> userData =
-        json.decode(prefs.getString("userData")!);
-
-    return AuthUser.fromMap(userData);
-  }
-
-  void save() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString("userData", json.encode(toJson()));
-  }
-
-  @override
   Map<String, dynamic> toJson() => {
-        "token": _token,
-        "id": _id,
+        "token": token,
+        "id": userId,
         "username": username,
         "imageUrl": imageUrl,
       };
-
-  // GETTERS
-  get token => _token;
-  get userId => _id;
 }

@@ -1,4 +1,4 @@
-import 'package:livechat/models/user.dart';
+import 'package:livechat/models/friend.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +8,7 @@ import '../../../providers/friends_provider.dart';
 class ProfileIcon extends StatelessWidget {
   const ProfileIcon({required this.user, Key? key}) : super(key: key);
 
-  final User user;
+  final Friend user;
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:livechat/providers/friends_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user.dart';
+import '../../models/friend.dart';
 import 'components/messages/messages.dart';
 import 'components/messages/send_message.dart';
 import 'components/profile_icon.dart';
@@ -20,7 +20,7 @@ class SingleChatScreen extends StatefulWidget {
 }
 
 class SingleChatScreenState extends State<SingleChatScreen> {
-  User? user;
+  Friend? user;
 
   @override
   void initState() {

@@ -59,7 +59,14 @@ const ChatSchema = CollectionSchema(
       ],
     )
   },
-  links: {},
+  links: {
+    r'authUser': LinkSchema(
+      id: -8681399735413598327,
+      name: r'authUser',
+      target: r'AuthUser',
+      single: true,
+    )
+  },
   embeddedSchemas: {r'Message': MessageSchema},
   getId: _chatGetId,
   getLinks: _chatGetLinks,
@@ -162,11 +169,12 @@ Id _chatGetId(Chat object) {
 }
 
 List<IsarLinkBase<dynamic>> _chatGetLinks(Chat object) {
-  return [];
+  return [object.authUser];
 }
 
 void _chatAttach(IsarCollection<dynamic> col, Id id, Chat object) {
   object.id = id;
+  object.authUser.attach(col, col.isar.collection<AuthUser>(), r'authUser', id);
 }
 
 extension ChatByIndex on IsarCollection<Chat> {
@@ -884,7 +892,20 @@ extension ChatQueryObject on QueryBuilder<Chat, Chat, QFilterCondition> {
   }
 }
 
-extension ChatQueryLinks on QueryBuilder<Chat, Chat, QFilterCondition> {}
+extension ChatQueryLinks on QueryBuilder<Chat, Chat, QFilterCondition> {
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> authUser(
+      FilterQuery<AuthUser> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'authUser');
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> authUserIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'authUser', 0, true, 0, true);
+    });
+  }
+}
 
 extension ChatQuerySortBy on QueryBuilder<Chat, Chat, QSortBy> {
   QueryBuilder<Chat, Chat, QAfterSortBy> sortByChatName() {

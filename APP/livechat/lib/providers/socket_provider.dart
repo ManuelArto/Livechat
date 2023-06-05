@@ -52,8 +52,8 @@ class SocketProvider with ChangeNotifier {
   // PRIVATE METHODS
 
   void _initListeners() {
-    _socketIO.onConnectError((err) => debugPrint(err));
-    _socketIO.onError((err) => debugPrint(err));
+    _socketIO.onConnectError((err) => debugPrint(err.toString()));
+    _socketIO.onError((err) => debugPrint(err.toString()));
     _socketIO.on("connect", (_) => debugPrint('CONNECTED'));
     _socketIO.on("disconnect", (_) => debugPrint('DISCONNECTED'));
     _socketIO.on('receive_message', _receiveMessage);

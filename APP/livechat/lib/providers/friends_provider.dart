@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/services/isar_service.dart';
 
-import '../models/user.dart';
+import '../models/auth/auth_user.dart';
+import '../models/friend.dart';
 
 class FriendsProvider with ChangeNotifier {
   final IsarService isar;
+  final AuthUser authUser;
 
-  Map<String, User> _users = {};
+  Map<String, Friend> _users = {};
 
-  FriendsProvider(this.isar) {
+  FriendsProvider(this.isar, this.authUser) {
     _loadFriendsFromMemory();
   }
 
-  List<User> get onlineUsers =>
+  List<Friend> get onlineUsers =>
       _users.values.where((user) => user.isOnline).toList();
 
-  User? getUser(String username) {
+  Friend? getUser(String username) {
     return _users[username];
   }
 
@@ -30,11 +32,13 @@ class FriendsProvider with ChangeNotifier {
   // TODO: da modificare una volta introdotti gli amici
   void newUsersOnline(Map<String, dynamic> users) {
     users.forEach(
-      (username, data) => _users[username] = User(username: username, imageUrl: data["imageUrl"], isOnline: true)
+      (username, data) => _users[username] =
+          Friend(username: username, imageUrl: data["imageUrl"], isOnline: true)
+            ..authUser.value = authUser,
     );
 
     notifyListeners();
-    isar.saveAll<User>(_users.values.toList());
+    isar.saveAll<Friend>(_users.values.toList());
   }
 
   void usersDisconnected(String username) {
@@ -42,12 +46,11 @@ class FriendsProvider with ChangeNotifier {
 
     notifyListeners();
   }
-  
+
   void _loadFriendsFromMemory() async {
-    List<User> usersList = await isar.getAll<User>();
+    List<Friend> usersList = await isar.getAll<Friend>();
     if (usersList.isNotEmpty) {
-      _users = { for (var user in usersList) user.username : user };
+      _users = {for (var user in usersList) user.username: user};
     }
   }
-
 }
