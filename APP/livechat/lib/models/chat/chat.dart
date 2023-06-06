@@ -1,6 +1,5 @@
 import 'package:isar/isar.dart';
 
-import '../auth/auth_user.dart';
 import 'message.dart';
 
 part 'chat.g.dart';
@@ -9,13 +8,12 @@ part 'chat.g.dart';
 class Chat {
   Id id = Isar.autoIncrement;
 
-  @Index(unique: true)
   String chatName;
   int toRead;
-  List<Message> messages = List.empty(growable: true);
+  List<Message> messages = [];
   List<String> sections = ["All"];
 
-  final authUser = IsarLink<AuthUser>();
+  int? userId;
 
   Chat({
     required this.chatName,

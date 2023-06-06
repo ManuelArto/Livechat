@@ -21,6 +21,11 @@ const SectionSchema = CollectionSchema(
       id: 0,
       name: r'name',
       type: IsarType.string,
+    ),
+    r'userId': PropertySchema(
+      id: 1,
+      name: r'userId',
+      type: IsarType.long,
     )
   },
   estimateSize: _sectionEstimateSize,
@@ -28,29 +33,8 @@ const SectionSchema = CollectionSchema(
   deserialize: _sectionDeserialize,
   deserializeProp: _sectionDeserializeProp,
   idName: r'id',
-  indexes: {
-    r'name': IndexSchema(
-      id: 879695947855722453,
-      name: r'name',
-      unique: true,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'name',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    )
-  },
-  links: {
-    r'authUser': LinkSchema(
-      id: 8004089059916937044,
-      name: r'authUser',
-      target: r'AuthUser',
-      single: true,
-    )
-  },
+  indexes: {},
+  links: {},
   embeddedSchemas: {},
   getId: _sectionGetId,
   getLinks: _sectionGetLinks,
@@ -75,6 +59,7 @@ void _sectionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.name);
+  writer.writeLong(offsets[1], object.userId);
 }
 
 Section _sectionDeserialize(
@@ -87,6 +72,7 @@ Section _sectionDeserialize(
     reader.readString(offsets[0]),
   );
   object.id = id;
+  object.userId = reader.readLongOrNull(offsets[1]);
   return object;
 }
 
@@ -99,6 +85,8 @@ P _sectionDeserializeProp<P>(
   switch (propertyId) {
     case 0:
       return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -109,66 +97,11 @@ Id _sectionGetId(Section object) {
 }
 
 List<IsarLinkBase<dynamic>> _sectionGetLinks(Section object) {
-  return [object.authUser];
+  return [];
 }
 
 void _sectionAttach(IsarCollection<dynamic> col, Id id, Section object) {
   object.id = id;
-  object.authUser.attach(col, col.isar.collection<AuthUser>(), r'authUser', id);
-}
-
-extension SectionByIndex on IsarCollection<Section> {
-  Future<Section?> getByName(String name) {
-    return getByIndex(r'name', [name]);
-  }
-
-  Section? getByNameSync(String name) {
-    return getByIndexSync(r'name', [name]);
-  }
-
-  Future<bool> deleteByName(String name) {
-    return deleteByIndex(r'name', [name]);
-  }
-
-  bool deleteByNameSync(String name) {
-    return deleteByIndexSync(r'name', [name]);
-  }
-
-  Future<List<Section?>> getAllByName(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return getAllByIndex(r'name', values);
-  }
-
-  List<Section?> getAllByNameSync(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'name', values);
-  }
-
-  Future<int> deleteAllByName(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'name', values);
-  }
-
-  int deleteAllByNameSync(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'name', values);
-  }
-
-  Future<Id> putByName(Section object) {
-    return putByIndex(r'name', object);
-  }
-
-  Id putByNameSync(Section object, {bool saveLinks = true}) {
-    return putByIndexSync(r'name', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByName(List<Section> objects) {
-    return putAllByIndex(r'name', objects);
-  }
-
-  List<Id> putAllByNameSync(List<Section> objects, {bool saveLinks = true}) {
-    return putAllByIndexSync(r'name', objects, saveLinks: saveLinks);
-  }
 }
 
 extension SectionQueryWhereSort on QueryBuilder<Section, Section, QWhere> {
@@ -242,50 +175,6 @@ extension SectionQueryWhere on QueryBuilder<Section, Section, QWhereClause> {
         upper: upperId,
         includeUpper: includeUpper,
       ));
-    });
-  }
-
-  QueryBuilder<Section, Section, QAfterWhereClause> nameEqualTo(String name) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'name',
-        value: [name],
-      ));
-    });
-  }
-
-  QueryBuilder<Section, Section, QAfterWhereClause> nameNotEqualTo(
-      String name) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ));
-      }
     });
   }
 }
@@ -473,26 +362,82 @@ extension SectionQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Section, Section, QAfterFilterCondition> userIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'userId',
+      ));
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterFilterCondition> userIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'userId',
+      ));
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterFilterCondition> userIdEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterFilterCondition> userIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterFilterCondition> userIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterFilterCondition> userIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'userId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension SectionQueryObject
     on QueryBuilder<Section, Section, QFilterCondition> {}
 
 extension SectionQueryLinks
-    on QueryBuilder<Section, Section, QFilterCondition> {
-  QueryBuilder<Section, Section, QAfterFilterCondition> authUser(
-      FilterQuery<AuthUser> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'authUser');
-    });
-  }
-
-  QueryBuilder<Section, Section, QAfterFilterCondition> authUserIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'authUser', 0, true, 0, true);
-    });
-  }
-}
+    on QueryBuilder<Section, Section, QFilterCondition> {}
 
 extension SectionQuerySortBy on QueryBuilder<Section, Section, QSortBy> {
   QueryBuilder<Section, Section, QAfterSortBy> sortByName() {
@@ -504,6 +449,18 @@ extension SectionQuerySortBy on QueryBuilder<Section, Section, QSortBy> {
   QueryBuilder<Section, Section, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterSortBy> sortByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterSortBy> sortByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -533,6 +490,18 @@ extension SectionQuerySortThenBy
       return query.addSortBy(r'name', Sort.desc);
     });
   }
+
+  QueryBuilder<Section, Section, QAfterSortBy> thenByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Section, Section, QAfterSortBy> thenByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
+    });
+  }
 }
 
 extension SectionQueryWhereDistinct
@@ -541,6 +510,12 @@ extension SectionQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Section, Section, QDistinct> distinctByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'userId');
     });
   }
 }
@@ -556,6 +531,12 @@ extension SectionQueryProperty
   QueryBuilder<Section, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<Section, int?, QQueryOperations> userIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'userId');
     });
   }
 }

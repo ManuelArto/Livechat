@@ -10,6 +10,10 @@ import 'package:livechat/providers/socket_provider.dart';
 import 'package:livechat/screens/auth/auth_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  IsarService.instance;
+
   runApp(const MyApp());
 }
 
@@ -18,13 +22,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => AuthProvider(IsarService.instance),
+          create: (_) => AuthProvider(),
         ),
-        ChangeNotifierProxyProvider<AuthProvider, SocketProvider>(
+        ChangeNotifierProxyProvider<AuthProvider,SocketProvider>(
           create: (_) => SocketProvider(),
           update: (_, auth, socketProvider) => socketProvider!..update(auth),
         ),

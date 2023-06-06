@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:livechat/models/auth/auth_user.dart';
 import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/providers/navbar_notifier.dart';
 import 'package:livechat/providers/friends_provider.dart';
 import 'package:livechat/screens/profile/profile_screen.dart';
-import 'package:livechat/services/isar_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
@@ -41,27 +39,27 @@ class _AppScreenState extends State<AppScreen> {
   @override
   Widget build(BuildContext context) {
     final SocketProvider socketProvider = Provider.of<SocketProvider>(context, listen: false);
-    final AuthUser authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
-    final IsarService isar = IsarService.instance;
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NavbarNotifier>(
           create: (_) => NavbarNotifier(keys),
         ),
-        ChangeNotifierProvider<FriendsProvider>(
+        ChangeNotifierProxyProvider<AuthProvider, FriendsProvider>(
           create: (_) {
-              FriendsProvider friendsProvider = FriendsProvider(isar, authUser);
+              FriendsProvider friendsProvider = FriendsProvider();
               socketProvider.friendsProvider = friendsProvider;
               return friendsProvider;
             },
+          update:(context, auth, friends) => friends!..update(auth.authUser),
         ),
-        ChangeNotifierProvider<ChatProvider>(
+        ChangeNotifierProxyProvider<AuthProvider, ChatProvider>(
           create: (_) {
-              ChatProvider chatProvider = ChatProvider(isar, authUser);
+              ChatProvider chatProvider = ChatProvider();
               socketProvider.chatProvider = chatProvider;
               return chatProvider;
             },
+          update:(context, auth, chat) => chat!..update(auth.authUser),
         ),
       ],
       builder: (context, child) {

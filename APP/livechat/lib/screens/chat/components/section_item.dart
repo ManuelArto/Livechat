@@ -24,13 +24,15 @@ class SectionItem extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       ),
-      onLongPress: () async {
-        if (await _deleteSectionDialog(context) == true) {
-          if (section == sectionsProvider.currentSectioName) pageController.jumpToPage(page-1);
-          
-          sectionsProvider.removeSection(section);
-        }
-      },
+      onLongPress: section == "All"
+          ? () {}
+          : () async {
+              if (await _deleteSectionDialog(context) == true) {
+                if (section == sectionsProvider.currentSectionName) pageController.jumpToPage(page - 1);
+
+                sectionsProvider.removeSection(section);
+              }
+            },
       child: Row(
         children: [
           if (sectionsProvider.currentSection == page)

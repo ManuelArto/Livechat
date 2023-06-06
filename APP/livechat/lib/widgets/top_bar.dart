@@ -16,14 +16,11 @@ class TopBar extends StatefulWidget implements PreferredSizeWidget {
 class _TopBarState extends State<TopBar> {
   bool _loggingOut = false;
 
-  Future<void> clickLogout() async {
-    setState(() {
-      _loggingOut = true;
-    });
-    await Provider.of<AuthProvider>(context, listen: false).logout();
-    setState(() {
-      _loggingOut = false;
-    });
+  void clickLogout() async {
+    setState(() => _loggingOut = true);
+    Provider.of<AuthProvider>(context, listen: false)
+        .logout()
+        .then((t) => setState(() => _loggingOut = false));
   }
 
   @override

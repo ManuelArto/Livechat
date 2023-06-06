@@ -1,13 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:livechat/models/auth/auth_user.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models/chat/chat.dart';
 import '../models/chat/section.dart';
-import '../models/friend.dart';
 
 class IsarService {
-  // Singleton
+
+  // SINGLETON
   static IsarService? _instance;
   static IsarService get instance {
     _instance ??= IsarService();
@@ -16,64 +17,58 @@ class IsarService {
 
   late Future<Isar> db;
   IsarService() {
-    db = openIsar();
+    db = _openIsar();
   }
 
-  Future<Isar> openIsar() async {
-    if (Isar.instanceNames.isEmpty) {
+  Future<Isar> _openIsar() async {
+    if (Isar.getInstance() == null) {
       final dir = await getApplicationDocumentsDirectory();
 
       return await Isar.open(
-          [FriendSchema, ChatSchema, SectionSchema, AuthUserSchema],
-          inspector: true, directory: dir.path);
+          [ChatSchema, SectionSchema, AuthUserSchema],
+          inspector: !kReleaseMode, directory: dir.path);
     }
 
     return Future.value(Isar.getInstance());
   }
 
-  Future<List<T>> getAll<T>() async {
+  // GENERICS
+
+  Future<List<T>> getAll<T>(int authUserId) async {
     final isar = await db;
     return await isar
         .collection<T>()
         .buildQuery<T>(
-          filter: const LinkFilter(
-            filter: FilterCondition.equalTo(
-              property: r'isLogged',
-              value: true,
-            ),
-            linkName: r'authUser',
+          filter: FilterCondition.equalTo(
+            property: r'userId',
+            value: authUserId,
           ),
         )
         .findAll();
   }
 
-  void saveAll<T>(List<T> data) async {
+  Future<void> saveAll<T>(List<T> data) async {
     final isar = await db;
     await isar.writeTxn(() async {
       await isar.collection<T>().putAll(data);
     });
   }
 
-  void save<T>(T data) async {
+  Future<void> insertOrUpdate<T>(T data) async {
     final isar = await db;
     await isar.writeTxn(() async {
       await isar.collection<T>().put(data);
     });
   }
 
-  void insertOrUpdate<T>(T data) async {
-    final isar = await db;
-    await isar.writeTxn(() async {
-      await isar.collection<T>().put(data);
-    });
-  }
-
-  void delete<T>(int id) async {
+  Future<void> delete<T>(int id) async {
     final isar = await db;
     await isar.writeTxn(() async {
       await isar.collection<T>().delete(id);
     });
   }
+
+  // AUTHUSER
 
   Future<AuthUser?> getLoggedUser() async {
     final isar = await db;

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/providers/auth_provider.dart';
-import 'package:livechat/services/isar_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/auth/auth_user.dart';
 import '../../../providers/sections_provider.dart';
 import 'chat_sections.dart';
 import 'chats_list.dart';
@@ -22,11 +20,10 @@ class ChatPagesState extends State<ChatPages> {
 
   @override
   Widget build(BuildContext context) {
-    AuthUser authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
-    final IsarService isar = IsarService.instance;
 
-    return ChangeNotifierProvider(
-      create: (_) => SectionsProvider(isar, authUser),
+    return ChangeNotifierProxyProvider<AuthProvider, SectionsProvider>(
+      create: (_) => SectionsProvider(),
+      update: (context, auth, sectionsProvider) => sectionsProvider!..update(auth.authUser),
       builder: (context, child) {
         SectionsProvider sectionsProvider = context.watch<SectionsProvider>();
         return Column(

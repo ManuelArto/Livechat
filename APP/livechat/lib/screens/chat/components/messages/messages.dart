@@ -39,7 +39,6 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin{
     final chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages(widget.chatName);
 
-    // TODO: probabilmente bisognere fare un ListView builder reverse
     return ListView.builder(
       controller: _scrollController,
       shrinkWrap: true,
@@ -50,7 +49,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin{
         return MessageBubble(
           message: message,
           isMe: isMe,
-          imageUrl: isMe ? authUser.imageUrl : friendsProvider.getImageUrl(message.sender!),
+          imageUrl: isMe ? authUser.imageUrl : friendsProvider.getUser(message.sender!)!.imageUrl,
           key: ValueKey(message.id),
         );
       },

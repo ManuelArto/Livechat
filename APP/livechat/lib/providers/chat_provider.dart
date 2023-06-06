@@ -7,14 +7,20 @@ import '../models/auth/auth_user.dart';
 import '../models/chat/message.dart';
 
 class ChatProvider with ChangeNotifier {
-  final IsarService isar;
-  final AuthUser authUser;
+  AuthUser? authUser;
 
   Map<String, Chat> _chats = {};
   String currentChat = "";
 
-  ChatProvider(this.isar, this.authUser) {
-    _loadChatsFromMemory();
+  // Called everytime AuthProvider changes
+  void update(AuthUser? authUser) {
+    if (authUser == null) {
+      _chats.clear();
+      this.authUser = null;
+    } else {
+      this.authUser = authUser;
+      _loadChatsFromMemory();
+    }
   }
 
   // GETTERS
@@ -32,11 +38,11 @@ class ChatProvider with ChangeNotifier {
     users.forEach((username, data) {
       if (!_chats.containsKey(username)) {
         _chats[username] = Chat(chatName: username, messages: [], toRead: 0)
-          ..authUser.value = authUser;
+          ..userId = authUser!.isarId;
       }
     });
     notifyListeners();
-    isar.saveAll<Chat>(_chats.values.toList());
+    IsarService.instance.saveAll<Chat>(_chats.values.toList());
   }
 
   void addMessage(String message, String sender, String chatName) {
@@ -45,7 +51,6 @@ class ChatProvider with ChangeNotifier {
       sender: sender,
       time: DateTime.now(),
       id: const Uuid().v1(),
-      chatName: chatName,
     );
 
     _chats[chatName]?.messages.add(newMessage);
@@ -53,33 +58,34 @@ class ChatProvider with ChangeNotifier {
     if (currentChat != chatName) _chats[chatName]?.toRead += 1;
 
     notifyListeners();
-    isar.insertOrUpdate<Chat>(_chats[chatName]!);
+    IsarService.instance.insertOrUpdate<Chat>(_chats[chatName]!);
   }
 
   void readChat(String chatName) {
     _chats[chatName]?.toRead = 0;
     notifyListeners();
-    isar.insertOrUpdate<Chat>(_chats[chatName]!);
+    IsarService.instance.insertOrUpdate<Chat>(_chats[chatName]!);
   }
 
   void updateSelectedSections(Chat chat, List<String> selectedSections) {
     chat.sections = ["All", ...selectedSections];
     notifyListeners();
-    isar.insertOrUpdate<Chat>(chat);
+    IsarService.instance.insertOrUpdate<Chat>(chat);
   }
 
   void _loadChatsFromMemory() async {
-    List<Chat> chatsList = await isar.getAll<Chat>();
+    List<Chat> chatsList = await IsarService.instance.getAll<Chat>(authUser!.isarId);
     if (chatsList.isEmpty) {
       _chats = {
         "GLOBAL": Chat(
-            chatName: "GLOBAL", messages: List.empty(growable: true), toRead: 0)
-          ..authUser.value = authUser
+            chatName: "GLOBAL", messages: [], toRead: 0)
+          ..userId = authUser!.isarId
       };
-      isar.saveAll<Chat>(_chats.values.toList());
-
+      
+      IsarService.instance.saveAll<Chat>(_chats.values.toList());
     } else {
-      _chats = {for (var chat in chatsList) chat.chatName: chat};
+      _chats = {for (var chat in chatsList) chat.chatName: chat..messages = List.from(chat.messages)};
+      // Bisogna ricreare la list dei messaggi a causa di un errore di ISAR https://github.com/isar/isar/discussions/781
     }
 
     notifyListeners();

@@ -13,28 +13,23 @@ const MessageSchema = Schema(
   name: r'Message',
   id: 2463283977299753079,
   properties: {
-    r'chatName': PropertySchema(
-      id: 0,
-      name: r'chatName',
-      type: IsarType.string,
-    ),
     r'content': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'content',
       type: IsarType.string,
     ),
     r'id': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'id',
       type: IsarType.string,
     ),
     r'sender': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'sender',
       type: IsarType.string,
     ),
     r'time': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'time',
       type: IsarType.dateTime,
     )
@@ -51,12 +46,6 @@ int _messageEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.chatName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   {
     final value = object.content;
     if (value != null) {
@@ -84,11 +73,10 @@ void _messageSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.chatName);
-  writer.writeString(offsets[1], object.content);
-  writer.writeString(offsets[2], object.id);
-  writer.writeString(offsets[3], object.sender);
-  writer.writeDateTime(offsets[4], object.time);
+  writer.writeString(offsets[0], object.content);
+  writer.writeString(offsets[1], object.id);
+  writer.writeString(offsets[2], object.sender);
+  writer.writeDateTime(offsets[3], object.time);
 }
 
 Message _messageDeserialize(
@@ -98,11 +86,10 @@ Message _messageDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Message(
-    chatName: reader.readStringOrNull(offsets[0]),
-    content: reader.readStringOrNull(offsets[1]),
-    id: reader.readStringOrNull(offsets[2]),
-    sender: reader.readStringOrNull(offsets[3]),
-    time: reader.readDateTimeOrNull(offsets[4]),
+    content: reader.readStringOrNull(offsets[0]),
+    id: reader.readStringOrNull(offsets[1]),
+    sender: reader.readStringOrNull(offsets[2]),
+    time: reader.readDateTimeOrNull(offsets[3]),
   );
   return object;
 }
@@ -121,8 +108,6 @@ P _messageDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
-    case 4:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -131,152 +116,6 @@ P _messageDeserializeProp<P>(
 
 extension MessageQueryFilter
     on QueryBuilder<Message, Message, QFilterCondition> {
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'chatName',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'chatName',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'chatName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'chatName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'chatName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'chatName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'chatName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'chatName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'chatName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'chatName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'chatName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatNameIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'chatName',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<Message, Message, QAfterFilterCondition> contentIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(

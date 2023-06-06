@@ -1,21 +1,7 @@
-
-import 'package:isar/isar.dart';
-
-import 'auth/auth_user.dart';
-
-part 'friend.g.dart';
-
-@collection
 class Friend {
-  Id? id;
-
-  @Index(unique: true)
   final String username;
   final String imageUrl;
 
-  final authUser = IsarLink<AuthUser>();
-
-  @Ignore()
   bool isOnline = false;
 
   Friend({required this.username, required this.imageUrl, this.isOnline = false});

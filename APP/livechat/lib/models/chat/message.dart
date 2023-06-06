@@ -8,21 +8,18 @@ class Message {
   final String? sender;
   final String? content;
   final DateTime? time;
-  final String? chatName;
 
   Message(
       {this.id,
       this.content,
       this.sender,
-      this.time,
-      this.chatName});
+      this.time});
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "sender": sender,
         "content": content,
         "time": time!.toIso8601String(),
-        "chatName": chatName,
       };
 
   factory Message.fromJson(Map<String, dynamic> data) => Message(
@@ -30,6 +27,5 @@ class Message {
         sender: data["sender"],
         content: data["content"],
         time: DateTime.parse(data["time"]),
-        chatName: data["chatName"],
       );
 }

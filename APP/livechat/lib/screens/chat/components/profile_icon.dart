@@ -25,7 +25,7 @@ class ProfileIcon extends StatelessWidget {
               backgroundImage: NetworkImage(user.imageUrl),
             ),
             CircleAvatar(
-              backgroundColor: usersProvider.userIsOnline(user.username)
+              backgroundColor: usersProvider.getUser(user.username)!.isOnline
                   ? Colors.greenAccent[700]
                   : Colors.red,
               radius: 10,

@@ -37,6 +37,11 @@ const ChatSchema = CollectionSchema(
       id: 3,
       name: r'toRead',
       type: IsarType.long,
+    ),
+    r'userId': PropertySchema(
+      id: 4,
+      name: r'userId',
+      type: IsarType.long,
     )
   },
   estimateSize: _chatEstimateSize,
@@ -44,29 +49,8 @@ const ChatSchema = CollectionSchema(
   deserialize: _chatDeserialize,
   deserializeProp: _chatDeserializeProp,
   idName: r'id',
-  indexes: {
-    r'chatName': IndexSchema(
-      id: -7083971124622143234,
-      name: r'chatName',
-      unique: true,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'chatName',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    )
-  },
-  links: {
-    r'authUser': LinkSchema(
-      id: -8681399735413598327,
-      name: r'authUser',
-      target: r'AuthUser',
-      single: true,
-    )
-  },
+  indexes: {},
+  links: {},
   embeddedSchemas: {r'Message': MessageSchema},
   getId: _chatGetId,
   getLinks: _chatGetLinks,
@@ -114,6 +98,7 @@ void _chatSerialize(
   );
   writer.writeStringList(offsets[2], object.sections);
   writer.writeLong(offsets[3], object.toRead);
+  writer.writeLong(offsets[4], object.userId);
 }
 
 Chat _chatDeserialize(
@@ -135,6 +120,7 @@ Chat _chatDeserialize(
   );
   object.id = id;
   object.sections = reader.readStringList(offsets[2]) ?? [];
+  object.userId = reader.readLongOrNull(offsets[4]);
   return object;
 }
 
@@ -159,6 +145,8 @@ P _chatDeserializeProp<P>(
       return (reader.readStringList(offset) ?? []) as P;
     case 3:
       return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 4:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -169,66 +157,11 @@ Id _chatGetId(Chat object) {
 }
 
 List<IsarLinkBase<dynamic>> _chatGetLinks(Chat object) {
-  return [object.authUser];
+  return [];
 }
 
 void _chatAttach(IsarCollection<dynamic> col, Id id, Chat object) {
   object.id = id;
-  object.authUser.attach(col, col.isar.collection<AuthUser>(), r'authUser', id);
-}
-
-extension ChatByIndex on IsarCollection<Chat> {
-  Future<Chat?> getByChatName(String chatName) {
-    return getByIndex(r'chatName', [chatName]);
-  }
-
-  Chat? getByChatNameSync(String chatName) {
-    return getByIndexSync(r'chatName', [chatName]);
-  }
-
-  Future<bool> deleteByChatName(String chatName) {
-    return deleteByIndex(r'chatName', [chatName]);
-  }
-
-  bool deleteByChatNameSync(String chatName) {
-    return deleteByIndexSync(r'chatName', [chatName]);
-  }
-
-  Future<List<Chat?>> getAllByChatName(List<String> chatNameValues) {
-    final values = chatNameValues.map((e) => [e]).toList();
-    return getAllByIndex(r'chatName', values);
-  }
-
-  List<Chat?> getAllByChatNameSync(List<String> chatNameValues) {
-    final values = chatNameValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'chatName', values);
-  }
-
-  Future<int> deleteAllByChatName(List<String> chatNameValues) {
-    final values = chatNameValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'chatName', values);
-  }
-
-  int deleteAllByChatNameSync(List<String> chatNameValues) {
-    final values = chatNameValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'chatName', values);
-  }
-
-  Future<Id> putByChatName(Chat object) {
-    return putByIndex(r'chatName', object);
-  }
-
-  Id putByChatNameSync(Chat object, {bool saveLinks = true}) {
-    return putByIndexSync(r'chatName', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByChatName(List<Chat> objects) {
-    return putAllByIndex(r'chatName', objects);
-  }
-
-  List<Id> putAllByChatNameSync(List<Chat> objects, {bool saveLinks = true}) {
-    return putAllByIndexSync(r'chatName', objects, saveLinks: saveLinks);
-  }
 }
 
 extension ChatQueryWhereSort on QueryBuilder<Chat, Chat, QWhere> {
@@ -302,50 +235,6 @@ extension ChatQueryWhere on QueryBuilder<Chat, Chat, QWhereClause> {
         upper: upperId,
         includeUpper: includeUpper,
       ));
-    });
-  }
-
-  QueryBuilder<Chat, Chat, QAfterWhereClause> chatNameEqualTo(String chatName) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'chatName',
-        value: [chatName],
-      ));
-    });
-  }
-
-  QueryBuilder<Chat, Chat, QAfterWhereClause> chatNameNotEqualTo(
-      String chatName) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'chatName',
-              lower: [],
-              upper: [chatName],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'chatName',
-              lower: [chatName],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'chatName',
-              lower: [chatName],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'chatName',
-              lower: [],
-              upper: [chatName],
-              includeUpper: false,
-            ));
-      }
     });
   }
 }
@@ -881,6 +770,74 @@ extension ChatQueryFilter on QueryBuilder<Chat, Chat, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> userIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'userId',
+      ));
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> userIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'userId',
+      ));
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> userIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> userIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> userIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> userIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'userId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension ChatQueryObject on QueryBuilder<Chat, Chat, QFilterCondition> {
@@ -892,20 +849,7 @@ extension ChatQueryObject on QueryBuilder<Chat, Chat, QFilterCondition> {
   }
 }
 
-extension ChatQueryLinks on QueryBuilder<Chat, Chat, QFilterCondition> {
-  QueryBuilder<Chat, Chat, QAfterFilterCondition> authUser(
-      FilterQuery<AuthUser> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'authUser');
-    });
-  }
-
-  QueryBuilder<Chat, Chat, QAfterFilterCondition> authUserIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'authUser', 0, true, 0, true);
-    });
-  }
-}
+extension ChatQueryLinks on QueryBuilder<Chat, Chat, QFilterCondition> {}
 
 extension ChatQuerySortBy on QueryBuilder<Chat, Chat, QSortBy> {
   QueryBuilder<Chat, Chat, QAfterSortBy> sortByChatName() {
@@ -929,6 +873,18 @@ extension ChatQuerySortBy on QueryBuilder<Chat, Chat, QSortBy> {
   QueryBuilder<Chat, Chat, QAfterSortBy> sortByToReadDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'toRead', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterSortBy> sortByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterSortBy> sortByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -969,6 +925,18 @@ extension ChatQuerySortThenBy on QueryBuilder<Chat, Chat, QSortThenBy> {
       return query.addSortBy(r'toRead', Sort.desc);
     });
   }
+
+  QueryBuilder<Chat, Chat, QAfterSortBy> thenByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterSortBy> thenByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
+    });
+  }
 }
 
 extension ChatQueryWhereDistinct on QueryBuilder<Chat, Chat, QDistinct> {
@@ -988,6 +956,12 @@ extension ChatQueryWhereDistinct on QueryBuilder<Chat, Chat, QDistinct> {
   QueryBuilder<Chat, Chat, QDistinct> distinctByToRead() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'toRead');
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QDistinct> distinctByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'userId');
     });
   }
 }
@@ -1020,6 +994,12 @@ extension ChatQueryProperty on QueryBuilder<Chat, Chat, QQueryProperty> {
   QueryBuilder<Chat, int, QQueryOperations> toReadProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'toRead');
+    });
+  }
+
+  QueryBuilder<Chat, int?, QQueryOperations> userIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'userId');
     });
   }
 }

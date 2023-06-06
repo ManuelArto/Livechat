@@ -19,6 +19,7 @@ class SocketProvider with ChangeNotifier {
   void update(AuthProvider auth) {
     if (auth.isAuth) {
       authUser = auth.authUser!;
+      
       init();
     } else {
       _socketIO.dispose();

@@ -9,15 +9,12 @@ import '../models/auth/auth_user.dart';
 import '../services/isar_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  final IsarService isar;
   AuthUser? authUser;
 
-  AuthProvider(this.isar);
-
-  get isAuth => authUser != null;
+  bool get isAuth => authUser != null;
 
   Future<bool> tryAutoLogin() async {
-    authUser = await isar.getLoggedUser();
+    authUser = await IsarService.instance.getLoggedUser();
     if (authUser == null) return false;
 
 
@@ -26,8 +23,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    authUser!.isLogged = false;
-    isar.insertOrUpdate<AuthUser>(authUser!);
+    await IsarService.instance.delete<AuthUser>(authUser!.isarId);
     authUser = null;
 
     notifyListeners();
@@ -40,7 +36,7 @@ class AuthProvider with ChangeNotifier {
     );
 
     authUser = AuthUser.fromMap(data);
-    isar.save<AuthUser>(authUser!);
+    IsarService.instance.insertOrUpdate<AuthUser>(authUser!);
 
     notifyListeners();
   }
