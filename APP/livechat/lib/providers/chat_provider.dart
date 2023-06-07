@@ -85,7 +85,7 @@ class ChatProvider with ChangeNotifier {
       IsarService.instance.saveAll<Chat>(_chats.values.toList());
     } else {
       _chats = {for (var chat in chatsList) chat.chatName: chat..messages = List.from(chat.messages)};
-      // Bisogna ricreare la list dei messaggi a causa di un errore di ISAR https://github.com/isar/isar/discussions/781
+      // * Bisogna ricreare la list dei messaggi a causa di un errore di ISAR https://github.com/isar/isar/discussions/781
     }
 
     notifyListeners();

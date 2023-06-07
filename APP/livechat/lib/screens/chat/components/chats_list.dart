@@ -19,59 +19,61 @@ class ChatsList extends StatelessWidget {
     final List<Chat> chats = chatProvider.chatsBySection(section);
 
     return chats.isEmpty
-        ? Center(
-            child:
-                Text("No chats yet${section == 'All' ? '' : ' for $section'}"))
+        ? Center(child: Text("No chats yet${section == 'All' ? '' : ' for $section'}"))
         : ListView.builder(
             itemCount: chats.length,
             itemBuilder: (context, index) {
               Chat chat = chats[index];
-              Message? lastMessage =
-                  chat.messages.isNotEmpty ? chat.messages.last : null;
+              Message? lastMessage = chat.messages.isNotEmpty ? chat.messages.last : null;
               String time = lastMessage?.time != null
                   ? DateFormat("jm").format(lastMessage!.time!)
                   : "";
 
-              return GestureDetector(
-                onTap: () {
-                  chatProvider.readChat(chat.chatName);
-                  Navigator.of(context, rootNavigator: false)
-                      .pushNamed(
-                        SingleChatScreen.routeName,
-                        arguments: chat.chatName,
-                      )
-                      .then((_) => chatProvider.currentChat = "");
-                },
-                onLongPress: () async {
-                  final List<String>? selectedSections = await _selectSectionsDialog(context, chat);
-                  if (selectedSections != null) chatProvider.updateSelectedSections(chat, selectedSections);
-                },
-                child: ListTile(
-                  leading: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      const Icon(Icons.chat_bubble),
-                      Positioned(
-                        top: -10,
-                        left: -10,
-                        child: CircleAvatar(
-                          maxRadius: 10.0,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          child: Text(
-                            "${chat.toRead}",
-                            style: const TextStyle(color: Colors.black),
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30.0),
+                  focusColor: Theme.of(context).listTileTheme.selectedTileColor,
+                  onTap: () {
+                    chatProvider.readChat(chat.chatName);
+                    Navigator.of(context, rootNavigator: false)
+                        .pushNamed(
+                          SingleChatScreen.routeName,
+                          arguments: chat.chatName,
+                        )
+                        .then((_) => chatProvider.currentChat = "");
+                  },
+                  onLongPress: () async {
+                    final List<String>? selectedSections = await _selectSectionsDialog(context, chat);
+                    if (selectedSections != null) chatProvider.updateSelectedSections(chat, selectedSections);
+                  },
+                  child: ListTile(
+                    leading: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        const Icon(Icons.chat_bubble),
+                        Positioned(
+                          top: -10,
+                          left: -10,
+                          child: CircleAvatar(
+                            maxRadius: 10.0,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            child: Text(
+                              "${chat.toRead}",
+                              style: const TextStyle(color: Colors.black),
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
+                    title: Text(
+                      chat.chatName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(lastMessage?.content ?? "No message"),
+                    trailing: Text(time),
                   ),
-                  title: Text(
-                    chat.chatName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(lastMessage?.content ?? "No message"),
-                  trailing: Text(time),
                 ),
               );
             },

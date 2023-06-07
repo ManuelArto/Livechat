@@ -25,7 +25,7 @@ class SectionItem extends StatelessWidget {
         curve: Curves.ease,
       ),
       onLongPress: section == "All"
-          ? () {}
+          ? null
           : () async {
               if (await _deleteSectionDialog(context) == true) {
                 if (section == sectionsProvider.currentSectionName) pageController.jumpToPage(page - 1);
