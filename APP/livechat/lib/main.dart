@@ -1,7 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:livechat/services/isar_service.dart';
+import 'package:livechat/database/isar_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:livechat/screens/app_screen.dart';

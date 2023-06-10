@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/chat.dart';
-import 'package:livechat/services/isar_service.dart';
+import 'package:livechat/database/isar_service.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/auth/auth_user.dart';
