@@ -1,10 +1,13 @@
-class Friend {
-  final String username;
-  final String imageUrl;
+import 'user.dart';
 
+class Friend extends User {
   bool isOnline = false;
 
-  Friend({required this.username, required this.imageUrl, this.isOnline = false});
+  Friend(
+      {required String username,
+      required String imageUrl,
+      this.isOnline = false})
+      : super(username, imageUrl);
 
   Map<String, dynamic> toJson() => {
         "username": username,
