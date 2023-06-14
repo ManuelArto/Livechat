@@ -1,6 +1,7 @@
 class AuthRequest {
   String? username;
   String? password;
+  String? phone;
   String? email;
   String? imageFile;
   bool isLogin = true;

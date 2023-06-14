@@ -26,9 +26,21 @@ class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Image.asset('assets/images/logo_nobg.png', height: 35),
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       elevation: 20,
+      title: Row(
+        children: [
+          Image.asset('assets/images/logo_nobg.png', height: 35),
+          const SizedBox(width: 8), // Aggiungi uno spazio di 8 punti tra il logo e il testo
+          const Text(
+            'LiveChat',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
       actions: [
         _loggingOut
             ? Center(

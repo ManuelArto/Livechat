@@ -117,6 +117,24 @@ class AuthFormState extends State<AuthForm>
                       decoration:
                           const InputDecoration(labelText: "Email address", fillColor: Colors.white),
                     ),
+                    if (!_authRequest.isLogin)
+                      TextFormField(
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
+                        enableSuggestions: false,
+                        key: const ValueKey("phone"),
+                        onSaved: (newValue) =>
+                            _authRequest.phone = newValue?.trim(),
+                        validator: (value) => value != null &&
+                                (!RegExp(
+                                        r"^\(?\d{1,}\)?[-.\s]?\d{1,}[-.\s]?\d{1,}[-.\s]?\d{1,}[-.\s]?\d{1,}$")
+                                    .hasMatch(value))
+                            ? "Please enter a valide phone number"
+                            : null,
+                        keyboardType: TextInputType.phone,
+                        decoration:
+                            const InputDecoration(labelText: "Phone Number", fillColor: Colors.white),
+                      ),
                     TextFormField(
                       controller: _passwordController,
                       key: const ValueKey("password"),
