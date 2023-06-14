@@ -20,7 +20,8 @@ class FriendsScreen extends StatefulWidget {
   State<FriendsScreen> createState() => _FriendsScreenState();
 }
 
-class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveClientMixin {
+class _FriendsScreenState extends State<FriendsScreen>
+    with AutomaticKeepAliveClientMixin {
   String searchingString = "";
   late Size screenSize;
 
@@ -39,8 +40,14 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
           children: [
             SearchBar(
               hintText: "Add or find a friend",
+              shape: MaterialStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
               textStyle: MaterialStateProperty.all(
-                  const TextStyle(backgroundColor: Colors.transparent)),
+                const TextStyle(backgroundColor: Colors.transparent),
+              ),
               leading: const Icon(Icons.search_rounded),
               onChanged: (value) {
                 debugPrint(searchingString);
@@ -80,10 +87,10 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
         selectedLeadingIcon: const Icon(Icons.person_pin_rounded),
         tab: FriendsTab(),
       ),
-      const TabItem(
+      TabItem(
         onTap: null,
-        title: Text("Requests"),
-        selectedLeadingIcon: Icon(Icons.notifications),
+        title: const Text("Requests"),
+        selectedLeadingIcon: const Icon(Icons.notifications),
         tab: FriendsRequestsTab(),
         showBadge: true,
         badgeCount: 10,

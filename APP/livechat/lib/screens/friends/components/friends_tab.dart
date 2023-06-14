@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/models/friend.dart';
+import 'package:livechat/screens/friends/components/friend_tiles.dart';
 
 class FriendsTab extends StatelessWidget {
   FriendsTab({Key? key}) : super(key: key);
@@ -28,25 +29,8 @@ class FriendsTab extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ListView.separated(
-            itemCount: _friends.length,
-            itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(
-                  bottom: index == _friends.length - 1 ? 250 : 0),
-              child: ListTile(
-                title: Text(_friends[index].username),
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(_friends[index].imageUrl),
-                ),
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.close_rounded),
-                ),
-              ),
-            ),
-            separatorBuilder: (context, index) => const Divider(),
-          ),
-        ),
+          child: FriendTiles(users: _friends),
+        )
       ],
     );
   }
