@@ -1,6 +1,8 @@
 import 'package:floating_tabbar/Models/tab_item.dart';
 import 'package:floating_tabbar/floating_tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:livechat/screens/friends/components/friends_requests_tab.dart';
+import 'package:livechat/screens/friends/components/friends_tab.dart';
 import 'package:livechat/screens/friends/components/suggested_friends_tab.dart';
 import 'package:livechat/widgets/top_bar.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +20,8 @@ class FriendsScreen extends StatefulWidget {
   State<FriendsScreen> createState() => _FriendsScreenState();
 }
 
-class _FriendsScreenState extends State<FriendsScreen>
-    with AutomaticKeepAliveClientMixin {
+class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveClientMixin {
+  String searchingString = "";
   late Size screenSize;
 
   @override
@@ -40,15 +42,24 @@ class _FriendsScreenState extends State<FriendsScreen>
               textStyle: MaterialStateProperty.all(
                   const TextStyle(backgroundColor: Colors.transparent)),
               leading: const Icon(Icons.search_rounded),
+              onChanged: (value) {
+                debugPrint(searchingString);
+                setState(() {
+                  searchingString = value;
+                });
+              },
             ),
-            ShareCard(user: user),
-            Expanded(
-              child: FloatingTabBar(
-                children: _buildTabs(),
-                useNautics: true,
-                showTabLabelsForFloating: true,
-              ),
-            ),
+            if (searchingString.isEmpty) ...[
+              ShareCard(user: user),
+              Expanded(
+                child: FloatingTabBar(
+                  children: _buildTabs(),
+                  useNautics: true,
+                  showTabLabelsForFloating: true,
+                ),
+              )
+            ] else
+              const Center(child: Text("Cerca amici da fare"))
           ],
         ),
       ),
@@ -63,17 +74,17 @@ class _FriendsScreenState extends State<FriendsScreen>
         selectedLeadingIcon: Icon(Icons.emoji_people),
         tab: SuggestedFriendsTab(),
       ),
-      const TabItem(
+      TabItem(
         onTap: null,
-        title: Text("Friends"),
-        selectedLeadingIcon: Icon(Icons.person_pin_rounded),
-        tab: SuggestedFriendsTab(),
+        title: const Text("Friends"),
+        selectedLeadingIcon: const Icon(Icons.person_pin_rounded),
+        tab: FriendsTab(),
       ),
       const TabItem(
         onTap: null,
         title: Text("Requests"),
         selectedLeadingIcon: Icon(Icons.notifications),
-        tab: SuggestedFriendsTab(),
+        tab: FriendsRequestsTab(),
         showBadge: true,
         badgeCount: 10,
       ),
