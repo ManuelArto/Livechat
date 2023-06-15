@@ -33,6 +33,7 @@ dependencies:
   floating_tabbar: ^0.0.9
   flutter:
     sdk: flutter
+  flutter_rating_bar: ^4.0.1
   http: ^0.13.6
   image_picker: ^0.8.7+4
   intl: ^0.18.1

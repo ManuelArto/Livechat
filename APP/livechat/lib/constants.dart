@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 
 const PORT = 8000;
-const SERVER_URL = kDebugMode ? "http://192.168.0.105:$PORT": "https://live-chat-fp.herokuapp.com";
+const SERVER_URL = kDebugMode ? "http://192.168.1.75:$PORT": "https://live-chat-fp.herokuapp.com";
 
 const URL_AUTH_SIGN_UP = "$SERVER_URL/api/auth/register";
 const URL_AUTH_SIGN_IN = "$SERVER_URL/api/auth/login";
