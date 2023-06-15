@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../models/friend.dart';
 
-// enum
-enum UserTileType {A, B}
-
 class FriendTiles extends StatelessWidget {
   const FriendTiles({
     super.key,
@@ -26,7 +23,8 @@ class FriendTiles extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _users.length,
       itemBuilder: (context, index) => Padding(
-        padding: EdgeInsets.only(bottom: index == _users.length - 1 && _bottomPadding ? 250 : 0),
+        padding: EdgeInsets.only(
+            bottom: index == _users.length - 1 && _bottomPadding ? 250 : 0),
         child: ListTile(
           title: Text(_users[index].username),
           leading: CircleAvatar(
@@ -40,15 +38,16 @@ class FriendTiles extends StatelessWidget {
                 TextButton(
                   onPressed: () {}, // TODO: FriendsProvider accept requests
                   style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(Theme.of(context).highlightColor)
-                  ),
+                      backgroundColor: MaterialStatePropertyAll(
+                          Theme.of(context).highlightColor)),
                   child: Text(_buttonText),
                 ),
-              IconButton(
-                splashRadius: 15,
-                onPressed: () {}, // TODO: FriendsProvider remove requests
-                icon: const Icon(Icons.close_rounded),
-              ),
+              if (_buttonText != "ADD")
+                IconButton(
+                  splashRadius: 15,
+                  onPressed: () {}, // TODO: FriendsProvider remove requests
+                  icon: const Icon(Icons.close_rounded),
+                ),
             ],
           ),
         ),

@@ -54,7 +54,7 @@ class SuggestedFriendsTab extends StatelessWidget {
             ),
           ),
           FriendTiles(
-            users: _contacts,
+            users: _suggested,
             buttonText: "ADD",
           )
         ],

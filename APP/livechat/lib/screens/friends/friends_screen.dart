@@ -1,6 +1,7 @@
 import 'package:floating_tabbar/Models/tab_item.dart';
 import 'package:floating_tabbar/floating_tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:livechat/screens/friends/components/find_friends.dart';
 import 'package:livechat/screens/friends/components/friends_requests_tab.dart';
 import 'package:livechat/screens/friends/components/friends_tab.dart';
 import 'package:livechat/screens/friends/components/suggested_friends_tab.dart';
@@ -20,15 +21,22 @@ class FriendsScreen extends StatefulWidget {
   State<FriendsScreen> createState() => _FriendsScreenState();
 }
 
-class _FriendsScreenState extends State<FriendsScreen>
-    with AutomaticKeepAliveClientMixin {
-  String searchingString = "";
-  late Size screenSize;
+class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveClientMixin {
+  String _searchingString = "";
+
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(
+      () => setState(() => _searchingString = _searchController.text),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    screenSize = MediaQuery.of(context).size;
     AuthUser user = Provider.of<AuthProvider>(context).authUser!;
 
     return Scaffold(
@@ -48,15 +56,18 @@ class _FriendsScreenState extends State<FriendsScreen>
               textStyle: MaterialStateProperty.all(
                 const TextStyle(backgroundColor: Colors.transparent),
               ),
+              controller: _searchController,
               leading: const Icon(Icons.search_rounded),
-              onChanged: (value) {
-                debugPrint(searchingString);
-                setState(() {
-                  searchingString = value;
-                });
-              },
+              trailing: _searchController.text.isNotEmpty
+                  ? [
+                      IconButton(
+                        icon: const Icon(Icons.clear_rounded),
+                        onPressed: _searchController.clear
+                      ),
+                    ]
+                  : null,
             ),
-            if (searchingString.isEmpty) ...[
+            if (_searchingString.isEmpty) ...[
               ShareCard(user: user),
               Expanded(
                 child: FloatingTabBar(
@@ -66,7 +77,7 @@ class _FriendsScreenState extends State<FriendsScreen>
                 ),
               )
             ] else
-              const Center(child: Text("Cerca amici da fare"))
+              Expanded(child: FindFriendsTab(_searchingString))
           ],
         ),
       ),
