@@ -10,6 +10,8 @@ class AuthUser {
   final String token;
   final String username;
   final String imageUrl;
+  // TODO: add email and phone number
+  // TODO: add theme and themeMode
   bool isLogged = true;
 
   Id get isarId => fastHash(id);

@@ -14,8 +14,7 @@ class AuthForm extends StatefulWidget {
   AuthFormState createState() => AuthFormState();
 }
 
-class AuthFormState extends State<AuthForm>
-    with SingleTickerProviderStateMixin {
+class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
 
@@ -124,7 +123,7 @@ class AuthFormState extends State<AuthForm>
                         enableSuggestions: false,
                         key: const ValueKey("phone"),
                         onSaved: (newValue) =>
-                            _authRequest.phone = newValue?.trim(),
+                            _authRequest.phoneNumber = newValue?.trim(),
                         validator: (value) => value != null &&
                                 (!RegExp(
                                         r"^\(?\d{1,}\)?[-.\s]?\d{1,}[-.\s]?\d{1,}[-.\s]?\d{1,}[-.\s]?\d{1,}$")
