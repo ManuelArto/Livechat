@@ -15,23 +15,24 @@ class FriendsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          alignment: Alignment.topLeft,
-          child: Text(
-            "MY FRIENDS (${_friends.length})",
-            style: TextStyle(
-              fontSize: theme.textTheme.bodyLarge!.fontSize,
-              fontWeight: theme.textTheme.bodyLarge!.fontWeight,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            alignment: Alignment.topLeft,
+            child: Text(
+              "MY FRIENDS (${_friends.length})",
+              style: TextStyle(
+                fontSize: theme.textTheme.bodyLarge!.fontSize,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: FriendTiles(users: _friends),
-        )
-      ],
+          FriendTiles(users: _friends)
+        ],
+      ),
     );
   }
 }

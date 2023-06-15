@@ -75,10 +75,10 @@ class _FriendsScreenState extends State<FriendsScreen>
 
   List<TabItem> _buildTabs() {
     return [
-      const TabItem(
+      TabItem(
         onTap: null,
-        title: Text("Suggested"),
-        selectedLeadingIcon: Icon(Icons.emoji_people),
+        title: const Text("Suggested"),
+        selectedLeadingIcon: const Icon(Icons.emoji_people),
         tab: SuggestedFriendsTab(),
       ),
       TabItem(

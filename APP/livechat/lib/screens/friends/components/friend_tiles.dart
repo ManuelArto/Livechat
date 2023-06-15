@@ -9,19 +9,24 @@ class FriendTiles extends StatelessWidget {
   const FriendTiles({
     super.key,
     required List<Friend> users,
-    bool isRequest = false,
+    String buttonText = "",
+    bool bottomPadding = true,
   })  : _users = users,
-        _isRequest = isRequest;
+        _buttonText = buttonText,
+        _bottomPadding = bottomPadding;
 
   final List<Friend> _users;
-  final bool _isRequest;
+  final String _buttonText;
+  final bool _bottomPadding;
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: _users.length,
       itemBuilder: (context, index) => Padding(
-        padding: EdgeInsets.only(bottom: index == _users.length - 1 ? 250 : 0),
+        padding: EdgeInsets.only(bottom: index == _users.length - 1 && _bottomPadding ? 250 : 0),
         child: ListTile(
           title: Text(_users[index].username),
           leading: CircleAvatar(
@@ -31,17 +36,17 @@ class FriendTiles extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (_isRequest)
+              if (_buttonText.isNotEmpty)
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {}, // TODO: FriendsProvider accept requests
                   style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(Theme.of(context).highlightColor)
                   ),
-                  child: const Text("Accept"),
+                  child: Text(_buttonText),
                 ),
               IconButton(
                 splashRadius: 15,
-                onPressed: () {},
+                onPressed: () {}, // TODO: FriendsProvider remove requests
                 icon: const Icon(Icons.close_rounded),
               ),
             ],
