@@ -29,7 +29,7 @@ class ProfileMenu extends StatelessWidget {
           height: 50,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(100),
-            color: theme.iconTheme.color?.withOpacity(0.1),
+            color: theme.primaryColor.withOpacity(0.2),
           ),
           child: Icon(
             icon,

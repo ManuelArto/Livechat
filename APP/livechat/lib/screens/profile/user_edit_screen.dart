@@ -25,19 +25,18 @@ class _UserEditScreenState extends State<UserEditScreen> {
             Theme.of(context).colorScheme.secondary.withOpacity(0.6),
       ),
       body: Container(
-          padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: ListView(children: [
+        padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: ListView(
+            children: [
               const Text(
                 "Account Settings",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               Center(
                 child: Stack(children: [
                   Container(
@@ -74,16 +73,16 @@ class _UserEditScreenState extends State<UserEditScreen> {
                             ),
                             color: Colors.blueAccent),
                         child: IconButton(
+                          alignment: Alignment.center,
+                          iconSize: 15,
                           icon: const Icon(Icons.edit),
                           color: Colors.white,
-                          onPressed: () {}, // TODO: modifica immagine 
+                          onPressed: () {}, // TODO: modifica immagine
                         ),
                       ))
                 ]),
               ),
-              const SizedBox(
-                height: 35,
-              ),
+              const SizedBox(height: 35),
               buildTextField("Username", authUser.username, false, false),
               buildTextField("Phone Number", "3402141216", false, false),
               buildTextField("Email", "andreanapoli@gmail.com", false, false),
@@ -141,8 +140,10 @@ class _UserEditScreenState extends State<UserEditScreen> {
                   ),
                 ],
               ),
-            ]),
-          )),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
