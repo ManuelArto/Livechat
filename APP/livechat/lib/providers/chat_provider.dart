@@ -25,8 +25,7 @@ class ChatProvider with ChangeNotifier {
 
   // GETTERS
 
-  List<Message> messages(String chatName) =>
-      _chats.containsKey(chatName) ? _chats[chatName]!.messages : [];
+  List<Message> messages(String chatName) => _chats[chatName]?.messages ?? [];
 
   List<Chat> chatsBySection(String section) =>
       _chats.values.where((chat) => chat.sections.contains(section)).toList();

@@ -41,7 +41,6 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin{
 
     return ListView.builder(
       controller: _scrollController,
-      shrinkWrap: true,
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final message = messages[index];
