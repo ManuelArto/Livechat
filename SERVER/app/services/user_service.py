@@ -1,11 +1,11 @@
 from app.config import settings
-from app.schemas import UserCreateSchema, UserDocument, UserLoginSchema, UserResponse
+from app.schemas import UserCreateSchema, UserDocument, UserLoginSchema, AuthUserResponse, UserResponse
 from app.helpers import hashing, jwt
 from app.db import db
 
 class UserService:
     @staticmethod
-    def save(user: UserCreateSchema) -> UserResponse:
+    def save(user: UserCreateSchema) -> AuthUserResponse:
         # STORE USER
         user.password = hashing.hash_password(user.password)
 
@@ -13,7 +13,7 @@ class UserService:
 
         id = db.User.insert_one(document_user).inserted_id
 
-        return UserService.createUserResponse(UserDocument(id = str(id), **user.dict()))
+        return UserService.createAuthUserResponse(UserDocument(id = str(id), **user.dict()))
 
     @staticmethod
     def retrieveUser(user: UserLoginSchema) -> UserDocument:
@@ -32,12 +32,25 @@ class UserService:
         return UserDocument(id = str(user["_id"]), **user)
     
     @staticmethod
+    def retrieveUsers(page: int, per_page: int) -> list[UserDocument]:
+        users = db.User.find().skip((page - 1) * per_page).limit(per_page)
+
+        return [UserDocument(id = str(user["_id"]), **user) for user in users]
+    
+    @staticmethod
     def createUserResponse(user: UserDocument) -> UserResponse:
+        return UserResponse(
+            **dict(user),
+            imageUrl=settings.FIREBASE_IMAGE_URL.format(user.id),
+        )
+    
+    @staticmethod
+    def createAuthUserResponse(user: UserDocument) -> AuthUserResponse:
 		# GENERATE TOKENS
         token, expInToken = jwt.generate_token(user.id, user.username)
         refreshToken, expInRefreshToken = jwt.generate_refresh_token(user.id)
 
-        return UserResponse(
+        return AuthUserResponse(
             **dict(user),
             imageUrl=settings.FIREBASE_IMAGE_URL.format(user.id),
             token=token,

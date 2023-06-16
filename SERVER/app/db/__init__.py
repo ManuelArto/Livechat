@@ -20,5 +20,6 @@ class MongoDB():
 	
 		self.User.create_index([('email', pymongo.ASCENDING)], unique=True)
 		self.User.create_index([('username', pymongo.ASCENDING)], unique=True)
+		self.User.create_index([('phoneNumber', pymongo.ASCENDING)], unique=True)
 
 db = MongoDB()

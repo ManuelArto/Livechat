@@ -6,6 +6,7 @@ from datetime import datetime
 class UserSchema(BaseModel):
     username: constr(min_length=6, max_length=30)
     email: EmailStr
+    phoneNumber: constr(min_length=10, max_length=10)
     _created_at: datetime = datetime.utcnow()
     _updated_at: datetime = datetime.utcnow()
 
@@ -22,10 +23,11 @@ class UserLoginSchema(BaseModel):
     email: EmailStr
     password: constr(min_length=8)
 
-
 class UserResponse(UserSchema):
     id: str
     imageUrl: str
+
+class AuthUserResponse(UserResponse):
     token: str
     expInToken: int
     refreshToken: str
