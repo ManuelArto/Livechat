@@ -6,7 +6,8 @@ import '../models/friend.dart';
 class FriendsProvider with ChangeNotifier {
   final Map<String, Friend> _users = {};
 
-  List<Friend> get onlineUsers => _users.values.where((user) => user.isOnline).toList();
+  List<Friend> get onlineUsers =>
+      _users.values.where((user) => user.isOnline).toList();
 
   // Called everytime AuthProvider changes
   void update(AuthUser? authUser) {
@@ -39,11 +40,9 @@ class FriendsProvider with ChangeNotifier {
 
   // TODO: da modificare una volta introdotti gli amici
   void newUsersOnline(Map<String, dynamic> users) {
-    users.forEach(
-      (username, data) => _users[username] = Friend(username: username, imageUrl: data["imageUrl"], isOnline: true)
-    );
+    users.forEach((username, data) =>
+        _users[username] = Friend.fromJson(data)..isOnline = true);
 
     notifyListeners();
   }
-
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/friend.dart';
-import 'friend_tiles.dart';
+import '../../../../models/friend.dart';
+import '../user_tiles.dart';
 
 class FriendsRequestsTab extends StatelessWidget {
   FriendsRequestsTab({Key? key}) : super(key: key);
@@ -9,24 +9,31 @@ class FriendsRequestsTab extends StatelessWidget {
   final List<Friend> _requests = List.generate(
     50,
     (index) => Friend(
-        username: "Username$index", imageUrl: "https://picsum.photos/$index"),
+      username: "Username$index",
+      imageUrl: "https://picsum.photos/$index",
+      email: "email$index",
+      phoneNumber: "phone$index",
+    ),
   );
 
   final List<Friend> _mineRequests = List.generate(
     5,
     (index) => Friend(
-        username: "Username$index", imageUrl: "https://picsum.photos/$index"),
+      username: "Username$index",
+      imageUrl: "https://picsum.photos/$index",
+      email: "email$index",
+      phoneNumber: "phone$index",
+    ),
   );
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             alignment: Alignment.topLeft,
             child: Row(
@@ -57,12 +64,12 @@ class FriendsRequestsTab extends StatelessWidget {
               ],
             ),
           ),
-          FriendTiles(
-            users: _requests,
-            buttonText: "ACCEPT",
-          ),
-        ],
-      ),
+        ),
+        UserTiles(
+          users: _requests,
+          buttonText: "ACCEPT",
+        ),
+      ],
     );
   }
 
@@ -91,7 +98,7 @@ class FriendsRequestsTab extends StatelessWidget {
               ),
             ),
             const Divider(),
-            Expanded(child: FriendTiles(users: _mineRequests))
+            Expanded(child: UserTiles(users: _mineRequests))
           ],
         );
       },

@@ -84,8 +84,8 @@ class _UserEditScreenState extends State<UserEditScreen> {
               ),
               const SizedBox(height: 35),
               buildTextField("Username", authUser.username, false, false),
-              buildTextField("Phone Number", "3402141216", false, false),
-              buildTextField("Email", "andreanapoli@gmail.com", false, false),
+              buildTextField("Phone Number", authUser.phoneNumber, false, false),
+              buildTextField("Email", authUser.email, false, false),
               buildTextField("New Password", "********", false, true),
               buildTextField("Confirm Password", "********", false, true),
               Row(

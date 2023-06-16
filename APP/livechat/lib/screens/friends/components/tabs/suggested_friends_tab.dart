@@ -1,32 +1,30 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/friend.dart';
-import 'friend_tiles.dart';
+import '../../../../models/friend.dart';
+import '../scroll_user_tiles.dart';
+import '../user_tiles.dart';
 
 class SuggestedFriendsTab extends StatelessWidget {
   SuggestedFriendsTab({Key? key}) : super(key: key);
 
-  final List<Friend> _suggested = List.generate(
-    50,
-    (index) => Friend(
-        username: "Username$index", imageUrl: "https://picsum.photos/$index"),
-  );
-
   final List<Friend> _contacts = List.generate(
     5,
     (index) => Friend(
-        username: "Username$index", imageUrl: "https://picsum.photos/$index"),
+      username: "Username$index",
+      imageUrl: "https://picsum.photos/$index",
+      email: "email$index",
+      phoneNumber: "phone$index",
+    ),
   );
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             alignment: Alignment.topLeft,
             child: Text(
@@ -37,12 +35,14 @@ class SuggestedFriendsTab extends StatelessWidget {
               ),
             ),
           ),
-          FriendTiles(
-            users: _contacts,
-            buttonText: "ADD",
-            bottomPadding: false,
-          ),
-          Container(
+        ),
+        UserTiles(
+          users: _contacts,
+          buttonText: "ADD",
+          bottomPadding: false,
+        ),
+        SliverToBoxAdapter(
+          child: Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             alignment: Alignment.topLeft,
             child: Text(
@@ -53,12 +53,9 @@ class SuggestedFriendsTab extends StatelessWidget {
               ),
             ),
           ),
-          FriendTiles(
-            users: _suggested,
-            buttonText: "ADD",
-          )
-        ],
-      ),
+        ),
+        const ScrollUserTiles()
+      ],
     );
   }
 }

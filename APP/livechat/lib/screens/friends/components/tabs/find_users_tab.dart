@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/friend.dart';
-import 'friend_tiles.dart';
+import '../../../../models/friend.dart';
+import '../user_tiles.dart';
 
-class FindFriendsTab extends StatelessWidget {
-  FindFriendsTab(String searchingString, {super.key})
+class FindUsersTab extends StatelessWidget {
+  FindUsersTab(String searchingString, {super.key})
       : _searchingString = searchingString;
 
   final String _searchingString;
   final List<Friend> _friends = List.generate(
     50,
     (index) => Friend(
-        username: "Username$index", imageUrl: "https://picsum.photos/$index"),
+      username: "Username$index",
+      imageUrl: "https://picsum.photos/$index",
+      email: "ciao@test.com",
+      phoneNumber: "1234567890",
+    ),
   );
 
   @override
@@ -27,7 +31,7 @@ class FindFriendsTab extends StatelessWidget {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(top: 12.0),
-        child: FriendTiles(
+        child: UserTiles(
           users: friendsFiltered,
           buttonText: "ADD",
         ),

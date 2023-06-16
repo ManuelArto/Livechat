@@ -15,17 +15,10 @@ class AuthUser extends User {
 
   Id get isarId => fastHash(id);
 
-  AuthUser(this.token, this.id, String username, String imageUrl) : super(username, imageUrl);
+  AuthUser(this.token, this.id, String username, String imageUrl, String email, String phoneNumber) : super(username, imageUrl, email, phoneNumber);
 
   AuthUser.fromMap(Map<String, dynamic> map)
       : token = map["token"],
         id = map["id"],
-        super(map["username"], map["imageUrl"]);
-
-  Map<String, dynamic> toJson() => {
-        "token": token,
-        "id": id,
-        "username": username,
-        "imageUrl": imageUrl,
-      };
+        super(map["username"], map["imageUrl"], map["email"], map["phoneNumber"]);
 }

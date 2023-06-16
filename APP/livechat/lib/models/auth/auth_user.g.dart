@@ -17,28 +17,38 @@ const AuthUserSchema = CollectionSchema(
   name: r'AuthUser',
   id: 1226332476445502907,
   properties: {
-    r'id': PropertySchema(
+    r'email': PropertySchema(
       id: 0,
+      name: r'email',
+      type: IsarType.string,
+    ),
+    r'id': PropertySchema(
+      id: 1,
       name: r'id',
       type: IsarType.string,
     ),
     r'imageUrl': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'imageUrl',
       type: IsarType.string,
     ),
     r'isLogged': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'isLogged',
       type: IsarType.bool,
     ),
+    r'phoneNumber': PropertySchema(
+      id: 4,
+      name: r'phoneNumber',
+      type: IsarType.string,
+    ),
     r'token': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'token',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'username',
       type: IsarType.string,
     )
@@ -63,8 +73,10 @@ int _authUserEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.email.length * 3;
   bytesCount += 3 + object.id.length * 3;
   bytesCount += 3 + object.imageUrl.length * 3;
+  bytesCount += 3 + object.phoneNumber.length * 3;
   bytesCount += 3 + object.token.length * 3;
   bytesCount += 3 + object.username.length * 3;
   return bytesCount;
@@ -76,11 +88,13 @@ void _authUserSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.id);
-  writer.writeString(offsets[1], object.imageUrl);
-  writer.writeBool(offsets[2], object.isLogged);
-  writer.writeString(offsets[3], object.token);
-  writer.writeString(offsets[4], object.username);
+  writer.writeString(offsets[0], object.email);
+  writer.writeString(offsets[1], object.id);
+  writer.writeString(offsets[2], object.imageUrl);
+  writer.writeBool(offsets[3], object.isLogged);
+  writer.writeString(offsets[4], object.phoneNumber);
+  writer.writeString(offsets[5], object.token);
+  writer.writeString(offsets[6], object.username);
 }
 
 AuthUser _authUserDeserialize(
@@ -90,12 +104,14 @@ AuthUser _authUserDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AuthUser(
-    reader.readString(offsets[3]),
+    reader.readString(offsets[5]),
+    reader.readString(offsets[1]),
+    reader.readString(offsets[6]),
+    reader.readString(offsets[2]),
     reader.readString(offsets[0]),
     reader.readString(offsets[4]),
-    reader.readString(offsets[1]),
   );
-  object.isLogged = reader.readBool(offsets[2]);
+  object.isLogged = reader.readBool(offsets[3]);
   return object;
 }
 
@@ -111,10 +127,14 @@ P _authUserDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readBool(offset)) as P;
-    case 3:
       return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readBool(offset)) as P;
     case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -210,6 +230,136 @@ extension AuthUserQueryWhere on QueryBuilder<AuthUser, AuthUser, QWhereClause> {
 
 extension AuthUserQueryFilter
     on QueryBuilder<AuthUser, AuthUser, QFilterCondition> {
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'email',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'email',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'email',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'email',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'email',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'email',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'email',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'email',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'email',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> emailIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'email',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> idEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -533,6 +683,138 @@ extension AuthUserQueryFilter
     });
   }
 
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition>
+      phoneNumberGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'phoneNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'phoneNumber',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> phoneNumberIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'phoneNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition>
+      phoneNumberIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'phoneNumber',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> tokenEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -801,6 +1083,18 @@ extension AuthUserQueryLinks
     on QueryBuilder<AuthUser, AuthUser, QFilterCondition> {}
 
 extension AuthUserQuerySortBy on QueryBuilder<AuthUser, AuthUser, QSortBy> {
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> sortByEmail() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'email', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> sortByEmailDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'email', Sort.desc);
+    });
+  }
+
   QueryBuilder<AuthUser, AuthUser, QAfterSortBy> sortById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -837,6 +1131,18 @@ extension AuthUserQuerySortBy on QueryBuilder<AuthUser, AuthUser, QSortBy> {
     });
   }
 
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> sortByPhoneNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> sortByPhoneNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.desc);
+    });
+  }
+
   QueryBuilder<AuthUser, AuthUser, QAfterSortBy> sortByToken() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'token', Sort.asc);
@@ -864,6 +1170,18 @@ extension AuthUserQuerySortBy on QueryBuilder<AuthUser, AuthUser, QSortBy> {
 
 extension AuthUserQuerySortThenBy
     on QueryBuilder<AuthUser, AuthUser, QSortThenBy> {
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> thenByEmail() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'email', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> thenByEmailDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'email', Sort.desc);
+    });
+  }
+
   QueryBuilder<AuthUser, AuthUser, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -912,6 +1230,18 @@ extension AuthUserQuerySortThenBy
     });
   }
 
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> thenByPhoneNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterSortBy> thenByPhoneNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phoneNumber', Sort.desc);
+    });
+  }
+
   QueryBuilder<AuthUser, AuthUser, QAfterSortBy> thenByToken() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'token', Sort.asc);
@@ -939,6 +1269,13 @@ extension AuthUserQuerySortThenBy
 
 extension AuthUserQueryWhereDistinct
     on QueryBuilder<AuthUser, AuthUser, QDistinct> {
+  QueryBuilder<AuthUser, AuthUser, QDistinct> distinctByEmail(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'email', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<AuthUser, AuthUser, QDistinct> distinctById(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -956,6 +1293,13 @@ extension AuthUserQueryWhereDistinct
   QueryBuilder<AuthUser, AuthUser, QDistinct> distinctByIsLogged() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isLogged');
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QDistinct> distinctByPhoneNumber(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'phoneNumber', caseSensitive: caseSensitive);
     });
   }
 
@@ -982,6 +1326,12 @@ extension AuthUserQueryProperty
     });
   }
 
+  QueryBuilder<AuthUser, String, QQueryOperations> emailProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'email');
+    });
+  }
+
   QueryBuilder<AuthUser, String, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
@@ -997,6 +1347,12 @@ extension AuthUserQueryProperty
   QueryBuilder<AuthUser, bool, QQueryOperations> isLoggedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isLogged');
+    });
+  }
+
+  QueryBuilder<AuthUser, String, QQueryOperations> phoneNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'phoneNumber');
     });
   }
 
