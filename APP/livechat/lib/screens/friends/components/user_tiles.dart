@@ -10,12 +10,10 @@ class UserTiles extends StatelessWidget {
     String buttonText = "",
     bool bottomPadding = true,
   })  : _users = users,
-        _buttonText = buttonText,
-        _bottomPadding = bottomPadding;
+        _buttonText = buttonText;
 
   final List<Friend> _users;
   final String _buttonText;
-  final bool _bottomPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,6 @@ class UserTiles extends StatelessWidget {
       itemCount: _users.length,
       itemBuilder: (context, index) => UserTile(
         user: _users[index],
-        bottomPadding: index == _users.length - 1 && _bottomPadding ? 250 : 0,
         buttonText: _buttonText,
       ),
     );

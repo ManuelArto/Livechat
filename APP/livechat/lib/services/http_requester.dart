@@ -20,4 +20,19 @@ class HttpRequester {
 
     return responseData;
   }
+
+  static Future<dynamic> get(String url, String? token) async {
+    final response = await http.get(
+      Uri.parse(url),
+      headers: token != null ? {"x-access-token": token} : null,
+    );
+
+    final responseData = json.decode(response.body) as Map<String, dynamic>;
+    if (responseData.containsKey("error")) {
+      throw HttpException(responseData["error"], response.statusCode);
+    }
+
+  return responseData["data"];
+  }
+
 }

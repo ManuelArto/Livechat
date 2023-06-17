@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:format/format.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:livechat/constants.dart';
 import 'package:livechat/models/friend.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/auth_provider.dart';
+import '../../../services/http_requester.dart';
 import 'user_tile.dart';
 
 class ScrollUserTiles extends StatefulWidget {
@@ -13,39 +18,29 @@ class ScrollUserTiles extends StatefulWidget {
 
 class _ScrollUserTilesState extends State<ScrollUserTiles> {
   static const _pageSize = 20;
+  late final String token;
 
   final PagingController<int, Friend> _pagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 1);
 
   @override
   void initState() {
-  _pagingController.addPageRequestListener((pageKey) {
+    _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
     super.initState();
-  }
-
-  Future<List<Friend>> getRoba(int pageKey, int pageSize) async {
-    await Future.delayed(
-      const Duration(seconds: 1),
-    );
-    return pageKey < 5
-        ? List.generate(
-            pageSize,
-            (index) => Friend(
-              username: "Username${index + pageSize * pageKey}",
-              imageUrl: "https://picsum.photos/${index + pageSize * pageKey}",
-              email: "email${index + pageSize * pageKey}",
-              phoneNumber: "phoneNumber${index + pageSize * pageKey}",
-            ),
-          )
-        : [];
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      // final List<Friend> newItems = await RemoteApi.getCharacterList(pageKey, _pageSize);
-      final List<Friend> newItems = await getRoba(pageKey, _pageSize);
+      final List<Friend> newItems = (await HttpRequester.get(
+        URL_USERS_LIST.format(pageKey, _pageSize),
+        token,
+      ) as List)
+          .map((user) => Friend.fromJson(user))
+          .toList();
+          
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -65,10 +60,6 @@ class _ScrollUserTilesState extends State<ScrollUserTiles> {
         itemBuilder: (context, user, index) => UserTile(
           user: user,
           buttonText: "ADD",
-          bottomPadding: _pagingController.nextPageKey == null &&
-                  index == _pagingController.itemList!.length - 1
-              ? 250
-              : 0,
         ),
       ),
     );

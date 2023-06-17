@@ -13,7 +13,7 @@ async def retrieve_users(
     data: Annotated[str, Depends(jwt.get_current_user)],
     page: int = 1,
     per_page: int = 10,
-) -> list[UserResponse]:
+) -> dict:
     users = UserService.retrieveUsers(page=page, per_page=per_page)
 
-    return [UserService.createUserResponse(user) for user in users]
+    return {"data": [UserService.createUserResponse(user) for user in users]}

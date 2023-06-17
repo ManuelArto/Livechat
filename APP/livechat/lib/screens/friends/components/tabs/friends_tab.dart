@@ -34,7 +34,8 @@ class FriendsTab extends StatelessWidget {
             ),
           ),
         ),
-        UserTiles(users: _friends)
+        UserTiles(users: _friends),
+        const SliverToBoxAdapter(child: SizedBox(height: 250)),
       ],
     );
   }

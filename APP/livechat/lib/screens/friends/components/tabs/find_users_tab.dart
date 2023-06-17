@@ -28,14 +28,16 @@ class FindUsersTab extends StatelessWidget {
         )
         .toList();
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 12.0),
-        child: UserTiles(
-          users: friendsFiltered,
-          buttonText: "ADD",
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.only(top: 12.0),
+          sliver: UserTiles(
+            users: friendsFiltered,
+            buttonText: "ADD",
+          ),
         ),
-      ),
+      ],
     );
   }
 }

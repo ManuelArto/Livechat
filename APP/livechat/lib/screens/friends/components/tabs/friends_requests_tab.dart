@@ -69,6 +69,7 @@ class FriendsRequestsTab extends StatelessWidget {
           users: _requests,
           buttonText: "ACCEPT",
         ),
+        const SliverToBoxAdapter(child: SizedBox(height: 250)),
       ],
     );
   }

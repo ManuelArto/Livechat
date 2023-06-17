@@ -5,5 +5,5 @@ class User {
   final String imageUrl;
 
   User(this.username, this.imageUrl, this.email, this.phoneNumber);
-  
+
 }

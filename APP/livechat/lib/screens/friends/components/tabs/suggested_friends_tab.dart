@@ -54,7 +54,8 @@ class SuggestedFriendsTab extends StatelessWidget {
             ),
           ),
         ),
-        const ScrollUserTiles()
+        const ScrollUserTiles(),
+        const SliverToBoxAdapter(child: SizedBox(height: 250)),
       ],
     );
   }
