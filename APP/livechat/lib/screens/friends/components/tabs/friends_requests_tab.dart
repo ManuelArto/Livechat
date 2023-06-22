@@ -17,7 +17,7 @@ class FriendsRequestsTab extends StatelessWidget {
   );
 
   final List<Friend> _mineRequests = List.generate(
-    5,
+    10,
     (index) => Friend(
       username: "Username$index",
       imageUrl: "https://picsum.photos/$index",
@@ -78,6 +78,7 @@ class FriendsRequestsTab extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       useSafeArea: true,
+      isScrollControlled: false,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(40.0),
@@ -99,7 +100,11 @@ class FriendsRequestsTab extends StatelessWidget {
               ),
             ),
             const Divider(),
-            Expanded(child: UserTiles(users: _mineRequests))
+            Expanded(
+              child: CustomScrollView(
+                slivers: [UserTiles(users: _mineRequests)],
+              ),
+            )
           ],
         );
       },
