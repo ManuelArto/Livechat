@@ -9,8 +9,6 @@ part 'auth_user.g.dart';
 class AuthUser extends User {
   final String id;
   final String token;
-  // TODO: add email and phone number
-  // TODO: add theme and themeMode
   bool isLogged = true;
 
   Id get isarId => fastHash(id);

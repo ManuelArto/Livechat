@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import '../../../models/friend.dart';
 import 'user_tile.dart';
 
+// ignore: constant_identifier_names
+enum UserAction { ADD, ACCEPT }
+
 class UserTiles extends StatelessWidget {
   const UserTiles({
     super.key,
     required List<Friend> users,
-    String buttonText = "",
+    UserAction? action,
     bool bottomPadding = true,
   })  : _users = users,
-        _buttonText = buttonText;
+        _action = action;
 
   final List<Friend> _users;
-  final String _buttonText;
+  final UserAction? _action;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class UserTiles extends StatelessWidget {
       itemCount: _users.length,
       itemBuilder: (context, index) => UserTile(
         user: _users[index],
-        buttonText: _buttonText,
+        action: _action,
       ),
     );
   }

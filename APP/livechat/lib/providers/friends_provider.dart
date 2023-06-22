@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/auth/auth_user.dart';
 import '../models/friend.dart';
 
+// TODO: mi sa che friendsProvider non serve a un cazz
+
 class FriendsProvider with ChangeNotifier {
   final Map<String, Friend> _users = {};
 

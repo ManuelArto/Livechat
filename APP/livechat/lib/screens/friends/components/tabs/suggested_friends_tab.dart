@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../models/friend.dart';
-import '../scroll_user_tiles.dart';
+import '../dynamic_user_tiles.dart';
 import '../user_tiles.dart';
 
 class SuggestedFriendsTab extends StatelessWidget {
@@ -15,7 +15,7 @@ class SuggestedFriendsTab extends StatelessWidget {
       email: "email$index",
       phoneNumber: "phone$index",
     ),
-  );
+  );  // TODO: integra contatti
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class SuggestedFriendsTab extends StatelessWidget {
         ),
         UserTiles(
           users: _contacts,
-          buttonText: "ADD",
+          action: UserAction.ADD,
           bottomPadding: false,
         ),
         SliverToBoxAdapter(
@@ -54,7 +54,7 @@ class SuggestedFriendsTab extends StatelessWidget {
             ),
           ),
         ),
-        const ScrollUserTiles(),
+        const DynamicUserTiles(),
         const SliverToBoxAdapter(child: SizedBox(height: 250)),
       ],
     );

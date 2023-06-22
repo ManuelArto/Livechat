@@ -1,6 +1,5 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:livechat/screens/friends/components/user_tiles.dart';
 
 import '../../../models/friend.dart';
 
@@ -8,12 +7,23 @@ class UserTile extends StatelessWidget {
   const UserTile({
     super.key,
     required Friend user,
-    required String buttonText,
+    required UserAction? action,
   })  : _user = user,
-        _buttonText = buttonText;
+        _action = action;
 
   final Friend _user;
-  final String _buttonText;
+  final UserAction? _action;
+
+  void _sendFriendRequest(BuildContext context) {
+
+
+
+    // Show SNACKBAR
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Friend request sent"),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +36,18 @@ class UserTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (_buttonText.isNotEmpty)
+          if (_action != null)
             TextButton(
-              onPressed: () {}, // TODO: FriendsProvider accept requests
+              onPressed: () => _sendFriendRequest(context), // TODO: FriendsProvider send/accept request
               style: ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(
                       Theme.of(context).highlightColor)),
-              child: Text(_buttonText),
+              child: Text(_action!.name),
             ),
-          if (_buttonText != "ADD")
+          if (_action != UserAction.ADD) // Is a friend or a friend request
             IconButton(
               splashRadius: 15,
-              onPressed: () {}, // TODO: FriendsProvider remove requests
+              onPressed: () {}, // TODO: FriendsProvider remove request
               icon: const Icon(Icons.close_rounded),
             ),
         ],

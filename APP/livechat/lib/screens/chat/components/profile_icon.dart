@@ -1,9 +1,5 @@
 import 'package:livechat/models/friend.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../../providers/friends_provider.dart';
-
 
 class ProfileIcon extends StatelessWidget {
   const ProfileIcon({required this.user, Key? key}) : super(key: key);
@@ -12,7 +8,6 @@ class ProfileIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FriendsProvider usersProvider = Provider.of<FriendsProvider>(context);
     return Hero(
       tag: user.username,
       child: Container(
@@ -25,9 +20,8 @@ class ProfileIcon extends StatelessWidget {
               backgroundImage: NetworkImage(user.imageUrl),
             ),
             CircleAvatar(
-              backgroundColor: usersProvider.getUser(user.username)!.isOnline
-                  ? Colors.greenAccent[700]
-                  : Colors.red,
+              backgroundColor:
+                  user.isOnline ? Colors.greenAccent[700] : Colors.red,
               radius: 10,
             ),
           ],

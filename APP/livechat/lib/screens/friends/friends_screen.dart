@@ -77,7 +77,7 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
                 ),
               )
             ] else
-            Expanded(child: FindUsersTab(_searchingString))
+              Expanded(child: FindUsersTab(_searchingString))
           ],
         ),
       ),
@@ -88,15 +88,15 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
     return [
       TabItem(
         onTap: null,
-        title: const Text("Suggested"),
-        selectedLeadingIcon: const Icon(Icons.emoji_people),
-        tab: SuggestedFriendsTab(),
-      ),
-      TabItem(
-        onTap: null,
         title: const Text("Friends"),
         selectedLeadingIcon: const Icon(Icons.person_pin_rounded),
         tab: FriendsTab(),
+      ),
+      TabItem(
+        onTap: null,
+        title: const Text("Suggested"),
+        selectedLeadingIcon: const Icon(Icons.emoji_people),
+        tab: SuggestedFriendsTab(),
       ),
       TabItem(
         onTap: null,

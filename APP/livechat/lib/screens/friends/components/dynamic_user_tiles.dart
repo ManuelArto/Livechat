@@ -3,20 +3,21 @@ import 'package:format/format.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:livechat/constants.dart';
 import 'package:livechat/models/friend.dart';
+import 'package:livechat/screens/friends/components/user_tiles.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';
 import '../../../services/http_requester.dart';
 import 'user_tile.dart';
 
-class ScrollUserTiles extends StatefulWidget {
-  const ScrollUserTiles({Key? key}) : super(key: key);
+class DynamicUserTiles extends StatefulWidget {
+  const DynamicUserTiles({Key? key}) : super(key: key);
 
   @override
-  State<ScrollUserTiles> createState() => _ScrollUserTilesState();
+  State<DynamicUserTiles> createState() => _DynamicUserTilesState();
 }
 
-class _ScrollUserTilesState extends State<ScrollUserTiles> {
+class _DynamicUserTilesState extends State<DynamicUserTiles> {
   static const _pageSize = 20;
   late final String token;
 
@@ -59,7 +60,7 @@ class _ScrollUserTilesState extends State<ScrollUserTiles> {
       builderDelegate: PagedChildBuilderDelegate<Friend>(
         itemBuilder: (context, user, index) => UserTile(
           user: user,
-          buttonText: "ADD",
+          action: UserAction.ADD,
         ),
       ),
     );

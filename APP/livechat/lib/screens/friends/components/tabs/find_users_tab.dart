@@ -34,7 +34,7 @@ class FindUsersTab extends StatelessWidget {
           padding: const EdgeInsets.only(top: 12.0),
           sliver: UserTiles(
             users: friendsFiltered,
-            buttonText: "ADD",
+            action: UserAction.ADD,
           ),
         ),
       ],
