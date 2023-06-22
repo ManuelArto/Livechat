@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,13 +17,13 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controllerPIN = TextEditingController();
   Color color = Colors.blueAccent;
+  FlexScheme selectedScheme = FlexScheme.material;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:
-            Theme.of(context).colorScheme.secondary.withOpacity(0.6),
+        backgroundColor: FlexColor.schemes[selectedScheme]?.light.primary,
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
@@ -37,7 +38,8 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             const SizedBox(height: 25),
             Row(
               children: [
-                Icon(Icons.person, color: color),
+                Icon(Icons.person,
+                    color: FlexColor.schemes[selectedScheme]?.light.secondary),
                 const SizedBox(
                   width: 8,
                 ),
@@ -72,7 +74,8 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             const SizedBox(height: 25),
             Row(
               children: [
-                Icon(Icons.lock, color: color),
+                Icon(Icons.lock,
+                    color: FlexColor.schemes[selectedScheme]?.light.secondary),
                 const SizedBox(
                   width: 8,
                 ),
@@ -98,22 +101,61 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     return GestureDetector(
       onTap: () {
         showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Change color of theme'),
-                // FlexScheme.values // TODO: radio con lista temi
-                content: null,
-                actions: [
-                  ElevatedButton(
-                    child: const Text('Conferma'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Change color of theme'),
+              content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: FlexScheme.values.map((scheme) {
+                          return ListTile(
+                            title: Text(scheme.name),
+                            leading: Radio<FlexScheme>(
+                              value: scheme,
+                              groupValue: selectedScheme,
+                              onChanged: (FlexScheme? value) {
+                                setState(() {
+                                  selectedScheme = value!;
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              actions: [
+                TextButton(
+                  child: const Text('Annulla'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.8),
                   ),
-                ],
-              );
-            });
+                  child: const Text('Conferma'),
+                  onPressed: () {
+                    setState(() {
+                      selectedScheme = selectedScheme;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,7 +175,18 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                 height: 22,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: color,
+                  color: FlexColor.schemes[selectedScheme]?.light.primary,
+                ),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: FlexColor.schemes[selectedScheme]?.light.secondary,
                 ),
               ),
               const SizedBox(
@@ -154,29 +207,30 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     return GestureDetector(
       onTap: () {
         showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Imposta un numero'),
-                content: TextField(
-                  controller: _controller,
-                  keyboardType: TextInputType.number,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Imposta un numero'),
+              content: TextField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+              ),
+              actions: [
+                ElevatedButton(
+                  child: const Text('Conferma'),
+                  onPressed: () {
+                    String numberText = _controller.text;
+                    int number = int.tryParse(numberText) ?? 0;
+                    setState(() {
+                      goalStep = number;
+                    });
+                    Navigator.of(context).pop();
+                  },
                 ),
-                actions: [
-                  ElevatedButton(
-                    child: const Text('Conferma'),
-                    onPressed: () {
-                      String numberText = _controller.text;
-                      int number = int.tryParse(numberText) ?? 0;
-                      setState(() {
-                        goalStep = number;
-                      });
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
+              ],
+            );
+          },
+        );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -218,72 +272,75 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             ),
           ),
           Transform.scale(
-              scale: 0.7,
-              child: CupertinoSwitch(
-                  value: appLock,
-                  onChanged: (bool val) {
-                    setState(() {
-                      appLock = val;
-                      if (appLock) {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Imposta un PIN'),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextField(
-                                      obscureText: true,
-                                      controller: _controllerPIN,
-                                      keyboardType: TextInputType.number,
-                                    ),
-                                  ],
+            scale: 0.7,
+            child: CupertinoSwitch(
+              value: appLock,
+              onChanged: (bool val) {
+                setState(
+                  () {
+                    appLock = val;
+                    if (appLock) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Imposta un PIN'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  obscureText: true,
+                                  controller: _controllerPIN,
+                                  keyboardType: TextInputType.number,
                                 ),
-                                actions: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.grey[300],
-                                        ),
-                                        child: const Text('Annulla',
-                                            style:
-                                                TextStyle(color: Colors.black)),
-                                        onPressed: () {
-                                          setState(() {
-                                            appLock = false;
-                                            _controllerPIN.text = "";
-                                          });
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      const SizedBox(width: 10),
-                                      ElevatedButton(
-                                        child: const Text('Conferma'),
-                                        onPressed: () {
-                                          String numberText =
-                                              _controllerPIN.text;
-                                          int number =
-                                              int.tryParse(numberText) ?? 0;
-                                          if (numberText.length >= 6) {
-                                            setState(() {
-                                              pin = number;
-                                              _controllerPIN.text = "";
-                                            });
-                                            Navigator.of(context).pop();
-                                          }
-                                        },
-                                      ),
-                                    ],
+                              ],
+                            ),
+                            actions: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey[300],
+                                    ),
+                                    child: const Text('Annulla',
+                                        style: TextStyle(color: Colors.black)),
+                                    onPressed: () {
+                                      setState(() {
+                                        appLock = false;
+                                        _controllerPIN.text = "";
+                                      });
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  const SizedBox(width: 10),
+                                  ElevatedButton(
+                                    child: const Text('Conferma'),
+                                    onPressed: () {
+                                      String numberText = _controllerPIN.text;
+                                      int number =
+                                          int.tryParse(numberText) ?? 0;
+                                      if (numberText.length >= 6) {
+                                        setState(() {
+                                          pin = number;
+                                          _controllerPIN.text = "";
+                                        });
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
                                   ),
                                 ],
-                              );
-                            });
-                      }
-                    });
-                  }))
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                );
+              },
+            ),
+          )
         ],
       ),
     );

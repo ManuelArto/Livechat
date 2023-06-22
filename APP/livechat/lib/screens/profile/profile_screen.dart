@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../../models/auth/auth_user.dart';
 import '../../providers/auth_provider.dart';
 import 'components/about.dart';
-import 'components/circular_steps.dart';
 import 'components/feedback_rating.dart';
 import 'components/profile_menu.dart';
 
@@ -77,12 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                     Text(authUser.email,
                         style: theme.textTheme.bodyMedium),
                     const Divider(),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 30),
-                      height: 200.0,
-                      child: const CircularSteps(),
-                    ),
+                    const SizedBox(height: 30),
                     ProfileMenu(
                       title: "Settings",
                       icon: Icons.settings,

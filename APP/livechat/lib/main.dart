@@ -36,8 +36,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Livechat',
         // TODO: carica tema da utente se loggato
-        theme: FlexThemeData.light(scheme: FlexScheme.blueM3),
-        darkTheme: FlexThemeData.dark(scheme: FlexScheme.blueM3),
+        theme: FlexThemeData.light(scheme: FlexScheme.brandBlue),
+        //darkTheme: FlexThemeData.dark(scheme: FlexScheme.brandBlue),
         themeMode: ThemeMode.system,
         home: Consumer<AuthProvider>(
           builder: (context, auth, _) => auth.isAuth
