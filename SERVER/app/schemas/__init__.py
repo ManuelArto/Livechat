@@ -1,7 +1,8 @@
-from pydantic import BaseModel, EmailStr, constr, Field
 from datetime import datetime
+from pydantic import BaseModel, EmailStr, constr, Field
 
 # HTTP SCHEMAS
+
 
 class UserSchema(BaseModel):
     username: constr(min_length=6, max_length=30)
@@ -23,18 +24,29 @@ class UserLoginSchema(BaseModel):
     email: EmailStr
     password: constr(min_length=8)
 
+
 class UserResponse(UserSchema):
     id: str
     imageUrl: str
+
 
 class AuthUserResponse(UserResponse):
     token: str
     expInToken: int
     refreshToken: str
     expInRefreshToken: int
+    friends: list[UserResponse]
+
 
 # MONGO SCHEMAS
+
 
 class UserDocument(UserSchema):
     id: str
     password: str
+    friends: list  # ObjectId | UserDocument
+
+
+class FriendRequest(BaseModel):
+    sender: str
+    receiver: str

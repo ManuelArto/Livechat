@@ -1,7 +1,15 @@
+from bson import ObjectId
 from app.config import settings
-from app.schemas import UserCreateSchema, UserDocument, UserLoginSchema, AuthUserResponse, UserResponse
-from app.helpers import hashing, jwt
+from app.schemas import (
+    UserCreateSchema,
+    UserDocument,
+    AuthUserResponse,
+    UserResponse,
+)
+from app.helpers import hashing, jwt_helper
 from app.db import db
+from app.services.friends_service import FriendsService
+
 
 class UserService:
     @staticmethod
@@ -9,54 +17,60 @@ class UserService:
         # STORE USER
         user.password = hashing.hash_password(user.password)
 
-        document_user = user.dict() | {"created_at": user._created_at, "updated_at": user._updated_at}
+        document_user = user.dict() | {
+            "created_at": user._created_at,
+            "updated_at": user._updated_at,
+            "friends": [],
+        }
 
-        id = db.User.insert_one(document_user).inserted_id
+        user_id = db.User.insert_one(document_user).inserted_id
 
-        return UserService.createAuthUserResponse(UserDocument(id = str(id), **user.dict()))
+        return UserService.create_auth_user_response(
+            UserDocument(id=str(user_id), friends=[], **user.dict())
+        )
 
     @staticmethod
-    def retrieveUser(user: UserLoginSchema) -> UserDocument:
-        user = db.User.find_one(filter={"email":user.email})
+    def retrieve_user_by(key: str, value: any) -> UserDocument:
+        user = db.User.find_one(filter={key: value})
         if not user:
             return None
-        
-        return UserDocument(id = str(user["_id"]), **user)
+
+        # Load FRIENDS
+        user["friends"] = FriendsService.retrieve_user_friends(user["_id"])
+        user["friends"] = [
+            UserService.create_user_response(user) for user in user["friends"]
+        ]
+
+        return UserDocument(id=str(user["_id"]), **user)
 
     @staticmethod
-    def retrieveUserByUsername(username: str) -> UserDocument:
-        user = db.User.find_one(filter={"username": username})
-        if not user:
-            return None
-        
-        return UserDocument(id = str(user["_id"]), **user)
-    
-    @staticmethod
-    def retrieveUsers(page: int, per_page: int) -> list[UserDocument]:
-        users = db.User.find().skip((page - 1) * per_page).limit(per_page)
+    def retrieve_users(user_id: str, page: int, per_page: int) -> list[UserDocument]:
+        users = (
+            db.User.find(filter={"_id": {"$ne": ObjectId(user_id)}})
+            .skip((page - 1) * per_page)
+            .limit(per_page)
+        )
 
-        return [UserDocument(id = str(user["_id"]), **user) for user in users]
-    
+        return [UserDocument(id=str(user["_id"]), **user) for user in users]
+
     @staticmethod
-    def createUserResponse(user: UserDocument) -> UserResponse:
+    def create_user_response(user: UserDocument) -> UserResponse:
         return UserResponse(
             **dict(user),
             imageUrl=settings.FIREBASE_IMAGE_URL.format(user.id),
         )
-    
+
     @staticmethod
-    def createAuthUserResponse(user: UserDocument) -> AuthUserResponse:
-		# GENERATE TOKENS
-        token, expInToken = jwt.generate_token(user.id, user.username)
-        refreshToken, expInRefreshToken = jwt.generate_refresh_token(user.id)
+    def create_auth_user_response(user: UserDocument) -> AuthUserResponse:
+        # GENERATE TOKENS
+        token, exp_in_token = jwt_helper.generate_token(user.id, user.username)
+        refresh_token, exp_in_refresh_token = jwt_helper.generate_refresh_token(user.id)
 
         return AuthUserResponse(
             **dict(user),
             imageUrl=settings.FIREBASE_IMAGE_URL.format(user.id),
             token=token,
-            expInToken=expInToken,
-            refreshToken=refreshToken,
-            expInRefreshToken=expInRefreshToken
+            expInToken=exp_in_token,
+            refreshToken=refresh_token,
+            expInRefreshToken=exp_in_refresh_token,
         )
-        
-

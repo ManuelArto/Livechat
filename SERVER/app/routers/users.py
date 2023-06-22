@@ -3,17 +3,19 @@ from fastapi import APIRouter, Depends
 
 from app.services.user_service import UserService
 from app.schemas import UserResponse
-from app.helpers import jwt
+from app.helpers import jwt_helper
 
 router = APIRouter()
 
 
 @router.get("/list")
 async def retrieve_users(
-    data: Annotated[str, Depends(jwt.get_current_user)],
+    user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
     page: int = 1,
     per_page: int = 10,
-) -> dict:
-    users = UserService.retrieveUsers(page=page, per_page=per_page)
+) -> dict[str, list[UserResponse]]:
+    users = UserService.retrieve_users(
+        user_id=user_data["id"], page=page, per_page=per_page
+    )
 
-    return {"data": [UserService.createUserResponse(user) for user in users]}
+    return {"data": [UserService.create_user_response(user) for user in users]}

@@ -12,7 +12,6 @@ class Settings(BaseSettings):
 
     FIREBASE_IMAGE_URL: str
 
-
     class Config:
         env_file = './.env'
 
