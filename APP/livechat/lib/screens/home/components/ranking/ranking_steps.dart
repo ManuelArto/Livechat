@@ -51,7 +51,7 @@ class RankingSteps extends StatelessWidget {
         ),
       ),
       title: Text(username, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text('Passi totali: ${totalSteps.toString()}'),
+      subtitle: Text('Total steps: ${totalSteps.toString()}'),
     );
   }
 }

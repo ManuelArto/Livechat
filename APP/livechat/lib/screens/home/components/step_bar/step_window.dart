@@ -22,7 +22,7 @@ class _StepWindowsState extends State<StepWindows> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Andamento settimanale'),
+      title: const Text('Weekly Trend'),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         height: MediaQuery.of(context).size.height * 0.6,
@@ -53,13 +53,13 @@ class _StepWindowsState extends State<StepWindows> {
                 ),
               ),
             ),
-            const Text("Passi totali effettuati: 49000"),
+            const Text("Total steps of week: 49000"),
             const SizedBox(height: 3),
             const Text(
-                "Calorie bruciate: 150 kcal"), // passi totali * 3
+                "Calories burned: 150 kcal"), // passi totali * 3
             const SizedBox(height: 3),
             const Text(
-                "Chilometri fatti: 29.4 km"), // passi totali * 0.6
+                "Kilometers: 29.4 km"), // passi totali * 0.6
           ],
         ),
       ),

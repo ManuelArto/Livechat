@@ -66,11 +66,11 @@ class _RankingScreenState extends State<RankingScreen>{
 
     List<TabItem> tabs = [
       TabItem(
-        title: const Text("Classifica giornaliera"),
+        title: const Text("Daily Ranking"),
         content: ClassificaTotale(dailyRanking: dailyRanking, weeklyRanking: []),
       ),
       TabItem(
-        title: const Text("Classifica settimanale"),
+        title: const Text("Weekly Ranking"),
         content: ClassificaTotale(weeklyRanking: weeklyRanking, dailyRanking: []),
       ),
     ];
@@ -98,7 +98,7 @@ class _RankingScreenState extends State<RankingScreen>{
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 22),
+                      width: MediaQuery.of(context).size.width/2,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: index == currentIndex

@@ -22,7 +22,7 @@ class PreviewRanking extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 15),
-          const Text("Classifica giornaliera",
+          const Text("Daily Ranking",
               style: TextStyle(fontWeight: FontWeight.bold)),
           const Divider(thickness: 1),
           RankingSteps(

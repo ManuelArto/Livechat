@@ -17,7 +17,7 @@ class PreviewSteps extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text('Passi effettuati oggi',
+          const Text('Steps of Today',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -29,9 +29,9 @@ class PreviewSteps extends StatelessWidget {
           ),
           Column(
             children: [
-              const Text("Calorie bruciate: 18 kcal"), // passi totali * 3
+              const Text("Calories burned: 18 kcal"), // passi totali * 3
               const SizedBox(height: 5),
-              const Text("Chilometri fatti: 3.6 km"), // passi totali * 0.6
+              const Text("Kilometers: 3.6 km"), // passi totali * 0.6
               const Divider(thickness: 1),
               TextButton(
                 onPressed: () {

@@ -71,7 +71,7 @@ class ClassificaTotale extends StatelessWidget {
               ),
             ),
             title: Text(user.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('Passi effettuati: ${user.steps}'),
+            subtitle: Text('Total Steps: ${user.steps}'),
           );
         },
       ),
