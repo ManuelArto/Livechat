@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../models/friend.dart';
 import '../dynamic_user_tiles.dart';
+import '../user_tile.dart';
 import '../user_tiles.dart';
 
 class SuggestedFriendsTab extends StatelessWidget {

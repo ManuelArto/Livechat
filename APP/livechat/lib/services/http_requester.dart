@@ -5,11 +5,14 @@ import 'package:http/http.dart' as http;
 import '../models/http_exception.dart';
 
 class HttpRequester {
-  static Future<Map<String, dynamic>> post(Map<String, dynamic> body, String url) async {
+  static Future<Map<String, dynamic>> post(
+      Map<String, dynamic> body, String url, {String? token}) async {
     final response = await http.post(
       Uri.parse(url),
       body: json.encode(body),
-      headers: {"Content-Type": "application/json"},
+      headers: token != null
+          ? {"x-access-token": token, "Content-Type": "application/json"}
+          : {"Content-Type": "application/json"},
     );
 
     final responseData = json.decode(response.body) as Map<String, dynamic>;
@@ -32,7 +35,13 @@ class HttpRequester {
       throw HttpException(responseData["error"], response.statusCode);
     }
 
-  return responseData["data"];
+    return responseData["data"];
   }
 
+  static Future<dynamic> delete(String url, String? token) async {
+    await http.delete(
+      Uri.parse(url),
+      headers: token != null ? {"x-access-token": token} : null,
+    );
+  }
 }

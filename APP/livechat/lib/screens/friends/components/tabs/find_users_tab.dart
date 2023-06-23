@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../models/friend.dart';
+import '../user_tile.dart';
 import '../user_tiles.dart';
 
 class FindUsersTab extends StatelessWidget {

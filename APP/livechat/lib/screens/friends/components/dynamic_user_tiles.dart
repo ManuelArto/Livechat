@@ -36,7 +36,7 @@ class _DynamicUserTilesState extends State<DynamicUserTiles> {
   Future<void> _fetchPage(int pageKey) async {
     try {
       final List<Friend> newItems = (await HttpRequester.get(
-        URL_USERS_LIST.format(pageKey, _pageSize),
+        URL_FRIENDS_SUGGESTED.format(pageKey, _pageSize),
         token,
       ) as List)
           .map((user) => Friend.fromJson(user))
@@ -59,16 +59,11 @@ class _DynamicUserTilesState extends State<DynamicUserTiles> {
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate<Friend>(
         itemBuilder: (context, user, index) => UserTile(
-          user: user,
+          friend: user,
           action: UserAction.ADD,
         ),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
 }

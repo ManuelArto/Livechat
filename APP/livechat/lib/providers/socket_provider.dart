@@ -72,6 +72,8 @@ class SocketProvider with ChangeNotifier {
     _socketIO.on('receive_message', _receiveMessage);
     _socketIO.on("user_connected", _userConnected);
     _socketIO.on("user_disconnected", _userDisconnected);
+
+    _socketIO.on("friend_deleted", (data) => debugPrint("FRIEND_DELETED: ${data.toString()}"));
   }
 
   void _receiveMessage(jsonData) {

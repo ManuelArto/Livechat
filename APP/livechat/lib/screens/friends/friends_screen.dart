@@ -86,10 +86,10 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
 
   List<TabItem> _buildTabs() {
     return [
-      TabItem(
+      const TabItem(
         onTap: null,
-        title: const Text("Friends"),
-        selectedLeadingIcon: const Icon(Icons.person_pin_rounded),
+        title: Text("Friends"),
+        selectedLeadingIcon: Icon(Icons.person_pin_rounded),
         tab: FriendsTab(),
       ),
       TabItem(
@@ -98,10 +98,10 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
         selectedLeadingIcon: const Icon(Icons.emoji_people),
         tab: SuggestedFriendsTab(),
       ),
-      TabItem(
+      const TabItem(
         onTap: null,
-        title: const Text("Requests"),
-        selectedLeadingIcon: const Icon(Icons.notifications),
+        title: Text("Requests"),
+        selectedLeadingIcon: Icon(Icons.notifications),
         tab: FriendsRequestsTab(),
         showBadge: true,
         badgeCount: 10, // TODO: replace with real requests count

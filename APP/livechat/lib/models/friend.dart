@@ -1,17 +1,24 @@
+import 'package:isar/isar.dart';
+
 import 'user.dart';
 
+part 'friend.g.dart';
+
+@embedded
 class Friend extends User {
+  @ignore
   bool isOnline = false;
 
   Friend(
-      {required String username,
-      required String imageUrl,
-      required String email,
-      required String phoneNumber,
-      this.isOnline = false})
-      : super(username, imageUrl, email, phoneNumber);
+      {String id = '',
+      String username = '',
+      String imageUrl = '',
+      String email = '',
+      String phoneNumber = ''})
+      : super(id, username, imageUrl, email, phoneNumber);
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "username": username,
         "imageUrl": imageUrl,
         "email": email,
@@ -19,6 +26,7 @@ class Friend extends User {
       };
 
   factory Friend.fromJson(Map<String, dynamic> data) => Friend(
+        id: data["id"],
         username: data["username"],
         imageUrl: data["imageUrl"],
         email: data["email"],

@@ -7,6 +7,7 @@ import '../constants.dart';
 import '../models/auth/auth_request.dart';
 import '../models/auth/auth_user.dart';
 import '../database/isar_service.dart';
+import '../models/friend.dart';
 
 class AuthProvider with ChangeNotifier {
   AuthUser? authUser;
@@ -17,6 +18,13 @@ class AuthProvider with ChangeNotifier {
     authUser = await IsarService.instance.getLoggedUser();
     if (authUser == null) return false;
 
+    authUser!.friends = (await HttpRequester.get(
+      URL_FRIENDS_LIST,
+      authUser!.token,
+    ) as List)
+        .map((user) => Friend.fromJson(user))
+        .toList();
+    IsarService.instance.insertOrUpdate<AuthUser>(authUser!);
 
     notifyListeners();
     return true;

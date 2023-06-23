@@ -21,8 +21,9 @@ class MongoDB:
         db = client[settings.MONGO_INITDB_DATABASE]
 
         self.REQUEST = db.requests
+        self.REQUEST.create_index([("sender", pymongo.ASCENDING), ("receiver", pymongo.ASCENDING)], unique=True)
+        
         self.USER = db.users
-
         self.USER.create_index([("email", pymongo.ASCENDING)], unique=True)
         self.USER.create_index([("username", pymongo.ASCENDING)], unique=True)
         self.USER.create_index([("phoneNumber", pymongo.ASCENDING)], unique=True)

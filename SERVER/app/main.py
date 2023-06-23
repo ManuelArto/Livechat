@@ -26,7 +26,7 @@ from app.routers.ws import chat
 
 app.include_router(auth.router, tags=["Auth"], prefix="/api/auth")
 app.include_router(friends.router, tags=["Friends"], prefix="/api/friends")
-app.include_router(friend_requests.router, tags=["Friends Requests"], prefix="/api/request")
+app.include_router(friend_requests.router, tags=["Friends Requests"], prefix="/api/requests")
 app.mount('/', app=chat.sio_app)
 
 
