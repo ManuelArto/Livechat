@@ -7,6 +7,18 @@ from app.db import db
 
 class FriendsService:
     @staticmethod
+    def suggested_friends(
+        user: UserDocument, page: int, per_page: int
+    ) -> list[UserDocument]:
+        users = (
+            db.User.find(filter={"_id": {"$nin": [ObjectId(user.id), *user.friends]}})
+            .skip((page - 1) * per_page)
+            .limit(per_page)
+        )
+
+        return [UserDocument(id=str(user["_id"]), **user) for user in users]
+
+    @staticmethod
     def retrieve_user_friends(user_id: ObjectId) -> list[UserDocument]:
         user = db.User.find_one(filter={"_id": user_id})
         if not user:
