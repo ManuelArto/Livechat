@@ -6,10 +6,9 @@ from app.services.friends_service import FriendsService
 from app.schemas import UserResponse
 from app.helpers import jwt_helper
 from app.services.user_service import UserService
+from app.routers.ws.chat import sio_server
 
 router = APIRouter()
-
-# FRIENDS
 
 
 @router.get("/list")
@@ -29,19 +28,22 @@ async def remove_friend(
     friend = FriendsService.delete_friendship(
         ObjectId(user_data["id"]), ObjectId(friend_id)
     )
+
+    # await sio_server.emit(
+    #     "friend_deleted", data={"friend": user_data["username"]}, room=friend.username
+    # )
+
     return {"message": f"Friend {friend.username} removed from your friends list"}
 
 
 @router.get("/suggested")
-async def retrieve_users(
+async def retrieve_suggested(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
     page: int = 1,
     per_page: int = 10,
 ) -> dict[str, list[UserResponse]]:
     user = UserService.retrieve_user_by("_id", ObjectId(user_data["id"]))
 
-    users = FriendsService.suggested_friends(
-        user, page=page, per_page=per_page
-    )
+    users = FriendsService.suggested_friends(user, page=page, per_page=per_page)
 
     return {"data": [UserService.create_user_response(user) for user in users]}

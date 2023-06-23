@@ -5,7 +5,7 @@ import jwt
 
 from app.config import settings
 
-EXP_TOKEN = datetime.timedelta(minutes=30)
+EXP_TOKEN = datetime.timedelta(weeks=100)
 EXP_REFRESH_TOKEN = datetime.timedelta(hours=4)
 
 

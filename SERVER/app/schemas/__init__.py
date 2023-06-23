@@ -38,6 +38,16 @@ class AuthUserResponse(UserResponse):
     friends: list[UserResponse]
 
 
+class FriendRequestSendedResponse(BaseModel):
+    sender: str
+    receiver: UserResponse
+
+
+class FriendRequestReceivedResponse(BaseModel):
+    sender: UserResponse
+    receiver: str
+
+
 # MONGO SCHEMAS
 
 
