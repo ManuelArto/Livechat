@@ -1,4 +1,3 @@
-from bson import ObjectId
 from app.config import settings
 from app.schemas import (
     UserCreateSchema,
@@ -8,7 +7,6 @@ from app.schemas import (
 )
 from app.helpers import hashing, jwt_helper
 from app.db import db
-from app.services.friends_service import FriendsService
 
 
 class UserService:
@@ -35,23 +33,15 @@ class UserService:
         if not user:
             return None
 
-        # Load FRIENDS
-        user["friends"] = FriendsService.retrieve_user_friends(user["_id"])
-        user["friends"] = [
-            UserService.create_user_response(user) for user in user["friends"]
-        ]
-
         return UserDocument(id=str(user["_id"]), **user)
 
     @staticmethod
-    def retrieve_users(user_id: str, page: int, per_page: int) -> list[UserDocument]:
-        users = (
-            db.User.find(filter={"_id": {"$ne": ObjectId(user_id)}})
-            .skip((page - 1) * per_page)
-            .limit(per_page)
-        )
+    def retrieve_users(ids: list) -> UserDocument:
+        users = db.User.find(filter={"_id": {"$in": ids}})
 
         return [UserDocument(id=str(user["_id"]), **user) for user in users]
+
+    # DOCUMENT -> RESPONSE
 
     @staticmethod
     def create_user_response(user: UserDocument) -> UserResponse:
@@ -65,6 +55,12 @@ class UserService:
         # GENERATE TOKENS
         token, exp_in_token = jwt_helper.generate_token(user.id, user.username)
         refresh_token, exp_in_refresh_token = jwt_helper.generate_refresh_token(user.id)
+
+        # Convert friends to UserResponse
+        user.friends = [
+            UserService.create_user_response(user)
+            for user in UserService.retrieve_users(user.friends)
+        ]
 
         return AuthUserResponse(
             **dict(user),
