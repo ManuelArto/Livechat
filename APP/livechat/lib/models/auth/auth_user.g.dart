@@ -22,33 +22,39 @@ const AuthUserSchema = CollectionSchema(
       name: r'email',
       type: IsarType.string,
     ),
-    r'id': PropertySchema(
+    r'friends': PropertySchema(
       id: 1,
+      name: r'friends',
+      type: IsarType.objectList,
+      target: r'Friend',
+    ),
+    r'id': PropertySchema(
+      id: 2,
       name: r'id',
       type: IsarType.string,
     ),
     r'imageUrl': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'imageUrl',
       type: IsarType.string,
     ),
     r'isLogged': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'isLogged',
       type: IsarType.bool,
     ),
     r'phoneNumber': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'token': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'token',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'username',
       type: IsarType.string,
     )
@@ -60,7 +66,7 @@ const AuthUserSchema = CollectionSchema(
   idName: r'isarId',
   indexes: {},
   links: {},
-  embeddedSchemas: {},
+  embeddedSchemas: {r'Friend': FriendSchema},
   getId: _authUserGetId,
   getLinks: _authUserGetLinks,
   attach: _authUserAttach,
@@ -74,6 +80,14 @@ int _authUserEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.email.length * 3;
+  bytesCount += 3 + object.friends.length * 3;
+  {
+    final offsets = allOffsets[Friend]!;
+    for (var i = 0; i < object.friends.length; i++) {
+      final value = object.friends[i];
+      bytesCount += FriendSchema.estimateSize(value, offsets, allOffsets);
+    }
+  }
   bytesCount += 3 + object.id.length * 3;
   bytesCount += 3 + object.imageUrl.length * 3;
   bytesCount += 3 + object.phoneNumber.length * 3;
@@ -89,12 +103,18 @@ void _authUserSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.email);
-  writer.writeString(offsets[1], object.id);
-  writer.writeString(offsets[2], object.imageUrl);
-  writer.writeBool(offsets[3], object.isLogged);
-  writer.writeString(offsets[4], object.phoneNumber);
-  writer.writeString(offsets[5], object.token);
-  writer.writeString(offsets[6], object.username);
+  writer.writeObjectList<Friend>(
+    offsets[1],
+    allOffsets,
+    FriendSchema.serialize,
+    object.friends,
+  );
+  writer.writeString(offsets[2], object.id);
+  writer.writeString(offsets[3], object.imageUrl);
+  writer.writeBool(offsets[4], object.isLogged);
+  writer.writeString(offsets[5], object.phoneNumber);
+  writer.writeString(offsets[6], object.token);
+  writer.writeString(offsets[7], object.username);
 }
 
 AuthUser _authUserDeserialize(
@@ -104,14 +124,21 @@ AuthUser _authUserDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AuthUser(
-    reader.readString(offsets[5]),
-    reader.readString(offsets[1]),
     reader.readString(offsets[6]),
+    reader.readObjectList<Friend>(
+          offsets[1],
+          FriendSchema.deserialize,
+          allOffsets,
+          Friend(),
+        ) ??
+        [],
     reader.readString(offsets[2]),
+    reader.readString(offsets[7]),
+    reader.readString(offsets[3]),
     reader.readString(offsets[0]),
-    reader.readString(offsets[4]),
+    reader.readString(offsets[5]),
   );
-  object.isLogged = reader.readBool(offsets[3]);
+  object.isLogged = reader.readBool(offsets[4]);
   return object;
 }
 
@@ -125,16 +152,24 @@ P _authUserDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readObjectList<Friend>(
+            offset,
+            FriendSchema.deserialize,
+            allOffsets,
+            Friend(),
+          ) ??
+          []) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readBool(offset)) as P;
-    case 4:
       return (reader.readString(offset)) as P;
+    case 4:
+      return (reader.readBool(offset)) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -357,6 +392,91 @@ extension AuthUserQueryFilter
         property: r'email',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> friendsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> friendsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> friendsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> friendsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition>
+      friendsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> friendsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1077,7 +1197,14 @@ extension AuthUserQueryFilter
 }
 
 extension AuthUserQueryObject
-    on QueryBuilder<AuthUser, AuthUser, QFilterCondition> {}
+    on QueryBuilder<AuthUser, AuthUser, QFilterCondition> {
+  QueryBuilder<AuthUser, AuthUser, QAfterFilterCondition> friendsElement(
+      FilterQuery<Friend> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'friends');
+    });
+  }
+}
 
 extension AuthUserQueryLinks
     on QueryBuilder<AuthUser, AuthUser, QFilterCondition> {}
@@ -1329,6 +1456,12 @@ extension AuthUserQueryProperty
   QueryBuilder<AuthUser, String, QQueryOperations> emailProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'email');
+    });
+  }
+
+  QueryBuilder<AuthUser, List<Friend>, QQueryOperations> friendsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'friends');
     });
   }
 

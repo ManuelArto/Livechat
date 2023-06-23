@@ -13,7 +13,7 @@ class RequestsService:
     @staticmethod
     def retrieve_user_requests(
         user_id: ObjectId, sended: bool = False
-    ) -> [FriendRequestSendedResponse | FriendRequestReceivedResponse]:
+    ) -> list[FriendRequestSendedResponse | FriendRequestReceivedResponse]:
         if sended:
             requests = db.REQUEST.find({"sender": user_id})
 

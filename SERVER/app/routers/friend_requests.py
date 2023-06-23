@@ -1,6 +1,7 @@
 from typing import Annotated
 from bson import ObjectId
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+from pymongo.errors import DuplicateKeyError
 
 from app.helpers import jwt_helper
 from app.services.friends_service import FriendsService
@@ -22,7 +23,13 @@ async def send_request(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
     receiver_id: str,
 ):
-    RequestsService.add_request(ObjectId(user_data["id"]), ObjectId(receiver_id))
+    try:
+        RequestsService.add_request(ObjectId(user_data["id"]), ObjectId(receiver_id))
+    except DuplicateKeyError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Request already sent",
+        )
 
     return {"message": "Request sent"}
 
