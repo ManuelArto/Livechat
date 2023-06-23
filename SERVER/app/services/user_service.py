@@ -21,7 +21,7 @@ class UserService:
             "friends": [],
         }
 
-        user_id = db.User.insert_one(document_user).inserted_id
+        user_id = db.USER.insert_one(document_user).inserted_id
 
         return UserService.create_auth_user_response(
             UserDocument(id=str(user_id), friends=[], **user.dict())
@@ -29,7 +29,7 @@ class UserService:
 
     @staticmethod
     def retrieve_user_by(key: str, value: any) -> UserDocument:
-        user = db.User.find_one(filter={key: value})
+        user = db.USER.find_one(filter={key: value})
         if not user:
             return None
 
@@ -37,7 +37,7 @@ class UserService:
 
     @staticmethod
     def retrieve_users(ids: list) -> UserDocument:
-        users = db.User.find(filter={"_id": {"$in": ids}})
+        users = db.USER.find(filter={"_id": {"$in": ids}})
 
         return [UserDocument(id=str(user["_id"]), **user) for user in users]
 

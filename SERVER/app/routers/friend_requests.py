@@ -1,26 +1,40 @@
 from typing import Annotated
+from bson import ObjectId
 from fastapi import APIRouter, Depends
 
 from app.helpers import jwt_helper
+from app.services.friends_service import FriendsService
+from app.services.requests_service import RequestsService
 
 router = APIRouter()
 
+@router.get("/list")
+async def list_requests(
+    user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
+    sended: bool = False,
+):
+    requests = RequestsService.retrieve_user_requests(ObjectId(user_data["id"]), sended)
 
-@router.post("/{id}/send")
+    return {"data": requests}
+
+@router.post("/{receiver_id}/send")
 async def send_request(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
-    id: str,
+    receiver_id: str,
 ):
-    # Add request to requests collection
+    RequestsService.add_request(ObjectId(user_data["id"]), ObjectId(receiver_id))
+
     return {"message": "Request sent"}
 
 
-@router.post("/{id}/accept")
+@router.post("/{sender_id}/accept")
 async def accept_request(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
-    id: str,
+    sender_id: str,
 ):
-    # Add request to requests schema
+    RequestsService.delete(ObjectId(user_data["id"]), ObjectId(sender_id))
+
+    FriendsService.add_friend(ObjectId(user_data["id"]), ObjectId(sender_id))
 
     return {"message": "Request accepted"}
 
@@ -28,7 +42,8 @@ async def accept_request(
 @router.delete("/{id}")
 async def delete_request(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
-    id: str,
+    user_id: str,
 ):
-    # Add request to requests schema
+    RequestsService.delete(ObjectId(user_data["id"]), ObjectId(user_id))
+
     return {"message": "Request deleted"}
