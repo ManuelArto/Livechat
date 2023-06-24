@@ -102,6 +102,8 @@ class SocketProvider with ChangeNotifier {
 
   void _userDisconnected(jsonData) {
     debugPrint("${jsonData['username']} DISCONNECTED");
+    if (jsonData["username"] == authUser.username) return;
+    
     friendsProvider.usersDisconnected(jsonData["username"]);
   }
 

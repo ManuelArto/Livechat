@@ -6,6 +6,7 @@ from pymongo.errors import DuplicateKeyError
 from app.helpers import jwt_helper
 from app.services.friends_service import FriendsService
 from app.services.requests_service import RequestsService
+from app.services.user_service import UserService
 
 router = APIRouter()
 
@@ -23,6 +24,12 @@ async def send_request(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
     receiver_id: str,
 ):
+    user = UserService.retrieve_user_by("username", user_data["username"])
+    if ObjectId(receiver_id) in user.friends:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You are already friends",
+        )
     try:
         RequestsService.add_request(ObjectId(user_data["id"]), ObjectId(receiver_id))
     except DuplicateKeyError as error:
@@ -46,7 +53,7 @@ async def accept_request(
     return {"message": "Request accepted"}
 
 
-@router.delete("/{id}")
+@router.delete("/{user_id}")
 async def delete_request(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
     user_id: str,
