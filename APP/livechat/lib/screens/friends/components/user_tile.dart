@@ -8,9 +8,9 @@ import '../../../providers/auth_provider.dart';
 import '../../../services/http_requester.dart';
 
 // ignore: constant_identifier_names
-enum UserAction { ADD, ACCEPT }
+enum UserAction { ADD, ACCEPT, REJECT }
 
-class UserTile extends StatelessWidget {
+class UserTile extends StatefulWidget {
   const UserTile({
     super.key,
     required Friend friend,
@@ -21,60 +21,68 @@ class UserTile extends StatelessWidget {
   final Friend _friend;
   final UserAction? _action;
 
-  void _sendFriendRequest(BuildContext context) {
-    String token =
-        Provider.of<AuthProvider>(context, listen: false).authUser!.token;
+  @override
+  State<UserTile> createState() => _UserTileState();
+}
 
-    HttpRequester.post(
-        {},
-        _action == UserAction.ADD
-            ? URL_ADD_REQUEST.format(_friend.id)
-            : URL_ACCEPT_REQUEST.format(_friend.id),
-        token: token);
+class _UserTileState extends State<UserTile> {
+  Future<void> _sendFriendRequest() async {
+    String token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
+    try {
+      await HttpRequester.post(
+          {},
+          widget._action == UserAction.ADD
+              ? URL_ADD_REQUEST.format(widget._friend.id)
+              : URL_ACCEPT_REQUEST.format(widget._friend.id),
+          token: token);
 
-    _showSnackBar(
-        context,
-        _action == UserAction.ADD
-            ? "Friend request sent"
-            : "Friend request accepted");
+      _showSnackBar(
+          widget._action == UserAction.ADD
+              ? "Friend request sent"
+              : "Friend request accepted");
+    } catch (error) {
+      _showSnackBar(error.toString(), isError: true);
+    }
   }
 
-  void _delete(BuildContext context) {
-    String token =
-        Provider.of<AuthProvider>(context, listen: false).authUser!.token;
+  Future<void> _delete() async {
+    String token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
 
-    HttpRequester.delete(
-        _action == null
-            ? URL_REMOVE_FRIEND.format(_friend.id)
-            : URL_REMOVE_REQUEST.format(_friend.id),
-        token);
-
-    _showSnackBar(context, "Removed");
+    try {
+      await HttpRequester.delete(
+          widget._action == null
+              ? URL_REMOVE_FRIEND.format(widget._friend.id)
+              : URL_REMOVE_REQUEST.format(widget._friend.id),
+          token);
+      _showSnackBar("Removed");
+    } catch (error) {
+      _showSnackBar(error.toString(), isError: true);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(_friend.username),
+      title: Text(widget._friend.username),
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(_friend.imageUrl),
+        backgroundImage: NetworkImage(widget._friend.imageUrl),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (_action != null)
+          if (widget._action != null && widget._action != UserAction.REJECT)
             TextButton(
-              onPressed: () => _sendFriendRequest(context),
+              onPressed: _sendFriendRequest,
               style: ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(
                       Theme.of(context).highlightColor)),
-              child: Text(_action!.name),
+              child: Text(widget._action!.name),
             ),
-          if (_action != UserAction.ADD) // Is a friend or a friend request
+          if (widget._action != UserAction.ADD) // Is a friend or a friend request
             IconButton(
               splashRadius: 15,
-              onPressed: () => _delete(context),
+              onPressed: _delete,
               icon: const Icon(Icons.close_rounded),
             ),
         ],
@@ -82,10 +90,12 @@ class UserTile extends StatelessWidget {
     );
   }
 
-  void _showSnackBar(BuildContext context, String text) {
+  void _showSnackBar(String text, {bool isError = false}) {
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(text),
+      backgroundColor: isError ? Colors.red : Colors.green,
     ));
   }
 }

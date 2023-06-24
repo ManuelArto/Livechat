@@ -137,7 +137,7 @@ class _FriendsRequestsTabState extends State<FriendsRequestsTab> {
                       child: Text("No request sended yet"),
                     )
                   : CustomScrollView(
-                      slivers: [UserTiles(users: _mineRequests)],
+                      slivers: [UserTiles(users: _mineRequests, action: UserAction.REJECT)],
                     ),
             )
           ],
