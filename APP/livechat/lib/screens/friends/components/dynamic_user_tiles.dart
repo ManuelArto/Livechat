@@ -3,7 +3,6 @@ import 'package:format/format.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:livechat/constants.dart';
 import 'package:livechat/models/friend.dart';
-import 'package:livechat/screens/friends/components/user_tiles.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';

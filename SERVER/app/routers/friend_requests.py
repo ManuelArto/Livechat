@@ -7,6 +7,7 @@ from app.helpers import jwt_helper
 from app.services.friends_service import FriendsService
 from app.services.requests_service import RequestsService
 from app.services.user_service import UserService
+from app.routers.ws.chat import sio_server
 
 router = APIRouter()
 
@@ -32,7 +33,7 @@ async def send_request(
         )
     try:
         RequestsService.add_request(ObjectId(user_data["id"]), ObjectId(receiver_id))
-    except DuplicateKeyError as error:
+    except DuplicateKeyError as _:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Request already sent",
@@ -46,9 +47,15 @@ async def accept_request(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
     sender_id: str,
 ):
+
     RequestsService.delete(ObjectId(user_data["id"]), ObjectId(sender_id))
 
-    FriendsService.add_friend(ObjectId(user_data["id"]), ObjectId(sender_id))
+    friend = FriendsService.add_friend(ObjectId(user_data["id"]), ObjectId(sender_id))
+    user = UserService.retrieve_user_by("username", user_data["username"])
+
+    await sio_server.emit(
+        "new_friend", data=dict(UserService.create_user_response(user)), room=friend.username
+    )
 
     return {"message": "Request accepted"}
 

@@ -29,9 +29,9 @@ async def remove_friend(
         ObjectId(user_data["id"]), ObjectId(friend_id)
     )
 
-    # await sio_server.emit(
-    #     "friend_deleted", data={"friend": user_data["username"]}, room=friend.username
-    # )
+    await sio_server.emit(
+        "friend_deleted", data={"id": user_data["id"]}, room=friend.username
+    )
 
     return {"message": f"Friend {friend.username} removed from your friends list"}
 

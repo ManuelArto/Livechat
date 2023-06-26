@@ -35,7 +35,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin{
     super.build(context);
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
-    final friendsProvider = Provider.of<FriendsProvider>(context);
+    final friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
     final chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages(widget.chatName);
 
@@ -48,7 +48,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin{
         return MessageBubble(
           message: message,
           isMe: isMe,
-          imageUrl: isMe ? authUser.imageUrl : friendsProvider.getUser(message.sender!)!.imageUrl,
+          imageUrl: isMe ? authUser.imageUrl : friendsProvider.getFriend(message.sender!).imageUrl,
           key: ValueKey(message.id),
         );
       },

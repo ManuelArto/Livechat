@@ -25,7 +25,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
   @override
   void initState() {
     super.initState();
-    user = Provider.of<FriendsProvider>(context, listen: false).getUser(widget.chatName);
+    user = Provider.of<FriendsProvider>(context, listen: false).getFriend(widget.chatName);
     Provider.of<ChatProvider>(context, listen: false).currentChat = widget.chatName;
   }
 

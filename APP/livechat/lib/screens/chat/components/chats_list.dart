@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../models/chat/chat.dart';
 import '../../../models/chat/message.dart';
 import '../../../providers/chat_provider.dart';
+import '../../../providers/friends_provider.dart';
 import '../single_chat_screen.dart';
 
 class ChatsList extends StatelessWidget {
@@ -15,16 +16,21 @@ class ChatsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
+
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
     final List<Chat> chats = chatProvider.chatsBySection(section);
 
     return chats.isEmpty
-        ? Center(child: Text("No chats yet${section == 'All' ? '' : ' for $section'}"))
+        ? Center(
+            child:
+                Text("No chats yet${section == 'All' ? '' : ' for $section'}"))
         : ListView.builder(
             itemCount: chats.length,
             itemBuilder: (context, index) {
               Chat chat = chats[index];
-              Message? lastMessage = chat.messages.isNotEmpty ? chat.messages.last : null;
+              Message? lastMessage =
+                  chat.messages.isNotEmpty ? chat.messages.last : null;
               String time = lastMessage?.time != null
                   ? DateFormat("jm").format(lastMessage!.time!)
                   : "";
@@ -34,15 +40,17 @@ class ChatsList extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(30.0),
                   focusColor: Theme.of(context).listTileTheme.selectedTileColor,
-                  onTap: () {
-                    chatProvider.readChat(chat.chatName);
-                    Navigator.of(context, rootNavigator: false)
-                        .pushNamed(
-                          SingleChatScreen.routeName,
-                          arguments: chat.chatName,
-                        )
-                        .then((_) => chatProvider.currentChat = "");
-                  },
+                  onTap: friendsProvider.isFriend(chat.chatName)
+                      ? () {
+                          chatProvider.readChat(chat.chatName);
+                          Navigator.of(context, rootNavigator: false)
+                              .pushNamed(
+                                SingleChatScreen.routeName,
+                                arguments: chat.chatName,
+                              )
+                              .then((_) => chatProvider.currentChat = "");
+                        }
+                      : null,
                   onLongPress: () async {
                     final List<String>? selectedSections = await _selectSectionsDialog(context, chat);
                     if (selectedSections != null) chatProvider.updateSelectedSections(chat, selectedSections);

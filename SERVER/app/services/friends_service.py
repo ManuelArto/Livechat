@@ -46,7 +46,7 @@ class FriendsService:
         return UserDocument(id=str(friend["_id"]), **friend)
 
     @staticmethod
-    def add_friend(user_id: ObjectId, friend_id: ObjectId) -> UserDocument | None:
+    def add_friend(user_id: ObjectId, friend_id: ObjectId) -> UserDocument:
         db.USER.update_one(
             filter={"_id": user_id}, update={"$push": {"friends": friend_id}}
         )
@@ -55,7 +55,5 @@ class FriendsService:
             filter={"_id": friend_id}, update={"$push": {"friends": user_id}}
         )
         friend = db.USER.find_one(filter={"_id": friend_id})
-        if not friend:
-            return None
 
         return UserDocument(id=str(friend["_id"]), **friend)
