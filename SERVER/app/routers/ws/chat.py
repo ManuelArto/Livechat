@@ -10,7 +10,7 @@ sio_server = socketio.AsyncServer(
 
 sio_app = socketio.ASGIApp(socketio_server=sio_server)
 
-socket_clients = {} # Sicuramente non scalabile, ma temporaneo
+socket_clients = set() # Sicuramente non scalabile, ma temporaneo
 
 
 @sio_server.event
@@ -18,7 +18,7 @@ async def connect(sid, _, auth):
     token = auth["x-access-token"] if "x-access-token" in auth else None
 
     username, user_id = data_from_token(token)
-    socket_clients[username] = {"imageUrl": settings.FIREBASE_IMAGE_URL.format(user_id)}
+    socket_clients.add(username)
 
     # Store token data in session
     await sio_server.save_session(sid, {"username": username, "id": user_id})
@@ -27,15 +27,14 @@ async def connect(sid, _, auth):
     sio_server.enter_room(sid, room=username)
     print(f"WEBSOCKET: [NEW USER] {username}")
 
-    await sio_server.emit("user_connected", data=socket_clients)
+    await sio_server.emit("user_connected", data=list(socket_clients))
 
 
 @sio_server.on("disconnect")
 async def disconnect(sid):
     username = (await sio_server.get_session(sid))["username"]
 
-    if username in socket_clients:
-        del socket_clients[username]
+    socket_clients.discard(username)
 
     sio_server.leave_room(sid, room=username)
     print(f"WEBSOCKET: [USER DISCONNECTED] {username}")

@@ -47,7 +47,7 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
         child: Column(
           children: [
             SearchBar(
-              hintText: "Add or find a friend",
+              hintText: "Find a new friend",
               shape: MaterialStateProperty.all(
                 const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
