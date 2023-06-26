@@ -34,14 +34,12 @@ class ChatProvider with ChangeNotifier {
 
   // METHODS
 
-  // TODO: da rimuovere una volta introdotti gli amici
-  void newUserChat(Map<String, dynamic> users) {
-    users.forEach((username, data) {
-      if (!_chats.containsKey(username)) {
-        _chats[username] = Chat(chatName: username, messages: [], toRead: 0)
-          ..userId = authUser!.isarId;
-      }
-    });
+  void newUserChat(Map<String, dynamic> data) {
+    if (!_chats.containsKey(data["username"])) {
+      _chats[data["username"]] = Chat(chatName: data["username"], messages: [], toRead: 0)
+        ..userId = authUser!.isarId;
+    }
+    
     notifyListeners();
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
   }
@@ -79,11 +77,8 @@ class ChatProvider with ChangeNotifier {
   void _loadChatsFromMemory() async {
     List<Chat> chatsList = await IsarService.instance.getAll<Chat>(authUser!.isarId);
     if (chatsList.isEmpty) {
-      _chats = {
-        "GLOBAL": Chat(
-            chatName: "GLOBAL", messages: [], toRead: 0)
-          ..userId = authUser!.isarId
-      };
+      _chats = {};
+      // TODO: inizializza chat vuote con lista amici
       
       IsarService.instance.saveAll<Chat>(_chats.values.toList());
     } else {

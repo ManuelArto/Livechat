@@ -72,14 +72,14 @@ class SocketProvider with ChangeNotifier {
     // FRIENDS
     _socketIO.on("user_connected", _userConnected);
     _socketIO.on("user_disconnected", _userDisconnected);
-    _socketIO.on("new_friend", (data) => friendsProvider.newFriend(data));
-    _socketIO.on("friend_deleted", (data) => friendsProvider.deleteFriend(data["id"]));
+    _socketIO.on("new_friend", _newFriend);
+    _socketIO.on("friend_deleted", _deleteFriend);
     // CHAT
     _socketIO.on('receive_message', _receiveMessage);
   }
 
   void _userConnected(jsonData) {
-    (jsonData as Map<String, dynamic>).removeWhere((key, value) => key == authUser.username);
+    (jsonData as List<dynamic>).removeWhere((friend) => friend == authUser.username);
 
     debugPrint("UPDATE ONLINE USERS");
     friendsProvider.updateOnlineFriends(jsonData);
@@ -90,6 +90,15 @@ class SocketProvider with ChangeNotifier {
     if (jsonData["username"] == authUser.username) return;
     
     friendsProvider.userDisconnected(jsonData["username"]);
+  }
+
+  void _newFriend(jsonData) {
+    friendsProvider.newFriend(jsonData);
+    chatProvider.newUserChat(jsonData);
+  }
+
+  void _deleteFriend(jsonData) {
+    friendsProvider.deleteFriend(jsonData["id"]);
   }
 
   void _receiveMessage(jsonData) {

@@ -39,6 +39,11 @@ class _UserTileState extends State<UserTile> {
               : URL_ACCEPT_REQUEST.format(widget._friend.id),
           token: token);
 
+      if (widget._action == UserAction.ACCEPT) {
+        
+        friendsProvider.deleteRequest(widget._friend.id);
+      }
+
       _showSnackBar(
           widget._action == UserAction.ADD
               ? "Friend request sent"
