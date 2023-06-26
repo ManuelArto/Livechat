@@ -39,7 +39,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
     super.build(context);
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
-    final friendsProvider = Provider.of<FriendsProvider>(context);
+    final friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
     final chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages(widget.chatName);
 
@@ -55,7 +55,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
             isMe: isMe,
             imageUrl: isMe
                 ? authUser.imageUrl
-                : friendsProvider.getUser(message.sender!)!.imageUrl,
+                : friendsProvider.getFriend(message.sender!).imageUrl,
             key: ValueKey(message.id),
           );
         } else if(message.duration != null) {
@@ -65,7 +65,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
             isMe: isMe,
             imageUrl: isMe
                 ? authUser.imageUrl
-                : friendsProvider.getUser(message.sender!)!.imageUrl,
+                : friendsProvider.getFriend(message.sender!).imageUrl,
             key: ValueKey(message.id),
           );
         }else{
@@ -74,7 +74,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
             isMe: isMe,
             imageUrl: isMe
                 ? authUser.imageUrl
-                : friendsProvider.getUser(message.sender!)!.imageUrl,
+                : friendsProvider.getFriend(message.sender!).imageUrl,
             key: ValueKey(message.id),
             image: message.image != null ? message.image! : File('assets/images/defaultFile.png'),
           );

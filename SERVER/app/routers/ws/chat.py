@@ -25,7 +25,7 @@ async def connect(sid, _, auth):
 
     # Private room
     sio_server.enter_room(sid, room=username)
-    print(f"[NEW USER] {username}")
+    print(f"WEBSOCKET: [NEW USER] {username}")
 
     await sio_server.emit("user_connected", data=socket_clients)
 
@@ -38,7 +38,7 @@ async def disconnect(sid):
         del socket_clients[username]
 
     sio_server.leave_room(sid, room=username)
-    print(f"[USER DISCONNECTED] {username}")
+    print(f"WEBSOCKET: [USER DISCONNECTED] {username}")
 
     await sio_server.emit(
         "user_disconnected", data={"username": username}, skip_sid=True
@@ -47,7 +47,7 @@ async def disconnect(sid):
 
 @sio_server.on("send_message")
 async def handle_msg(sid, input_data):
-    print(f"[MESSAGE] {input_data}")
+    print(f"WEBSOCKET: [MESSAGE] {input_data}")
     username = (await sio_server.get_session(sid))["username"]
 
     body = json.loads(input_data)

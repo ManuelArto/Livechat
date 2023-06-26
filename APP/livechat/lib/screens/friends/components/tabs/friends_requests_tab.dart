@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:format/format.dart';
+import 'package:livechat/providers/friends_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../constants.dart';
-import '../../../../models/friend.dart';
-import '../../../../providers/auth_provider.dart';
-import '../../../../services/http_requester.dart';
 import '../user_tile.dart';
 import '../user_tiles.dart';
 
@@ -17,34 +13,15 @@ class FriendsRequestsTab extends StatefulWidget {
 }
 
 class _FriendsRequestsTabState extends State<FriendsRequestsTab> {
-  late List<Friend> _requests;
-  late List<Friend> _mineRequests;
-
-  Future<void> _loadRequests() async {
-    String token =
-        Provider.of<AuthProvider>(context, listen: false).authUser!.token;
-
-    _requests = (await HttpRequester.get(
-      URL_REQUESTS_LIST.format("false"),
-      token,
-    ) as List)
-        .map((user) => Friend.fromJson(user["sender"]))
-        .toList();
-
-    _mineRequests = (await HttpRequester.get(
-      URL_REQUESTS_LIST.format("true"),
-      token,
-    ) as List)
-        .map((user) => Friend.fromJson(user["receiver"]))
-        .toList();
-  }
+  late FriendsProvider friendsProvider;
 
   @override
   Widget build(BuildContext context) {
+    friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
     ThemeData theme = Theme.of(context);
 
     return FutureBuilder(
-      future: _loadRequests(),
+      future: friendsProvider.loadRequests(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -87,16 +64,7 @@ class _FriendsRequestsTabState extends State<FriendsRequestsTab> {
                   ),
                 ),
               ),
-              _requests.isEmpty
-                  ? const SliverFillRemaining(
-                      child: Center(
-                        child: Text("No request yet"),
-                      ),
-                    )
-                  : UserTiles(
-                      users: _requests,
-                      action: UserAction.ACCEPT,
-                    ),
+              const UserTilesWrapper(),
               const SliverToBoxAdapter(child: SizedBox(height: 250)),
             ],
           );
@@ -116,33 +84,60 @@ class _FriendsRequestsTabState extends State<FriendsRequestsTab> {
         ),
       ),
       builder: (BuildContext context) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(
-                'Sended Requests',
-                style: TextStyle(
-                  fontSize: theme.textTheme.bodyLarge!.fontSize,
-                  fontWeight: FontWeight.bold,
+        return ChangeNotifierProvider.value(
+          value: friendsProvider,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  'Sended Requests',
+                  style: TextStyle(
+                    fontSize: theme.textTheme.bodyLarge!.fontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            const Divider(),
-            Expanded(
-              child: _mineRequests.isEmpty
-                  ? const Center(
-                      child: Text("No request sended yet"),
-                    )
-                  : CustomScrollView(
-                      slivers: [UserTiles(users: _mineRequests, action: UserAction.REJECT)],
-                    ),
-            )
-          ],
+              const Divider(),
+              Expanded(
+                child: friendsProvider.mineRequests.isEmpty
+                    ? const Center(
+                        child: Text("No request sended yet"),
+                      )
+                    : CustomScrollView(
+                        slivers: [
+                          UserTiles(
+                              users: friendsProvider.mineRequests,
+                              action: UserAction.REJECT)
+                        ],
+                      ),
+              )
+            ],
+          ),
         );
       },
     );
+  }
+}
+
+class UserTilesWrapper extends StatelessWidget {
+  const UserTilesWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
+
+    return friendsProvider.requests.isEmpty
+        ? const SliverFillRemaining(
+            child: Center(
+              child: Text("No request yet"),
+            ),
+          )
+        : UserTiles(
+            users: friendsProvider.requests,
+            action: UserAction.ACCEPT,
+          );
   }
 }

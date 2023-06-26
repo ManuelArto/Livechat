@@ -69,11 +69,27 @@ class SocketProvider with ChangeNotifier {
     _socketIO.onError((err) => debugPrint(err.toString()));
     _socketIO.on("connect", (_) => debugPrint('CONNECTED'));
     _socketIO.on("disconnect", (_) => debugPrint('DISCONNECTED'));
-    _socketIO.on('receive_message', _receiveMessage);
+    // FRIENDS
     _socketIO.on("user_connected", _userConnected);
     _socketIO.on("user_disconnected", _userDisconnected);
+    _socketIO.on("new_friend", (data) => friendsProvider.newFriend(data));
+    _socketIO.on("friend_deleted", (data) => friendsProvider.deleteFriend(data["id"]));
+    // CHAT
+    _socketIO.on('receive_message', _receiveMessage);
+  }
 
-    _socketIO.on("friend_deleted", (data) => debugPrint("FRIEND_DELETED: ${data.toString()}"));
+  void _userConnected(jsonData) {
+    (jsonData as Map<String, dynamic>).removeWhere((key, value) => key == authUser.username);
+
+    debugPrint("UPDATE ONLINE USERS");
+    friendsProvider.updateOnlineFriends(jsonData);
+  }
+
+  void _userDisconnected(jsonData) {
+    debugPrint("${jsonData['username']} DISCONNECTED");
+    if (jsonData["username"] == authUser.username) return;
+    
+    friendsProvider.userDisconnected(jsonData["username"]);
   }
 
   void _receiveMessage(jsonData) {
@@ -90,21 +106,6 @@ class SocketProvider with ChangeNotifier {
       jsonData["duration"],
       jsonData["image"],
     );
-  }
-
-  void _userConnected(jsonData) {
-    (jsonData as Map<String, dynamic>).removeWhere((key, value) => key == authUser.username);
-
-    debugPrint("UPDATE ONLINE USERS");
-    friendsProvider.newUsersOnline(jsonData);
-    chatProvider.newUserChat(jsonData);
-  }
-
-  void _userDisconnected(jsonData) {
-    debugPrint("${jsonData['username']} DISCONNECTED");
-    if (jsonData["username"] == authUser.username) return;
-    
-    friendsProvider.usersDisconnected(jsonData["username"]);
   }
 
 }

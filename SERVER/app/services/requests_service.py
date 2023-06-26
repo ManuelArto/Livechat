@@ -50,7 +50,7 @@ class RequestsService:
 
     @staticmethod
     def delete(user_id: ObjectId, friend_id: ObjectId):
-        db.REQUEST.delete_one(
+        db.REQUEST.delete_many(
             {
                 "$or": [
                     {"sender": user_id, "receiver": friend_id},

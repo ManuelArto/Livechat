@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:format/format.dart';
+import 'package:livechat/providers/friends_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
@@ -26,6 +27,8 @@ class UserTile extends StatefulWidget {
 }
 
 class _UserTileState extends State<UserTile> {
+  late FriendsProvider friendsProvider;
+
   Future<void> _sendFriendRequest() async {
     String token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
     try {
@@ -46,7 +49,7 @@ class _UserTileState extends State<UserTile> {
   }
 
   Future<void> _delete() async {
-    String token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
+    final String token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
 
     try {
       await HttpRequester.delete(
@@ -54,6 +57,11 @@ class _UserTileState extends State<UserTile> {
               ? URL_REMOVE_FRIEND.format(widget._friend.id)
               : URL_REMOVE_REQUEST.format(widget._friend.id),
           token);
+      widget._action == null
+          ? friendsProvider.deleteFriend(widget._friend.id)
+          : friendsProvider.deleteRequest(widget._friend.id);
+
+      if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
       _showSnackBar("Removed");
     } catch (error) {
       _showSnackBar(error.toString(), isError: true);
@@ -62,6 +70,8 @@ class _UserTileState extends State<UserTile> {
 
   @override
   Widget build(BuildContext context) {
+    friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
+
     return ListTile(
       title: Text(widget._friend.username),
       leading: CircleAvatar(
