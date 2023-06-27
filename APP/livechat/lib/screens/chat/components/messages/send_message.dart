@@ -39,7 +39,6 @@ class SendMessageState extends State<SendMessage> {
     socketProvider.sendMessage(_controller.text, widget.chatName);
     setState(() => _controller.text = "");
   }
-
   void _sendAudio(){
     socketProvider.sendAudio(_controller.text, second, widget.chatName);
     setState(() => second = 0);
@@ -121,6 +120,7 @@ class SendMessageState extends State<SendMessage> {
               controller: _controller,
               decoration: InputDecoration(
                 labelText: isRecording ? _formatDuration(second) : "Type a message...",
+                labelStyle: const TextStyle(color: Colors.black),
                 fillColor: Colors.grey[200],
                 border: InputBorder.none,
               ),
@@ -146,9 +146,9 @@ class SendMessageState extends State<SendMessage> {
               ),
               child: _controller.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.send,
-                        color: Colors.white,
+                        color: Theme.of(context).iconTheme.color,
                       ),
                       onPressed:
                           _controller.text.trim().isEmpty ? null : _sendMessage,
@@ -156,7 +156,7 @@ class SendMessageState extends State<SendMessage> {
                   : IconButton(
                       icon: Icon(
                         isRecording ? Icons.send : Icons.mic,
-                        color: Colors.white,
+                        color: Theme.of(context).iconTheme.color,
                       ),
                       onPressed: () {
                         isRecording ? _sendAudio() : startRecording();  // TODO: qui andrà la funzione sendAudio()

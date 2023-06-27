@@ -77,6 +77,7 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
                   children: _buildTabs(),
                   useNautics: true,
                   showTabLabelsForFloating: true,
+                  inactiveColor: Colors.transparent,
                 ),
               )
             ] else

@@ -1,7 +1,7 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:livechat/database/isar_service.dart';
+import 'package:livechat/providers/settings_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:livechat/screens/app_screen.dart';
@@ -27,29 +27,47 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
-        ChangeNotifierProxyProvider<AuthProvider,SocketProvider>(
+        ChangeNotifierProvider(
+          create: (_) => SettingsProvider(),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, SocketProvider>(
           create: (_) => SocketProvider(),
           update: (_, auth, socketProvider) => socketProvider!..update(auth),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Livechat',
-        // TODO: carica tema da utente se loggato
-        theme: FlexThemeData.light(scheme: FlexScheme.brandBlue),
-        //darkTheme: FlexThemeData.dark(scheme: FlexScheme.brandBlue),
-        themeMode: ThemeMode.system,
-        home: Consumer<AuthProvider>(
-          builder: (context, auth, _) => auth.isAuth
-              ? const AppScreen()
-              : FutureBuilder(
-                  future: auth.tryAutoLogin(),
-                  builder: (context, snapshot) =>
-                      snapshot.connectionState == ConnectionState.waiting
-                          ? const Center(child: CircularProgressIndicator())
-                          : const AuthScreen(),
-                ),
-        ),
+      builder: (context, child) => FutureBuilder(
+        future: context.read<SettingsProvider>().loadSettings(),
+        builder: (context, snapshot) {
+          return snapshot.connectionState == ConnectionState.waiting
+              ? const Center(child: CircularProgressIndicator())
+              : const AppLoginWrapper();
+        },
+      ),
+    );
+  }
+}
+
+class AppLoginWrapper extends StatelessWidget {
+  const AppLoginWrapper({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Livechat',
+      theme: context.watch<SettingsProvider>().settings.theme,
+      home: Consumer<AuthProvider>(
+        builder: (context, auth, _) => auth.isAuth
+            ? const AppScreen()
+            : FutureBuilder(
+                future: auth.tryAutoLogin(),
+                builder: (context, snapshot) =>
+                    snapshot.connectionState == ConnectionState.waiting
+                        ? const Center(child: CircularProgressIndicator())
+                        : const AuthScreen(),
+              ),
       ),
     );
   }

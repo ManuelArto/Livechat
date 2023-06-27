@@ -90,7 +90,6 @@ class _ChatSectionsState extends State<ChatSections> {
                   autofocus: true,
                   decoration: const InputDecoration(
                     labelText: "Section name",
-                    fillColor: Colors.white,
                   ),
                 ),
               )

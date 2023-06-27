@@ -1,4 +1,4 @@
-class User {
+abstract class User {
   final String id;
   final String username;
   final String email;
