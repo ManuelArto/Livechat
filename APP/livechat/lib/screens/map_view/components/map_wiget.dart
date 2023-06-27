@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import '../../models/auth/auth_user.dart';
-import 'map_view_screen.dart';
+import '../../../models/auth/auth_user.dart';
+import '../map_view_screen.dart';
 
 class MapWidget extends StatelessWidget {
   const MapWidget({

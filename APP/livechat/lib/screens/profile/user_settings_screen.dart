@@ -1,6 +1,10 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:livechat/screens/profile/components/theme/theme_changer.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/settings.dart';
+import '../../providers/settings_provider.dart';
 
 class UserSettingsScreen extends StatefulWidget {
   static const routeName = "/settingsScreen";
@@ -16,14 +20,14 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   bool appLock = false;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controllerPIN = TextEditingController();
-  Color color = Colors.blueAccent;
-  FlexScheme selectedScheme = FlexScheme.material;
 
   @override
   Widget build(BuildContext context) {
+    Settings settings = Provider.of<SettingsProvider>(context, listen: false).settings;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: FlexColor.schemes[selectedScheme]?.light.primary,
+        backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.6),
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
@@ -39,7 +43,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             Row(
               children: [
                 Icon(Icons.person,
-                    color: FlexColor.schemes[selectedScheme]?.light.secondary),
+                    color: settings.schemeColor.secondary),
                 const SizedBox(
                   width: 8,
                 ),
@@ -48,34 +52,14 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
               ],
             ),
             const Divider(height: 15, thickness: 2),
-            const SizedBox(height: 10),
-            changeColorTheme(context),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Dark Mode",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                Transform.scale(
-                  scale: 0.7,
-                  child: CupertinoSwitch(
-                    value: false,
-                    onChanged: (bool val) {}, // TODO: salva dark mode
-                  ),
-                )
-              ],
+            const Padding(
+              padding: EdgeInsets.only(top: 10, bottom: 25),
+              child: ThemeChanger(),
             ),
-            const SizedBox(height: 25),
             Row(
               children: [
                 Icon(Icons.lock,
-                    color: FlexColor.schemes[selectedScheme]?.light.secondary),
+                    color: settings.schemeColor.secondary),
                 const SizedBox(
                   width: 8,
                 ),
@@ -93,112 +77,6 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             changePin(context)
           ],
         ),
-      ),
-    );
-  }
-
-  Widget changeColorTheme(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Change color of theme'),
-              content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-                  return Scrollbar(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: FlexScheme.values.map((scheme) {
-                          return ListTile(
-                            title: Text(scheme.name),
-                            leading: Radio<FlexScheme>(
-                              value: scheme,
-                              groupValue: selectedScheme,
-                              onChanged: (FlexScheme? value) {
-                                setState(() {
-                                  selectedScheme = value!;
-                                });
-                              },
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              actions: [
-                TextButton(
-                  child: const Text('Annulla'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context)
-                        .colorScheme
-                        .secondary
-                        .withOpacity(0.8),
-                  ),
-                  child: const Text('Conferma'),
-                  onPressed: () {
-                    setState(() {
-                      selectedScheme = selectedScheme;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Change color",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[600],
-            ),
-          ),
-          Row(
-            children: [
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: FlexColor.schemes[selectedScheme]?.light.primary,
-                ),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: FlexColor.schemes[selectedScheme]?.light.secondary,
-                ),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey,
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

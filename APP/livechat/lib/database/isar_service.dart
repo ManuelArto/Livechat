@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../models/chat/chat.dart';
 import '../models/chat/section.dart';
+import '../models/settings.dart';
 
 class IsarService {
 
@@ -25,7 +26,7 @@ class IsarService {
       final dir = await getApplicationDocumentsDirectory();
 
       return await Isar.open(
-          [ChatSchema, SectionSchema, AuthUserSchema],
+          [ChatSchema, SectionSchema, AuthUserSchema, SettingsSchema],
           inspector: !kReleaseMode, directory: dir.path);
     }
 
@@ -73,6 +74,13 @@ class IsarService {
   Future<AuthUser?> getLoggedUser() async {
     final isar = await db;
     return await isar.authUsers.filter().isLoggedEqualTo(true).findFirst();
+  }
+
+  // SETTINGS
+
+  Future<Settings?> getSettings() async {
+    final isar = await db;
+    return await isar.settings.buildQuery().findFirst();
   }
 
   Future<void> cleanDb() async {

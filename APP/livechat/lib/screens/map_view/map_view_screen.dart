@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:livechat/screens/map_view/reposition_button.dart';
+import 'package:livechat/screens/map_view/components/reposition_button.dart';
 import 'package:provider/provider.dart';
 import '../../models/auth/auth_user.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/top_bar.dart';
-import 'bar_menu.dart';
-import 'map_wiget.dart';
+import 'components/ranking/bar_menu.dart';
+import 'components/map_wiget.dart';
 
 class MapViewScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;

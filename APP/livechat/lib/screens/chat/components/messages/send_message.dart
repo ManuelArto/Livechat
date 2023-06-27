@@ -21,7 +21,8 @@ class SendMessageState extends State<SendMessage> {
   void initState() {
     super.initState();
     chatProvider = Provider.of<SocketProvider>(context, listen: false);
-    username = Provider.of<AuthProvider>(context, listen: false).authUser?.username;
+    username =
+        Provider.of<AuthProvider>(context, listen: false).authUser?.username;
   }
 
   void _sendMessage() {
@@ -34,7 +35,9 @@ class SendMessageState extends State<SendMessage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       decoration: BoxDecoration(
-          color: Colors.grey[200], borderRadius: BorderRadius.circular(40.0)),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(40.0),
+      ),
       child: ListTile(
         // leading: IconButton(
         //   icon: Icon(Icons.image),
@@ -45,7 +48,12 @@ class SendMessageState extends State<SendMessage> {
           textCapitalization: TextCapitalization.sentences,
           enableSuggestions: true,
           controller: _controller,
-          decoration: InputDecoration(labelText: "Type a message...", fillColor: Colors.grey[200], border: InputBorder.none),
+          decoration: InputDecoration(
+            labelText: "Type a message...",
+            labelStyle: const TextStyle(color: Colors.black),
+            fillColor: Colors.grey[200],
+            border: InputBorder.none,
+          ),
           onChanged: (value) => setState(() {}),
         ),
         trailing: Container(
@@ -54,9 +62,9 @@ class SendMessageState extends State<SendMessage> {
             color: Theme.of(context).colorScheme.secondary,
           ),
           child: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.send,
-              color: Colors.white,
+              color: Theme.of(context).iconTheme.color,
             ),
             onPressed: _controller.text.trim().isEmpty ? null : _sendMessage,
           ),

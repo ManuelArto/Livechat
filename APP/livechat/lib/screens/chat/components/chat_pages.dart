@@ -34,12 +34,12 @@ class ChatPagesState extends State<ChatPages> {
             ),
             Expanded(
               child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(40.0),
                     topRight: Radius.circular(40.0),
                   ),
-                  color: Colors.white,
+                  color: Theme.of(context).dialogBackgroundColor
                 ),
                 height: widget.screenSize.height * .6,
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),

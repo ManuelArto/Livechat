@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'map_view_screen.dart';
+import '../../map_view_screen.dart';
 import 'menu_on_map.dart';
 
 class BarMenu extends StatefulWidget {
@@ -36,8 +36,7 @@ class _BarMenuState extends State<BarMenu> {
                   minChildSize: 0.2,
                   maxChildSize: 0.8,
                   expand: false,
-                  builder: (BuildContext context,
-                      ScrollController scrollController) {
+                  builder: (BuildContext context, ScrollController scrollController) {
                     return MenuOnMap(mapController: widget._mapController, scrollController: scrollController, friendsOnMap: widget.friendsOnMap);
                   },
                 );
