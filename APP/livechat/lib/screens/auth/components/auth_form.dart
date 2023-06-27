@@ -6,6 +6,7 @@ import 'package:livechat/providers/auth_provider.dart';
 import 'package:livechat/screens/auth/components/user_image_section.dart';
 
 import '../../../models/auth/auth_request.dart';
+import '../../../providers/settings_provider.dart';
 
 class AuthForm extends StatefulWidget {
   const AuthForm({Key? key}) : super(key: key);
@@ -14,7 +15,8 @@ class AuthForm extends StatefulWidget {
   AuthFormState createState() => AuthFormState();
 }
 
-class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin {
+class AuthFormState extends State<AuthForm>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
 
@@ -43,7 +45,8 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
     });
 
     try {
-        await Provider.of<AuthProvider>(context, listen: false).authenticate(_authRequest);
+      await Provider.of<AuthProvider>(context, listen: false)
+          .authenticate(_authRequest);
     } catch (error) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -59,6 +62,8 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
 
   @override
   Widget build(BuildContext context) {
+    bool darkMode = Provider.of<SettingsProvider>(context).settings.darkMode;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -95,8 +100,9 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
                                       ? "Username must be 6-30 characters long"
                                       : null;
                         },
-                        decoration:
-                            const InputDecoration(labelText: "Username", fillColor: Colors.white),
+                        decoration: InputDecoration(
+                            labelText: "Username",
+                            fillColor: darkMode ? null : Colors.white),
                       ),
                     ],
                     TextFormField(
@@ -113,8 +119,9 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
                           ? "Please enter a valide email"
                           : null,
                       keyboardType: TextInputType.emailAddress,
-                      decoration:
-                          const InputDecoration(labelText: "Email address", fillColor: Colors.white),
+                      decoration: InputDecoration(
+                          labelText: "Email address",
+                          fillColor: darkMode ? null : Colors.white),
                     ),
                     if (!_authRequest.isLogin)
                       TextFormField(
@@ -131,8 +138,9 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
                             ? "Please enter a valide phone number"
                             : null,
                         keyboardType: TextInputType.phone,
-                        decoration:
-                            const InputDecoration(labelText: "Phone Number", fillColor: Colors.white),
+                        decoration: InputDecoration(
+                            labelText: "Phone Number",
+                            fillColor: darkMode ? null : Colors.white),
                       ),
                     TextFormField(
                       controller: _passwordController,
@@ -148,8 +156,9 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
                                     ? "Password must be at least 7 characters long"
                                     : null;
                       },
-                      decoration:
-                          const InputDecoration(labelText: "Password", fillColor: Colors.white),
+                      decoration: InputDecoration(
+                          labelText: "Password",
+                          fillColor: darkMode ? null : Colors.white),
                       obscureText: true,
                     ),
                     if (!_authRequest.isLogin)
@@ -159,7 +168,9 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
                             (value != _passwordController.text)
                                 ? "Password doesn't match"
                                 : null,
-                        decoration: const InputDecoration(labelText: "Confirm password", fillColor: Colors.white),
+                        decoration: InputDecoration(
+                            labelText: "Confirm password",
+                            fillColor: darkMode ? null : Colors.white),
                         obscureText: true,
                       ),
                     const SizedBox(
@@ -180,7 +191,8 @@ class AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin 
                         child: Text(_authRequest.isLogin
                             ? "Create new Account"
                             : "I already have an account"),
-                        onPressed: () => setState(() => _authRequest.isLogin = !_authRequest.isLogin),
+                        onPressed: () => setState(
+                            () => _authRequest.isLogin = !_authRequest.isLogin),
                       ),
                     ],
                     if (_isLoading)
