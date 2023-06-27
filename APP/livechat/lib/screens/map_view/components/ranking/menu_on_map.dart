@@ -34,43 +34,37 @@ class _MenuOnMapState extends State<MenuOnMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              'Friends on Map',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+          const Text(
+            'Friends',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const Divider(thickness: 1),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: SearchBar(
-              hintText: "Add or find a friend",
-              shape: MaterialStateProperty.all(
-                const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+          SearchBar(
+            hintText: "Find a friend",
+            shape: MaterialStateProperty.all(
+              const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-              textStyle: MaterialStateProperty.all(
-                const TextStyle(backgroundColor: Colors.transparent),
-              ),
-              controller: _searchController,
-              leading: const Icon(Icons.search_rounded),
-              trailing: _searchController.text.isNotEmpty
-                  ? [
-                      IconButton(
-                          icon: const Icon(Icons.clear_rounded),
-                          onPressed: _searchController.clear),
-                    ]
-                  : null,
             ),
+            textStyle: MaterialStateProperty.all(
+              const TextStyle(backgroundColor: Colors.transparent),
+            ),
+            controller: _searchController,
+            leading: const Icon(Icons.search_rounded),
+            trailing: _searchController.text.isNotEmpty
+                ? [
+                    IconButton(
+                        icon: const Icon(Icons.clear_rounded),
+                        onPressed: _searchController.clear),
+                  ]
+                : null,
           ),
           if (_searchingString.isEmpty) ...[
             Expanded(
