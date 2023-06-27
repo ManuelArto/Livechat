@@ -6,17 +6,6 @@ from app.db import db
 
 
 class FriendsService:
-    @staticmethod
-    def suggested_friends(
-        user: UserDocument, page: int, per_page: int
-    ) -> list[UserDocument]:
-        users = (
-            db.USER.find(filter={"_id": {"$nin": [ObjectId(user.id), *user.friends]}})
-            .skip((page - 1) * per_page)
-            .limit(per_page)
-        )
-
-        return [UserDocument(id=str(user["_id"]), **user) for user in users]
 
     @staticmethod
     def retrieve_user_friends(user_id: ObjectId) -> list[UserDocument]:
@@ -57,3 +46,28 @@ class FriendsService:
         friend = db.USER.find_one(filter={"_id": friend_id})
 
         return UserDocument(id=str(friend["_id"]), **friend)
+
+    @staticmethod
+    def suggested_friends(
+        user: UserDocument, page: int, per_page: int
+    ) -> list[UserDocument]:
+        users = (
+            db.USER.find(filter={"_id": {"$nin": [ObjectId(user.id), *user.friends]}})
+            .skip((page - 1) * per_page)
+            .limit(per_page)
+        )
+
+        return [UserDocument(id=str(user["_id"]), **user) for user in users]
+
+    @staticmethod
+    def search_friends(user: UserDocument, query: str) -> list[UserDocument]:
+        users = (
+            db.USER.find(
+                filter={
+                    "_id": {"$nin": [ObjectId(user.id), *user.friends]},
+                    "username": {"$regex": query, "$options": "i"},
+                }
+            )
+        )
+
+        return [UserDocument(id=str(user["_id"]), **user) for user in users]

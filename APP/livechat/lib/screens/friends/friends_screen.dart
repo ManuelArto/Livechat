@@ -22,7 +22,7 @@ class FriendsScreen extends StatefulWidget {
 }
 
 class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveClientMixin {
-  String _searchingString = "";
+  String _searchString = "";
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -30,14 +30,17 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
   void initState() {
     super.initState();
     _searchController.addListener(
-      () => setState(() => _searchingString = _searchController.text),
+      () {
+        setState(() => _searchString = _searchController.text);
+        if (_searchString.isEmpty) FocusScope.of(context).unfocus();
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    AuthUser user = Provider.of<AuthProvider>(context).authUser!;
+    AuthUser user = Provider.of<AuthProvider>(context, listen: false).authUser!;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -67,7 +70,7 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
                     ]
                   : null,
             ),
-            if (_searchingString.isEmpty) ...[
+            if (_searchString.isEmpty) ...[
               ShareCard(user: user),
               Expanded(
                 child: FloatingTabBar(
@@ -77,7 +80,7 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
                 ),
               )
             ] else
-              Expanded(child: FindUsersTab(_searchingString))
+              Expanded(child: FindUsersTab(_searchString))
           ],
         ),
       ),
@@ -103,8 +106,8 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
         title: Text("Requests"),
         selectedLeadingIcon: Icon(Icons.notifications),
         tab: FriendsRequestsTab(),
-        showBadge: true,
-        badgeCount: 10, // TODO: replace with real requests count
+        // showBadge: true,
+        // badgeCount: 10, // TODO: show requests count
       ),
     ];
   }

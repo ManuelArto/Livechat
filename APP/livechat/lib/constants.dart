@@ -12,8 +12,9 @@ const URL_AUTH_REFRESH_TOKEN = "$SERVER_URL/api/auth/refreshToken";
 
 // FRIENDS
 const URL_FRIENDS_LIST = "$SERVER_URL/api/friends/list";
-const URL_FRIENDS_SUGGESTED = "$SERVER_URL/api/friends/suggested?page={}&per_page={}";
 const URL_REMOVE_FRIEND = "$SERVER_URL/api/friends/{}";
+const URL_FRIENDS_SUGGESTED = "$SERVER_URL/api/friends/suggested?page={}&per_page={}";
+const URL_FRIENDS_SEARCH = "$SERVER_URL/api/friends/searchNewFriends?query={}";
 
 // REQUESTS
 const URL_REQUESTS_LIST = "$SERVER_URL/api/requests/list?sended={}";
