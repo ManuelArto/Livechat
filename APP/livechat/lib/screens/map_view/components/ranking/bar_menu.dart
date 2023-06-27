@@ -32,7 +32,7 @@ class _BarMenuState extends State<BarMenu> {
               isScrollControlled: true,
               builder: (BuildContext context) {
                 return DraggableScrollableSheet(
-                  initialChildSize: 3 / 5,
+                  initialChildSize: 4/6,
                   minChildSize: 0.2,
                   maxChildSize: 0.8,
                   expand: false,

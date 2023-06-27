@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:share_plus/share_plus.dart';
 import '../../../models/auth/auth_user.dart';
 
 class ShareCard extends StatelessWidget {
@@ -23,10 +23,12 @@ class ShareCard extends StatelessWidget {
           radius: 30.0,
           backgroundImage: NetworkImage(user.imageUrl),
         ),
-        title: const Text("Invita amici su Livechat"),
+        title: const Text("Invite friends on Livechat"),
         subtitle: Text("livechat/${user.username}"),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Share.share("Discover LiveChat, the ultimate communication app. Download now!\nhttps://www.facebook.com/watch/?v=298873375806313&extid=CL-UNK-UNK-UNK-AN_GK0T-GK1C&mibextid=2Rb1fB&ref=sharing");
+          },
           icon: const Icon(Icons.share_rounded),
         ),
       ),
