@@ -17,7 +17,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AuthUser authUser = Provider.of<AuthProvider>(context).authUser!;
+    AuthUser authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
 
     return Scaffold(
       appBar: AppBar(

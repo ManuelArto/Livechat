@@ -10,7 +10,7 @@ import '../constants.dart';
 import '../models/auth/auth_user.dart';
 
 class SocketProvider with ChangeNotifier {
-  late Socket _socketIO;
+  Socket? _socketIO;
   late AuthUser authUser;
   late ChatProvider chatProvider;
   late FriendsProvider friendsProvider;
@@ -19,10 +19,10 @@ class SocketProvider with ChangeNotifier {
   void update(AuthProvider auth) {
     if (auth.isAuth) {
       authUser = auth.authUser!;
-      
-      init();
+
+      if (_socketIO == null) init();
     } else {
-      _socketIO.dispose();
+      _socketIO?.dispose();
     }
   }
 
@@ -46,24 +46,24 @@ class SocketProvider with ChangeNotifier {
       "receiver": receiver,
     });
 
-    _socketIO.emit("send_message", data);
+    _socketIO?.emit("send_message", data);
     chatProvider.addMessage(message, authUser.username, receiver);
   }
 
   // PRIVATE METHODS
 
   void _initListeners() {
-    _socketIO.onConnectError((err) => debugPrint(err.toString()));
-    _socketIO.onError((err) => debugPrint(err.toString()));
-    _socketIO.on("connect", (_) => debugPrint('CONNECTED'));
-    _socketIO.on("disconnect", (_) => debugPrint('DISCONNECTED'));
+    _socketIO?.onConnectError((err) => debugPrint(err.toString()));
+    _socketIO?.onError((err) => debugPrint(err.toString()));
+    _socketIO?.on("connect", (_) => debugPrint('CONNECTED'));
+    _socketIO?.on("disconnect", (_) => debugPrint('DISCONNECTED'));
     // FRIENDS
-    _socketIO.on("user_connected", _userConnected);
-    _socketIO.on("user_disconnected", _userDisconnected);
-    _socketIO.on("new_friend", _newFriend);
-    _socketIO.on("friend_deleted", _deleteFriend);
+    _socketIO?.on("user_connected", _userConnected);
+    _socketIO?.on("user_disconnected", _userDisconnected);
+    _socketIO?.on("new_friend", _newFriend);
+    _socketIO?.on("friend_deleted", _deleteFriend);
     // CHAT
-    _socketIO.on('receive_message', _receiveMessage);
+    _socketIO?.on('receive_message', _receiveMessage);
   }
 
   void _userConnected(jsonData) {

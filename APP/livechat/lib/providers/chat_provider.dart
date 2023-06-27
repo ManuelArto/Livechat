@@ -34,9 +34,11 @@ class ChatProvider with ChangeNotifier {
 
   void newUserChat(Map<String, dynamic> data) {
     if (!_chats.containsKey(data["username"])) {
-      _chats[data["username"]] =
-          Chat(chatName: data["username"], messages: [], toRead: 0)
-            ..userId = authUser!.isarId;
+      _chats[data["username"]] = Chat(
+        chatName: data["username"],
+        messages: [],
+        toRead: 0,
+      )..userId = authUser!.isarId;
     }
 
     notifyListeners();
