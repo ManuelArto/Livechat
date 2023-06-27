@@ -47,3 +47,14 @@ async def retrieve_suggested(
     users = FriendsService.suggested_friends(user, page=page, per_page=per_page)
 
     return {"data": [UserService.create_user_response(user) for user in users]}
+
+@router.get("/searchNewFriends")
+async def search(
+    user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
+    query: str,
+) -> dict[str, list[UserResponse]]:
+    user = UserService.retrieve_user_by("_id", ObjectId(user_data["id"]))
+
+    users = FriendsService.search_friends(user, query=query)
+
+    return {"data": [UserService.create_user_response(user) for user in users]}
