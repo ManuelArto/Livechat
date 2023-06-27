@@ -71,3 +71,16 @@ class FriendsService:
         )
 
         return [UserDocument(id=str(user["_id"]), **user) for user in users]
+
+    @staticmethod
+    def retrieve_contacts(user: UserDocument, numbers: list[str]) -> list[UserDocument]:
+        users = (
+            db.USER.find(
+                filter={
+                    "_id": {"$nin": [ObjectId(user.id), *user.friends]},
+                    "phoneNumber": {"$in": numbers},
+                }
+            )
+        )
+
+        return [UserDocument(id=str(user["_id"]), **user) for user in users]

@@ -1,6 +1,6 @@
 from typing import Annotated
 from bson import ObjectId
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from app.services.friends_service import FriendsService
 from app.schemas import UserResponse
@@ -56,5 +56,16 @@ async def search(
     user = UserService.retrieve_user_by("_id", ObjectId(user_data["id"]))
 
     users = FriendsService.search_friends(user, query=query)
+
+    return {"data": [UserService.create_user_response(user) for user in users]}
+
+@router.get("/contacts")
+async def retrieve_contacts(
+    user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
+    numbers: list[str] = Query(None, description="List of phone numbers")
+) -> dict[str, list[UserResponse]]:
+    user = UserService.retrieve_user_by("_id", ObjectId(user_data["id"]))
+
+    users = FriendsService.retrieve_contacts(user, numbers=numbers)
 
     return {"data": [UserService.create_user_response(user) for user in users]}
