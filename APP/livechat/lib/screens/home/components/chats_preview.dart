@@ -36,7 +36,7 @@ class ChatsPreview extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
-              'Chat più recenti',
+              'Recent Chats',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -47,7 +47,7 @@ class ChatsPreview extends StatelessWidget {
           if (chatList.isEmpty)
             const Expanded(
               child: Center(
-                child: Text('Non hai ancora chat', style: TextStyle(fontSize: 20)),
+                child: Text('No chats yet', style: TextStyle(fontSize: 20)),
               ),
             )
           else
@@ -74,7 +74,7 @@ class ChatsPreview extends StatelessWidget {
           if (chatList.isNotEmpty)
             TextButton(
               onPressed: () {},
-              child: const Text('View the chats'),
+              child: const Text('View chats'),
             ),
         ],
       ),

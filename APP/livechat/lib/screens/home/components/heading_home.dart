@@ -26,6 +26,7 @@ class HeadingHome extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CircleAvatar(
               radius: 30.0,

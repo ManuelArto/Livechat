@@ -56,6 +56,9 @@ async def accept_request(
     await sio_server.emit(
         "new_friend", data=dict(UserService.create_user_response(user)), room=friend.username
     )
+    await sio_server.emit(
+        "new_friend", data=dict(UserService.create_user_response(friend)), room=user.username
+    )
 
     return {"message": "Request accepted"}
 
