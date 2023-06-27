@@ -15,12 +15,10 @@ class SingleChatScreen extends StatefulWidget {
   const SingleChatScreen(this.chatName, {Key? key}) : super(key: key);
 
   @override
-
   SingleChatScreenState createState() => SingleChatScreenState();
 }
 
 class SingleChatScreenState extends State<SingleChatScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -30,24 +28,24 @@ class SingleChatScreenState extends State<SingleChatScreen> {
   @override
   Widget build(BuildContext context) {
     FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
-    // TODO: fixare sta roba
-    if (!friendsProvider.isFriend(widget.chatName)) {
-      Navigator.popUntil(context, (route) => route.isFirst);
-    }
 
-    Friend user = Provider.of<FriendsProvider>(context).getFriend(widget.chatName);
+    Friend? user = friendsProvider.isFriend(widget.chatName)
+        ? Provider.of<FriendsProvider>(context).getFriend(widget.chatName)
+        : null;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.6),
+        backgroundColor:
+            Theme.of(context).colorScheme.secondary.withOpacity(0.6),
         title: Text(
           widget.chatName,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         actions: [
           Container(
             padding: const EdgeInsets.all(5.0),
             margin: const EdgeInsets.only(right: 10.0),
-            child: ProfileIcon(user: user),
+            child: user != null ? ProfileIcon(user: user) : null,
           ),
         ],
       ),
@@ -59,7 +57,8 @@ class SingleChatScreenState extends State<SingleChatScreen> {
               child: Messages(widget.chatName),
             ),
           ),
-          SendMessage(widget.chatName),
+          if (user != null)
+            SendMessage(widget.chatName),
         ],
       ),
     );

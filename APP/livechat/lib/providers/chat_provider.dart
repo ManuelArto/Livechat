@@ -36,10 +36,11 @@ class ChatProvider with ChangeNotifier {
 
   void newUserChat(Map<String, dynamic> data) {
     if (!_chats.containsKey(data["username"])) {
-      _chats[data["username"]] = Chat(chatName: data["username"], messages: [], toRead: 0)
-        ..userId = authUser!.isarId;
+      _chats[data["username"]] =
+          Chat(chatName: data["username"], messages: [], toRead: 0)
+            ..userId = authUser!.isarId;
     }
-    
+
     notifyListeners();
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
   }
@@ -75,14 +76,24 @@ class ChatProvider with ChangeNotifier {
   }
 
   void _loadChatsFromMemory() async {
-    List<Chat> chatsList = await IsarService.instance.getAll<Chat>(authUser!.isarId);
+    List<Chat> chatsList =
+        await IsarService.instance.getAll<Chat>(authUser!.isarId);
     if (chatsList.isEmpty) {
-      _chats = {};
-      // TODO: inizializza chat vuote con lista amici
-      
+      _chats = {
+        for (var friend in authUser!.friends)
+          friend.username: Chat(
+            chatName: friend.username,
+            messages: [],
+            toRead: 0,
+          )..userId = authUser!.isarId
+      };
+
       IsarService.instance.saveAll<Chat>(_chats.values.toList());
     } else {
-      _chats = {for (var chat in chatsList) chat.chatName: chat..messages = List.from(chat.messages)};
+      _chats = {
+        for (var chat in chatsList)
+          chat.chatName: chat..messages = List.from(chat.messages)
+      };
       // * Bisogna ricreare la list dei messaggi a causa di un errore di ISAR https://github.com/isar/isar/discussions/781
     }
 
