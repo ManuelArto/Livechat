@@ -56,7 +56,16 @@ class _ChatSectionsState extends State<ChatSections> {
             onPressed: () async {
               final String? section = await _newSectionDialog();
               if (section != null && section.isNotEmpty) {
-                sectionsProvider.addSection(section);
+                if (!sectionsProvider.sections.contains(section)) {
+                  sectionsProvider.addSection(section);
+                } else if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Section already created"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
             },
             child: const Icon(Icons.new_label),
