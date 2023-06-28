@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:isar/isar.dart';
 
 part 'message.g.dart';
@@ -8,18 +10,24 @@ class Message {
   final String? sender;
   final String? content;
   final DateTime? time;
+  final int? duration;
+  final File? image;
 
   Message(
       {this.id,
       this.content,
       this.sender,
-      this.time});
+      this.time,
+      this.duration,
+      this.image});
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "sender": sender,
         "content": content,
         "time": time!.toIso8601String(),
+        "duration": duration,
+        "image": image,
       };
 
   factory Message.fromJson(Map<String, dynamic> data) => Message(
@@ -27,5 +35,7 @@ class Message {
         sender: data["sender"],
         content: data["content"],
         time: DateTime.parse(data["time"]),
+        duration: data["duration"],
+        image: data["image"],
       );
 }

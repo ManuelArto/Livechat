@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:livechat/providers/friends_provider.dart';
@@ -14,6 +15,7 @@ class SocketProvider with ChangeNotifier {
   late AuthUser authUser;
   late ChatProvider chatProvider;
   late FriendsProvider friendsProvider;
+  final File defaultFile = File('assets/images/defaultFile.png');
 
   // Called everytime AuthProvider changes
   void update(AuthProvider auth) {
@@ -47,7 +49,17 @@ class SocketProvider with ChangeNotifier {
     });
 
     _socketIO.emit("send_message", data);
-    chatProvider.addMessage(message, authUser.username, receiver);
+    chatProvider.addMessage(message, authUser.username, receiver, 0, defaultFile);
+  }
+
+  void sendAudio(String message, int duration, String receiver) {
+    debugPrint("Sending audio di $duration to $receiver");
+    chatProvider.addMessage(message, authUser.username, receiver, duration, defaultFile);
+  }
+
+  void sendImage(String message, int duration, String receiver, File attachment) {
+    debugPrint("Sending image di $attachment to $receiver");
+    chatProvider.addMessage(message, authUser.username, receiver, 0, attachment);
   }
 
   // PRIVATE METHODS
@@ -73,6 +85,8 @@ class SocketProvider with ChangeNotifier {
       authUser.username == jsonData["receiver"]
           ? jsonData["sender"]
           : jsonData["receiver"],
+      jsonData["duration"],
+      jsonData["image"],
     );
   }
 

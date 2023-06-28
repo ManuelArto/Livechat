@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/chat.dart';
 import 'package:livechat/database/isar_service.dart';
@@ -44,12 +46,14 @@ class ChatProvider with ChangeNotifier {
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
   }
 
-  void addMessage(String message, String sender, String chatName) {
+  void addMessage(String message, String sender, String chatName, int duration, File attachment) {
     Message newMessage = Message(
       content: message,
       sender: sender,
       time: DateTime.now(),
       id: const Uuid().v1(),
+      duration: duration,
+      image: attachment
     );
 
     _chats[chatName]?.messages.add(newMessage);
