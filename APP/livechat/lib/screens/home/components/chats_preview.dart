@@ -51,31 +51,32 @@ class ChatsPreview extends StatelessWidget {
               ),
             )
           else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: chatList.length,
-              itemBuilder: (context, index) {
-                final chat = chatList[index];
-                return Column(
-                  children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(authUser.imageUrl),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: chatList.length,
+                itemBuilder: (context, index) {
+                  final chat = chatList[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(authUser.imageUrl),
+                        ),
+                        title: Text(chat['user']!),
+                        subtitle: Text(chat['message']!),
                       ),
-                      title: Text(chat['user']!),
-                      subtitle: Text(chat['message']!),
-                    ),
-                    const Divider(thickness: 1),
-                  ],
-                );
-              },
+                      const Divider(thickness: 1),
+                    ],
+                  );
+                },
+              ),
             ),
-          if (chatList.isNotEmpty)
-            TextButton(
-              onPressed: () {},
-              child: const Text('View chats'),
-            ),
+          TextButton(
+            onPressed: () {},
+            child: const Text('View chats'),
+          ),
         ],
       ),
     );
