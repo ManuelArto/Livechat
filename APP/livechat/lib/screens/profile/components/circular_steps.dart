@@ -13,6 +13,18 @@ class CircularSteps extends StatelessWidget {
     int steps = 4000;
     int goal = Provider.of<SettingsProvider>(context).settings.goalSteps;
 
+    Color progressColor;
+
+    if (steps < goal * 25 / 100) {
+      progressColor = Colors.red;
+    } else if (steps < goal * 50 / 100) {
+      progressColor = Colors.orange;
+    } else if (steps < goal * 75 / 100) {
+      progressColor = Colors.blue;
+    } else {
+      progressColor = Colors.green;
+    }
+
     return Stack(
       children: <Widget>[
         Center(
@@ -20,17 +32,9 @@ class CircularSteps extends StatelessWidget {
             width: 150,
             height: 150,
             child: CircularProgressIndicator(
-              value: steps/goal,
+              value: steps / goal,
               strokeWidth: 20,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                steps < goal * 25 / 100
-                    ? Colors.red
-                    : steps < goal * 50 / 100
-                        ? Colors.orange
-                        : steps < goal * 75 / 100
-                            ? Colors.blue
-                            : Colors.green,
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(progressColor),
               backgroundColor: Colors.grey,
             ),
           ),
