@@ -73,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
             ),
-            const SizedBox(height: 8),
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(
@@ -100,8 +99,10 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
             ),
-            const SizedBox(height: 8),
-            PageViewHome(authUser: authUser),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: PageViewHome(authUser: authUser),
+            ),
           ],
         ),
       ),
