@@ -76,8 +76,12 @@ class ChatsList extends StatelessWidget {
                       ],
                     ),
                     title: Text(
-                      chat.chatName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      friendsProvider.isFriend(chat.chatName)
+                          ? chat.chatName
+                          : "${chat.chatName} (no friend)",
+                      style: friendsProvider.isFriend(chat.chatName)
+                          ? const TextStyle(fontWeight: FontWeight.bold)
+                          : const TextStyle(fontStyle: FontStyle.italic),
                     ),
                     subtitle: Text(lastMessage?.content ?? "No message"),
                     trailing: Text(time),
