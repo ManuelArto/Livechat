@@ -23,6 +23,7 @@ class SocketProvider with ChangeNotifier {
       if (_socketIO == null) init();
     } else {
       _socketIO?.dispose();
+      _socketIO = null;
     }
   }
 
