@@ -21,9 +21,16 @@ class PreviewRanking extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const SizedBox(height: 15),
-          const Text("Daily Ranking",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              "Daily Ranking",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ),
           const Divider(thickness: 1),
           RankingSteps(
             username: "naepols-01",
@@ -46,10 +53,12 @@ class PreviewRanking extends StatelessWidget {
             authUser: authUser,
           ),
           const Divider(thickness: 1),
-          TextButton(
-            onPressed: () => Navigator.of(context, rootNavigator: false)
-                          .pushNamed(RankingScreen.routeName),
-            child: const Text("View total ranking"),
+          Flexible(
+            child: TextButton(
+              onPressed: () => Navigator.of(context, rootNavigator: false)
+                  .pushNamed(RankingScreen.routeName),
+              child: const Text("View total ranking"),
+            ),
           ),
         ],
       ),

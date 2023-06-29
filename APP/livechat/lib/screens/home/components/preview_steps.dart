@@ -17,11 +17,17 @@ class PreviewSteps extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text('Today Steps',
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              'Today Steps',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-              )),
+              ),
+            ),
+          ),
+          const Divider(thickness: 1),
           const Expanded(
             child: Center(
               child: CircularSteps(),

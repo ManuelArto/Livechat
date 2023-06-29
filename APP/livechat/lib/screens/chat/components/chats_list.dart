@@ -78,7 +78,7 @@ class ChatsList extends StatelessWidget {
                     title: Text(
                       friendsProvider.isFriend(chat.chatName)
                           ? chat.chatName
-                          : "${chat.chatName} (no friend)",
+                          : "${chat.chatName} (not friends anymore)",
                       style: friendsProvider.isFriend(chat.chatName)
                           ? const TextStyle(fontWeight: FontWeight.bold)
                           : const TextStyle(fontStyle: FontStyle.italic),

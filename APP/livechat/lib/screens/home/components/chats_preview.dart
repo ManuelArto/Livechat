@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../models/auth/auth_user.dart';
 import '../../../models/chat/chat.dart';
+import '../../../models/chat/message.dart';
 import '../../../providers/chat_provider.dart';
 import '../../../providers/navbar_notifier.dart';
 
@@ -23,7 +24,8 @@ class _ChatsPreviewState extends State<ChatsPreview> {
   Widget build(BuildContext context) {
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
     final List<Chat> chats = chatProvider.chatsBySection("All");
-    NavbarNotifier navbarNotifier = Provider.of<NavbarNotifier>(context, listen: false);
+    NavbarNotifier navbarNotifier =
+        Provider.of<NavbarNotifier>(context, listen: false);
 
     return Card(
       elevation: 2,
@@ -42,7 +44,7 @@ class _ChatsPreviewState extends State<ChatsPreview> {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const Divider(thickness: 1),
           if (chats.isEmpty)
             const Expanded(
               child: Center(
@@ -50,36 +52,42 @@ class _ChatsPreviewState extends State<ChatsPreview> {
               ),
             )
           else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: chats.length > 3 ? 3 : chats.length,
-              itemBuilder: (context, index) {
-                Chat chat = chats[index];
-                String time = chat.messages.last.time != null
-                  ? DateFormat("jm").format(chat.messages.last.time!)
-                  : "";
-                return Column(
-                  children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(widget.authUser.imageUrl),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: chats.length > 3 ? 3 : chats.length,
+                itemBuilder: (context, index) {
+                  Chat chat = chats[index];
+                  Message? lastMessage =
+                      chat.messages.isNotEmpty ? chat.messages.last : null;
+                  String time = lastMessage?.time != null
+                      ? DateFormat("jm").format(lastMessage!.time!)
+                      : "";
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(widget.authUser.imageUrl),
+                        ),
+                        title: Text(chat.chatName),
+                        subtitle: Text(lastMessage?.content ?? "No message"),
+                        trailing: Text(time),
                       ),
-                      title: Text(chat.chatName),
-                      subtitle: Text(chat.messages.last.content!),
-                      trailing: Text(time),
-                    ),
-                    const Divider(thickness: 1),
-                  ],
-                );
-              },
+                      const Divider(thickness: 1),
+                    ],
+                  );
+                },
+              ),
             ),
-          if (chats.isNotEmpty)
+          if (chats.isNotEmpty) ...[
+            const Divider(thickness: 1),
             TextButton(
               onPressed: () => navbarNotifier.changePage(Pages.chatsScreen),
               child: const Text('View chats'),
             ),
+          ],
         ],
       ),
     );
