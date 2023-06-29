@@ -10,7 +10,8 @@ class Settings {
 
   bool darkMode = false;
   String themeString = "FlexScheme.brandBlue";
-
+  int goalSteps = 10000;
+  
   @ignore
   FlexScheme get themeScheme => FlexScheme.values.firstWhere(
         (scheme) => scheme.toString() == themeString,

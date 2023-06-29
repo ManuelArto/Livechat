@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -6,7 +8,7 @@ class StepWindows extends StatefulWidget {
     super.key,
   });
 
-  @override
+  @override 
   State<StepWindows> createState() => _StepWindowsState();
 }
 
@@ -21,6 +23,10 @@ class _StepWindowsState extends State<StepWindows> {
 
   @override
   Widget build(BuildContext context) {
+    final int totalStepsOfWeek = _chartData.fold(0, (int sum, StepsData data) => sum + data.steps);
+    final double totalkCal = totalStepsOfWeek * 3;
+    final double totalKm = totalStepsOfWeek * 0.6;
+
     return AlertDialog(
       title: const Text('Weekly Trend'),
       content: SizedBox(
@@ -53,13 +59,11 @@ class _StepWindowsState extends State<StepWindows> {
                 ),
               ),
             ),
-            const Text("Total steps of week: 49000"),
+            Text("Total steps of week: $totalStepsOfWeek"),
             const SizedBox(height: 3),
-            const Text(
-                "Calories burned: 150 kcal"), // passi totali * 3
+            Text("Calories burned: $totalkCal kcal"), // passi totali * 3
             const SizedBox(height: 3),
-            const Text(
-                "Kilometers: 29.4 km"), // passi totali * 0.6
+            Text("Kilometers: $totalKm km"), // passi totali * 0.6
           ],
         ),
       ),
@@ -75,15 +79,18 @@ class _StepWindowsState extends State<StepWindows> {
   }
 
   List<StepsData> getChartData() {
-    final List<StepsData> chartData = [
-      StepsData(17, 2000),
-      StepsData(16, 5000),
-      StepsData(15, 8000),
-      StepsData(14, 9000),
-      StepsData(13, 12000),
-      StepsData(12, 10000),
-      StepsData(11, 3000),
-    ];
+    final List<StepsData> chartData = [];
+    final DateTime today = DateTime.now();
+    
+    for (int i = 0; i < 7; i++) {
+      final DateTime date = today.subtract(Duration(days: i));
+      final int day = date.day;
+      final int steps = 1500; // bisogna prelevare i passi giornalieri
+      
+      final StepsData data = StepsData(day, steps);
+      chartData.add(data);
+    }
+    
     return chartData;
   }
 }

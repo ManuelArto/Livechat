@@ -21,6 +21,13 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setNewGoalSteps(int goalSteps){
+    settings.goalSteps = goalSteps;
+
+    IsarService.instance.insertOrUpdate<Settings>(settings);
+    notifyListeners();
+  }
+
   Future<void> loadSettings() async {
     Settings? settings = await IsarService.instance.getSettings();
     if (settings == null) {

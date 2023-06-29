@@ -20,6 +20,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   bool appLock = false;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controllerPIN = TextEditingController();
+  late SettingsProvider _settingsProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +83,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   }
 
   Widget changeStep(BuildContext context) {
+    _settingsProvider = Provider.of<SettingsProvider>(context);
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -99,10 +101,11 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                   onPressed: () {
                     String numberText = _controller.text;
                     int number = int.tryParse(numberText) ?? 0;
-                    setState(() {
+                    setState((){
                       goalStep = number;
                     });
                     Navigator.of(context).pop();
+                    _settingsProvider.setNewGoalSteps(goalStep);
                   },
                 ),
               ],
