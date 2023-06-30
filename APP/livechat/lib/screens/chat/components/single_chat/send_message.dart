@@ -121,7 +121,7 @@ class SendMessageState extends State<SendMessage> {
                 borderRadius: BorderRadius.circular(30.0),
                 color: Theme.of(context).colorScheme.secondary,
               ),
-              child: _controller.text.isNotEmpty || (!(_timer?.isActive ?? true) && _seconds == 0)
+              child: _controller.text.isNotEmpty || !(_timer?.isActive ?? true)
                   ? IconButton(
                       icon: Icon(
                         Icons.send,
