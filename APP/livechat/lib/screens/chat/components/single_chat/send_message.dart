@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:livechat/providers/auth_provider.dart';
 import 'package:livechat/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:livechat/screens/chat/components/single_chat/record_button.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,12 +21,9 @@ class SendMessageState extends State<SendMessage> {
   final _controller = TextEditingController();
   late SocketProvider socketProvider;
   String? username;
-  bool emptyText = false;
+
   final picker = ImagePicker();
   File? attachment;
-  bool isRecording = false;
-  Timer? timer;
-  int second = 0;
 
   @override
   void initState() {
@@ -39,10 +37,6 @@ class SendMessageState extends State<SendMessage> {
     socketProvider.sendMessage(_controller.text, widget.chatName);
     setState(() => _controller.text = "");
   }
-  void _sendAudio(){
-    setState(() => second = 0);
-    stopRecording();
-  }
 
   void _selectFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -50,54 +44,34 @@ class SendMessageState extends State<SendMessage> {
       setState(() {
         attachment = File(pickedFile.path);
       });
-      _sendImage();
     }
   }
 
-  void _sendImage(){
-    setState(() {
-        attachment = null;
+  // AUDIO
+  bool _hasRecorded = false;
+  int _seconds = 0;
+  Timer? _timer;
+
+  void _recordingStartedCallback() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() => _seconds++);
     });
+    setState(() => _hasRecorded = true);
   }
 
+  void _recordingFinishedCallback(String path) {
+    _timer?.cancel();
+    // setState(() => _isRecording = false);
 
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
+    final uri = Uri.parse(path);
+    File file = File(uri.path);
+    file.length().then(
+          (fileSize) {},
+        );
   }
 
-  void startRecording() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        second++;
-      });
-    });
-
-    setState(() {
-      isRecording = true;
-    });
-  }
-
-  void stopRecording() {
-    timer?.cancel();
-    setState(() {
-      isRecording = false;
-      second = 0;
-    });
-  }
-
-  String _formatDuration(int seconds) {
-    final minutes = seconds ~/ 60;
-    final remainingSeconds = seconds % 60;
-    final formattedMinutes = minutes.toString();
-    final formattedSeconds = remainingSeconds.toString().padLeft(2, '0');
-    return '$formattedMinutes:$formattedSeconds';
-  }
-  
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       decoration: BoxDecoration(
@@ -117,24 +91,29 @@ class SendMessageState extends State<SendMessage> {
               enableSuggestions: true,
               controller: _controller,
               decoration: InputDecoration(
-                labelText: isRecording ? _formatDuration(second) : "Type a message...",
+                labelText: _hasRecorded
+                    ? _formatDuration(_seconds)
+                    : "Type a message...",
                 labelStyle: const TextStyle(color: Colors.black),
                 fillColor: Colors.grey[200],
                 border: InputBorder.none,
               ),
               maxLines: null,
               onChanged: (value) => setState(() {}),
-              enabled: !isRecording,
+              enabled: !_hasRecorded,
             ),
           ),
-          isRecording
-              ? IconButton(
-                  icon: const Icon(
-                    Icons.delete,
-                  ),
-                  onPressed: () => stopRecording(),
-                )
-              : Container(),
+          if (_hasRecorded)
+            IconButton(
+              icon: const Icon(
+                Icons.delete,
+              ),
+              onPressed: () =>
+                setState(() {
+                  _hasRecorded = false;
+                  _seconds = 0;
+                }),
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Container(
@@ -142,7 +121,7 @@ class SendMessageState extends State<SendMessage> {
                 borderRadius: BorderRadius.circular(30.0),
                 color: Theme.of(context).colorScheme.secondary,
               ),
-              child: _controller.text.isNotEmpty
+              child: _controller.text.isNotEmpty || (!(_timer?.isActive ?? true) && _seconds == 0)
                   ? IconButton(
                       icon: Icon(
                         Icons.send,
@@ -151,19 +130,22 @@ class SendMessageState extends State<SendMessage> {
                       onPressed:
                           _controller.text.trim().isEmpty ? null : _sendMessage,
                     )
-                  : IconButton(
-                      icon: Icon(
-                        isRecording ? Icons.send : Icons.mic,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onPressed: () {
-                        isRecording ? _sendAudio() : startRecording();  // TODO: qui andrà la funzione sendAudio()
-                      },
+                  : RecordButton(
+                      recordingStartedCallback: _recordingStartedCallback,
+                      recordingFinishedCallback: _recordingFinishedCallback,
                     ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _formatDuration(int seconds) {
+    final minutes = seconds ~/ 60;
+    final remainingSeconds = seconds % 60;
+    final formattedMinutes = minutes.toString();
+    final formattedSeconds = remainingSeconds.toString().padLeft(2, '0');
+    return '$formattedMinutes:$formattedSeconds';
   }
 }

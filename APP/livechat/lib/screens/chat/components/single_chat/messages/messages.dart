@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../models/auth/auth_user.dart';
-import '../../../../providers/auth_provider.dart';
-import '../../../../providers/chat_provider.dart';
-import '../../../../providers/friends_provider.dart';
+import '../../../../../models/auth/auth_user.dart';
+import '../../../../../providers/auth_provider.dart';
+import '../../../../../providers/chat_provider.dart';
+import '../../../../../providers/friends_provider.dart';
 import 'message_audio.dart';
 import 'message_bubble.dart';
 import 'message_image.dart';
