@@ -1,3 +1,4 @@
+import logging
 from pymongo import mongo_client, collection
 import pymongo
 from app.config import settings
@@ -14,15 +15,18 @@ class MongoDB:
 
         try:
             conn = client.server_info()
-            print(f'Connected to MongoDB {conn.get("version")}')
+            logging.info('Connected to MongoDB %s', conn.get("version"))
         except Exception:
-            print("Unable to connect to the MongoDB server.")
+            logging.error("Unable to connect to the MongoDB server.")
 
         db = client[settings.MONGO_INITDB_DATABASE]
 
         self.REQUEST = db.requests
-        self.REQUEST.create_index([("sender", pymongo.ASCENDING), ("receiver", pymongo.ASCENDING)], unique=True)
-        
+        self.REQUEST.create_index(
+            [("sender", pymongo.ASCENDING), ("receiver", pymongo.ASCENDING)],
+            unique=True,
+        )
+
         self.USER = db.users
         self.USER.create_index([("email", pymongo.ASCENDING)], unique=True)
         self.USER.create_index([("username", pymongo.ASCENDING)], unique=True)
