@@ -1,4 +1,3 @@
-import logging
 from pymongo import mongo_client, collection
 import pymongo
 from app.config import settings
@@ -15,9 +14,9 @@ class MongoDB:
 
         try:
             conn = client.server_info()
-            logging.info('Connected to MongoDB %s', conn.get("version"))
+            print('Connected to MongoDB %s', conn.get("version"))
         except Exception:
-            logging.error("Unable to connect to the MongoDB server.")
+            print("Unable to connect to the MongoDB server.")
 
         db = client[settings.MONGO_INITDB_DATABASE]
 

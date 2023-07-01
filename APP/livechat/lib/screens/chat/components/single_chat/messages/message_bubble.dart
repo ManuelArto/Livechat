@@ -1,16 +1,20 @@
-import 'package:livechat/models/chat/message.dart';
+import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
+import '../../../../../models/chat/messages/message.dart';
+
 class MessageBubble extends StatelessWidget {
   final Message message;
+  final TextContent content;  
   final String imageUrl;
   final bool isMe;
 
   const MessageBubble({
     required this.message,
+    required this.content,
     required this.isMe,
     required this.imageUrl,
     Key? key,
@@ -60,7 +64,7 @@ class MessageBubble extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    message.content!,
+                    content.get(),
                     style: TextStyle(
                       color: isMe ? Colors.white : Colors.black,
                     ),

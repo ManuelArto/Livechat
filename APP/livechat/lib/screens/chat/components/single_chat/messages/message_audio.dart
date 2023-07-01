@@ -1,179 +1,137 @@
 import 'dart:async';
 
-import 'package:livechat/models/chat/message.dart';
-import 'package:livechat/screens/chat/single_chat_screen.dart';
-import 'package:intl/intl.dart';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:livechat/models/chat/messages/content/audio_content.dart';
+
+import '../../../../../models/chat/messages/message.dart';
 
 class MessageAudio extends StatefulWidget {
   final Message message;
+  final AudioContent audio;
   final String imageUrl;
   final bool isMe;
-  final int duration;
 
   const MessageAudio({
     required this.message,
+    required this.audio,
     required this.isMe,
     required this.imageUrl,
-    required this.duration,
     Key? key,
   }) : super(key: key);
-
+  
   @override
-  State<MessageAudio> createState() => _MessageAudioState();
+  MessageAudioState createState() => MessageAudioState();
 }
 
-class _MessageAudioState extends State<MessageAudio> {
-  bool isPlay = false;
-  int progress = 0;
-  late Timer? timer;
+class MessageAudioState extends State<MessageAudio> {
+  late final AudioSource source;
+  final _audioPlayer = AudioPlayer();
+  late StreamSubscription<PlayerState> _playerStateChangedSubscription;
 
-  String _formatDuration(int seconds) {
-    final minutes = seconds ~/ 60;
-    final remainingSeconds = seconds % 60;
-    final formattedMinutes = minutes.toString();
-    final formattedSeconds = remainingSeconds.toString().padLeft(2, '0');
-    return '$formattedMinutes:$formattedSeconds';
-  }
+  late Future<Duration?> futureDuration;
 
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      if (isPlay && progress < widget.duration.toDouble()) {
-        setState(() {
-          progress += 1;
-        });
-      } else if (isPlay) {
-        setState(() {
-          progress = 0;
-          isPlay = false;
-        });
-      }
-    });
+    source = AudioSource.uri(Uri.parse(widget.audio.get().path));
+
+    _playerStateChangedSubscription =
+        _audioPlayer.playerStateStream.listen(playerStateListener);
+
+    futureDuration = _audioPlayer.setAudioSource(source);
+  }
+
+  void playerStateListener(PlayerState state) async {
+    if (state.processingState == ProcessingState.completed) {
+      await reset();
+    }
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    _playerStateChangedSubscription.cancel();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment:
-          widget.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.5),
-              decoration: BoxDecoration(
-                color: widget.isMe ? Colors.green : Colors.grey[300],
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(20),
-                  topRight: const Radius.circular(20),
-                  bottomLeft: !widget.isMe
-                      ? const Radius.circular(0)
-                      : const Radius.circular(20),
-                  bottomRight: widget.isMe
-                      ? const Radius.circular(0)
-                      : const Radius.circular(20),
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              child: Column(
-                crossAxisAlignment: widget.isMe
-                    ? CrossAxisAlignment.end
-                    : CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    alignment:
-                        widget.isMe ? Alignment.topRight : Alignment.topLeft,
-                    child: Text(
-                      widget.message.sender!,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: widget.isMe ? Colors.black : Colors.grey[900],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: isPlay
-                              ? IconButton(
-                                  icon: const Icon(Icons.pause),
-                                  onPressed: () {
-                                    setState(() {
-                                      isPlay = false;
-                                    });
-                                  },
-                                )
-                              : IconButton(
-                                  icon: const Icon(Icons.play_arrow),
-                                  onPressed: () {
-                                    setState(() {
-                                      isPlay = true;
-                                    });
-                                  },
-                                ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 18,
-                        child: Slider(
-                          activeColor: Colors.blueAccent,
-                          inactiveColor: Theme.of(context).secondaryHeaderColor,
-                          value: progress.toDouble(),
-                          min: 0.0,
-                          max: widget.duration.toDouble(),
-                          onChanged: (value) {
-                            setState(() {
-                              progress = value.toInt();
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text('${_formatDuration(progress)} / ${_formatDuration(widget.duration)}'),
-                ],
-              ),
-            ),
-            Positioned(
-              top: -5,
-              right: widget.isMe ? null : -10,
-              left: widget.isMe ? -10 : null,
-              child: GestureDetector(
-                onTap: widget.isMe
-                    ? () {}
-                    : () => Navigator.of(context, rootNavigator: false)
-                        .pushReplacementNamed(SingleChatScreen.routeName,
-                            arguments: widget.message.sender),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(widget.imageUrl),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(DateFormat("jm").format(widget.message.time!)),
-        ),
-      ],
+    return FutureBuilder<Duration?>(
+      future: futureDuration,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _controlButtons(),
+              _slider(snapshot.data),
+            ],
+          );
+        }
+        return const CircularProgressIndicator();
+      },
     );
+  }
+
+  Widget _controlButtons() {
+    return StreamBuilder<bool>(
+      stream: _audioPlayer.playingStream,
+      builder: (context, _) {
+        final color =
+            _audioPlayer.playerState.playing ? Colors.red : Colors.blue;
+        final icon =
+            _audioPlayer.playerState.playing ? Icons.pause : Icons.play_arrow;
+        return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: GestureDetector(
+            onTap: () {
+              if (_audioPlayer.playerState.playing) {
+                pause();
+              } else {
+                play();
+              }
+            },
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: Icon(icon, color: color, size: 30),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _slider(Duration? duration) {
+    return StreamBuilder<Duration>(
+      stream: _audioPlayer.positionStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && duration != null) {
+          return CupertinoSlider(
+            value: snapshot.data!.inMicroseconds / duration.inMicroseconds,
+            onChanged: (val) {
+              _audioPlayer.seek(duration * val);
+            },
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  Future<void> play() {
+    return _audioPlayer.play();
+  }
+
+  Future<void> pause() {
+    return _audioPlayer.pause();
+  }
+
+  Future<void> reset() async {
+    await _audioPlayer.stop();
+    return _audioPlayer.seek(const Duration(milliseconds: 0));
   }
 }

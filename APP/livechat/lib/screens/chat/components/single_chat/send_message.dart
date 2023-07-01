@@ -51,23 +51,32 @@ class SendMessageState extends State<SendMessage> {
   bool _hasRecorded = false;
   int _seconds = 0;
   Timer? _timer;
+  File? audio;
 
   void _recordingStartedCallback() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() => _seconds++);
     });
-    setState(() => _hasRecorded = true);
   }
 
   void _recordingFinishedCallback(String path) {
+    setState(() => _hasRecorded = true);
     _timer?.cancel();
-    // setState(() => _isRecording = false);
 
     final uri = Uri.parse(path);
-    File file = File(uri.path);
-    file.length().then(
-          (fileSize) {},
-        );
+    audio = File(uri.path);
+  }
+
+  void _cleanAudio() {
+    setState(() {
+      _hasRecorded = false;
+      _seconds = 0;
+    });
+  }
+
+  void _sendAudio() {
+    socketProvider.sendAudio(audio!, widget.chatName);
+    _cleanAudio();
   }
 
   @override
@@ -91,7 +100,7 @@ class SendMessageState extends State<SendMessage> {
               enableSuggestions: true,
               controller: _controller,
               decoration: InputDecoration(
-                labelText: _hasRecorded
+                labelText: _hasRecorded || (_timer?.isActive ?? false)
                     ? _formatDuration(_seconds)
                     : "Type a message...",
                 labelStyle: const TextStyle(color: Colors.black),
@@ -100,7 +109,7 @@ class SendMessageState extends State<SendMessage> {
               ),
               maxLines: null,
               onChanged: (value) => setState(() {}),
-              enabled: !_hasRecorded,
+              enabled: !(_hasRecorded || (_timer?.isActive ?? false)),
             ),
           ),
           if (_hasRecorded)
@@ -108,11 +117,7 @@ class SendMessageState extends State<SendMessage> {
               icon: const Icon(
                 Icons.delete,
               ),
-              onPressed: () =>
-                setState(() {
-                  _hasRecorded = false;
-                  _seconds = 0;
-                }),
+              onPressed: _cleanAudio,
             ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -121,14 +126,17 @@ class SendMessageState extends State<SendMessage> {
                 borderRadius: BorderRadius.circular(30.0),
                 color: Theme.of(context).colorScheme.secondary,
               ),
-              child: _controller.text.isNotEmpty || !(_timer?.isActive ?? true)
+              child: _controller.text.isNotEmpty || _hasRecorded
                   ? IconButton(
                       icon: Icon(
                         Icons.send,
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      onPressed:
-                          _controller.text.trim().isEmpty ? null : _sendMessage,
+                      onPressed: _hasRecorded
+                          ? _sendAudio
+                          : _controller.text.trim().isNotEmpty
+                              ? _sendMessage
+                              : null,
                     )
                   : RecordButton(
                       recordingStartedCallback: _recordingStartedCallback,

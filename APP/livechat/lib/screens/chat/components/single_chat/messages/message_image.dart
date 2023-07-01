@@ -1,11 +1,11 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:livechat/models/chat/message.dart';
 import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
+
+import '../../../../../models/chat/messages/message.dart';
 
 class MessageImage extends StatefulWidget {
   final Message message;

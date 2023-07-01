@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:livechat/models/chat/messages/content/audio_content.dart';
+import 'package:livechat/models/chat/messages/content/file_content.dart';
+import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/providers/sections_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/chat/chat.dart';
-import '../../../models/chat/message.dart';
+import '../../../models/chat/messages/content/content.dart';
+import '../../../models/chat/messages/message.dart';
 import '../../../providers/chat_provider.dart';
 import '../../../providers/friends_provider.dart';
 import '../single_chat_screen.dart';
@@ -29,8 +33,7 @@ class ChatsList extends StatelessWidget {
             itemCount: chats.length,
             itemBuilder: (context, index) {
               Chat chat = chats[index];
-              Message? lastMessage =
-                  chat.messages.isNotEmpty ? chat.messages.last : null;
+              Message? lastMessage = chat.messages.isNotEmpty ? chat.messages.last : null;
               String time = lastMessage?.time != null
                   ? DateFormat("jm").format(lastMessage!.time!)
                   : "";
@@ -83,7 +86,7 @@ class ChatsList extends StatelessWidget {
                           ? const TextStyle(fontWeight: FontWeight.bold)
                           : const TextStyle(fontStyle: FontStyle.italic),
                     ),
-                    subtitle: Text(lastMessage?.content ?? "No message"),
+                    subtitle: Text(getLastMessageContent(lastMessage)),
                     trailing: Text(time),
                   ),
                 ),
@@ -91,6 +94,19 @@ class ChatsList extends StatelessWidget {
             },
           );
   }
+
+  String getLastMessageContent(Message? lastMessage) {
+    if (lastMessage == null || lastMessage.content == null) return "No message";
+    
+    Content content = lastMessage.content!;
+
+    if (content is TextContent) return content.get();
+    if (content is AudioContent) return "Audio received";
+    if (content is FileContent) return "File received";
+
+    return "";
+  }
+
 
   Future<List<String>?> _selectSectionsDialog(BuildContext context, Chat chat) async {
     Size screenSize = MediaQuery.of(context).size;

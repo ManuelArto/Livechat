@@ -20,9 +20,9 @@ class RecordButtonState extends State<RecordButton> {
   final _audioRecorder = Record();
 
   Future<void> _start() async {
-    widget.recordingStartedCallback();
     try {
       if (await _audioRecorder.hasPermission()) {
+        widget.recordingStartedCallback();
         await _audioRecorder.start();
 
         bool isRecording = await _audioRecorder.isRecording();
