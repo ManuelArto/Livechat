@@ -1,5 +1,3 @@
-import 'package:livechat/models/chat/messages/content/text_content.dart';
-import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
