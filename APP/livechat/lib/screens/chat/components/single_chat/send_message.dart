@@ -38,6 +38,8 @@ class SendMessageState extends State<SendMessage> {
     setState(() => _controller.text = "");
   }
 
+  // FILE ? IMAGER\
+
   void _selectFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {

@@ -1,14 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/chat.dart';
 import 'package:livechat/database/isar_service.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/auth/auth_user.dart';
-import '../models/chat/messages/content/audio_content.dart';
+import '../models/chat/messages/content/content.dart';
 import '../models/chat/messages/message.dart';
-import '../models/chat/messages/content/text_content.dart';
 
 class ChatProvider with ChangeNotifier {
   AuthUser? authUser;
@@ -49,27 +46,13 @@ class ChatProvider with ChangeNotifier {
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
   }
 
-  void addTextMessage(String message, String sender, String chatName) {
+  void addMessage(Content content, String sender, String chatName) {
     Message newMessage = Message(
       sender: sender,
       time: DateTime.now(),
       id: const Uuid().v1(),
-      content: TextContent(content: message),
+      content: content,
     );
-    addMessage(newMessage, chatName);
-  }
-
-  void addAudioMessage(File audio, String sender, String chatName) {
-    Message newMessage = Message(
-      sender: sender,
-      time: DateTime.now(),
-      id: const Uuid().v1(),
-      content: AudioContent(audio: audio),
-    );
-    addMessage(newMessage, chatName);
-  }
-
-  void addMessage(Message newMessage, String chatName) {
     _chats[chatName]?.messages.add(newMessage);
 
     if (currentChat != chatName) _chats[chatName]?.toRead += 1;

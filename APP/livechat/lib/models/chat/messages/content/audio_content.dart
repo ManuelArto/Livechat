@@ -4,21 +4,21 @@ import 'dart:io';
 import 'content.dart';
 
 class AudioContent implements Content<File> {
-  File audio;
-  String get audioString => base64Encode(audio.readAsBytesSync());
+  File content;
+  String get audioString => base64Encode(content.readAsBytesSync());
 
-  AudioContent({required this.audio});
+  AudioContent({required this.content});
 
   @override
   ContentType type = ContentType.audio;
   
   @override
-  File get() => audio;
+  File get() => content;
 
   @override
-  Map<String, dynamic> toJson() => {"content": audio.uri, "type": type};
+  Map<String, dynamic> toJson() => {"content": content.uri, "type": type};
 
   factory AudioContent.fromJson(Map<String, dynamic> json) => AudioContent(
-        audio: File.fromUri(Uri.parse(json["content"])),
+        content: File.fromUri(Uri.parse(json["content"])),
       );
 }

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:livechat/models/chat/messages/content/audio_content.dart';
+import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/providers/friends_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -51,7 +53,7 @@ class SocketProvider with ChangeNotifier {
     });
 
     _socketIO?.emit("send_audio", data);
-    chatProvider.addAudioMessage(audio, authUser.username, receiver);
+    chatProvider.addMessage(AudioContent(content: audio) , authUser.username, receiver);
   }
 
   void sendMessage(String message, String receiver) {
@@ -62,7 +64,7 @@ class SocketProvider with ChangeNotifier {
     });
 
     _socketIO?.emit("send_message", data);
-    chatProvider.addTextMessage(message, authUser.username, receiver);
+    chatProvider.addMessage(TextContent(content: message), authUser.username, receiver);
   }
 
   // PRIVATE METHODS
@@ -111,8 +113,8 @@ class SocketProvider with ChangeNotifier {
 
     if (jsonData["sender"] == authUser.username) return;
 
-    chatProvider.addTextMessage(
-      jsonData["message"],
+    chatProvider.addMessage(
+      TextContent(content: jsonData["message"]),
       jsonData["sender"],
       authUser.username == jsonData["receiver"]
           ? jsonData["sender"]
@@ -131,8 +133,8 @@ class SocketProvider with ChangeNotifier {
         .create(recursive: true);
     await audio.writeAsBytes(base64Decode(jsonData["audio"]));
 
-    chatProvider.addAudioMessage(
-      audio,
+    chatProvider.addMessage(
+      AudioContent(content: audio),
       jsonData["sender"],
       authUser.username == jsonData["receiver"]
           ? jsonData["sender"]
