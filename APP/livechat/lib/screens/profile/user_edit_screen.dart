@@ -38,108 +38,61 @@ class _UserEditScreenState extends State<UserEditScreen> {
               ),
               const SizedBox(height: 15),
               Center(
-                child: Stack(children: [
-                  Container(
-                    width: 130,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 4,
-                          color: Theme.of(context).scaffoldBackgroundColor),
-                      boxShadow: [
-                        BoxShadow(
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                            color: Colors.black.withOpacity(0.1),
-                            offset: const Offset(0, 10))
-                      ],
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(authUser.imageUrl)),
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                        boxShadow: [
+                          BoxShadow(
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              color: Colors.black.withOpacity(0.1),
+                              offset: const Offset(0, 10))
+                        ],
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(authUser.imageUrl)),
+                      ),
                     ),
-                  ),
-                  Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              width: 4,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                            color: Colors.blueAccent),
-                        child: IconButton(
-                          alignment: Alignment.center,
-                          iconSize: 15,
-                          icon: const Icon(Icons.edit),
-                          color: Colors.white,
-                          onPressed: () {}, // TODO: modifica immagine
-                        ),
-                      ))
-                ]),
+                    // Positioned(
+                    //   bottom: 0,
+                    //   right: 0,
+                    //   child: Container(
+                    //     height: 40,
+                    //     width: 40,
+                    //     decoration: BoxDecoration(
+                    //         shape: BoxShape.circle,
+                    //         border: Border.all(
+                    //           width: 4,
+                    //           color: Theme.of(context).scaffoldBackgroundColor,
+                    //         ),
+                    //         color: Colors.blueAccent),
+                    //     child: IconButton(
+                    //       alignment: Alignment.center,
+                    //       iconSize: 15,
+                    //       icon: const Icon(Icons.edit),
+                    //       color: Colors.white,
+                    //       onPressed: () {}, // TODO: modifica immagine
+                    //     ),
+                    //   ),
+                    // )
+                  ],
+                ),
               ),
               const SizedBox(height: 35),
               buildTextField("Username", authUser.username, false, false),
-              buildTextField("Phone Number", authUser.phoneNumber, false, false),
+              buildTextField(
+                  "Phone Number", authUser.phoneNumber, false, false),
               buildTextField("Email", authUser.email, false, false),
-              buildTextField("New Password", "********", false, true),
-              buildTextField("Confirm Password", "********", false, true),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: SizedBox(
-                      width: 120,
-                      height: 50,
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: const Text(
-                          "CANCEL",
-                          style: TextStyle(
-                            fontSize: 16,
-                            letterSpacing: 2.2,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: SizedBox(
-                      width: 120,
-                      height: 50,
-                      child: TextButton(
-                        onPressed: () {}, // TODO: salva nuove info
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: const Text(
-                          "SAVE",
-                          style: TextStyle(
-                            fontSize: 16,
-                            letterSpacing: 2.2,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // buildTextField("New Password", "********", false, true),
+              // buildTextField("Confirm Password", "********", false, true),
+              // _buildbuttons(),
             ],
           ),
         ),
@@ -147,13 +100,12 @@ class _UserEditScreenState extends State<UserEditScreen> {
     );
   }
 
-  Widget buildTextField(
-      String labelText, String placeholder, bool isDate, bool isPassword) {
+  Widget buildTextField( String labelText, String placeholder, bool isDate, bool isPassword) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
+        enabled: false,
         obscureText: isPassword ? showPassword : false,
-        onTap: () {},
         decoration: InputDecoration(
           suffixIcon: isPassword
               ? IconButton(
@@ -179,6 +131,61 @@ class _UserEditScreenState extends State<UserEditScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Row _buildbuttons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SizedBox(
+            width: 120,
+            height: 50,
+            child: OutlinedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: const Text(
+                "CANCEL",
+                style: TextStyle(
+                  fontSize: 16,
+                  letterSpacing: 2.2,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SizedBox(
+            width: 120,
+            height: 50,
+            child: TextButton(
+              onPressed: () {}, // TODO: salva nuove info
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: const Text(
+                "SAVE",
+                style: TextStyle(
+                  fontSize: 16,
+                  letterSpacing: 2.2,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
