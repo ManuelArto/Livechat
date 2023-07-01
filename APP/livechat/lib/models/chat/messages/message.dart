@@ -2,10 +2,7 @@ import 'dart:convert';
 
 import 'package:isar/isar.dart';
 
-import 'content/audio_content.dart';
 import 'content/content.dart';
-import 'content/file_content.dart';
-import 'content/text_content.dart';
 
 part 'message.g.dart';
 
@@ -26,21 +23,7 @@ class Message<T extends Content> {
     } else if (contentString != null) {
       // Loading a message from memory
       Map<String, dynamic> contentMap = json.decode(contentString!);
-      content = _createContentInstance(contentMap);
-    }
-  }
-
-  ContentType findContentType(String type) => ContentType.values.firstWhere((e) => e.toString() == type);
-
-  T _createContentInstance(Map<String, dynamic> json) {
-    ContentType contentType = findContentType(json['type']);
-    switch (contentType) {
-      case ContentType.text:
-        return TextContent.fromJson(json) as T;
-      case ContentType.audio:
-        return AudioContent.fromJson(json) as T;
-      case ContentType.file:
-        return FileContent.fromJson(json) as T;
+      content = Content.createContentInstanceFromJson<T>(contentMap);
     }
   }
 }

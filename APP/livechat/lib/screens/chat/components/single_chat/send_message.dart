@@ -34,11 +34,11 @@ class SendMessageState extends State<SendMessage> {
   }
 
   void _sendMessage() {
-    socketProvider.sendMessage(_controller.text, widget.chatName);
+    socketProvider.sendMessage(_controller.text, "text", widget.chatName);
     setState(() => _controller.text = "");
   }
 
-  // FILE ? IMAGER\
+  // FILE ? IMAGE
 
   void _selectFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -77,7 +77,7 @@ class SendMessageState extends State<SendMessage> {
   }
 
   void _sendAudio() {
-    socketProvider.sendAudio(audio!, widget.chatName);
+    socketProvider.sendMessage(audio!, "audio", widget.chatName);
     _cleanAudio();
   }
 

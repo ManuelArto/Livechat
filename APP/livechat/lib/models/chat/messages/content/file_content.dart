@@ -4,21 +4,21 @@ import 'dart:io';
 import 'content.dart';
 
 class FileContent implements Content<File> {
-  File file;
-  String get fileString => base64Encode(file.readAsBytesSync());
+  File content;
+  String get fileString => base64Encode(content.readAsBytesSync());
 
-  FileContent({required this.file});
+  FileContent({required this.content});
 
   @override
   ContentType type = ContentType.file;
 
   @override
-  File get() => file;
+  File get() => content;
 
   @override
-  Map<String, dynamic> toJson() => {"content": file.uri, "type": type};
+  Map<String, dynamic> toJson() => {"content": content.uri, "type": type};
 
   factory FileContent.fromJson(Map<String, dynamic> json) => FileContent(
-        file: File.fromUri(json["content"]),
+        content: File.fromUri(Uri.parse(json["content"])),
       );
 }

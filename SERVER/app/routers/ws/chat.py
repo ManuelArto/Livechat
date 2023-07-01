@@ -53,27 +53,10 @@ async def handle_msg(sid, input_data):
 
     data = {
         "sender": username,
-        "receiver": body["receiver"],
-        "message": body["message"],
+        **body
     }
 
     await sio_server.emit("receive_message", data=data, room=data["receiver"])
-
-
-@sio_server.on("send_audio")
-async def handle_audio(sid, input_data):
-    print("WEBSOCKET: [MESSAGE_AUDIO] %s", input_data)
-    username = (await sio_server.get_session(sid))["username"]
-
-    body = json.loads(input_data)
-
-    data = {
-        "sender": username,
-        "receiver": body["receiver"],
-        "audio": body["audio"],
-    }
-
-    await sio_server.emit("receive_audio", data=data, room=data["receiver"])
 
 
 def data_from_token(token) -> tuple[str, str]:

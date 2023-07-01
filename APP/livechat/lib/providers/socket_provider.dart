@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:livechat/models/chat/messages/content/audio_content.dart';
 import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/providers/friends_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart';
-import 'package:uuid/uuid.dart';
 
+import '../models/chat/messages/content/content.dart';
 import 'auth_provider.dart';
 import 'chat_provider.dart';
 import '../constants.dart';
@@ -45,26 +44,21 @@ class SocketProvider with ChangeNotifier {
     _initListeners();
   }
 
-  void sendAudio(File audio, String receiver) {
-    debugPrint("Sending audio to $receiver");
-    final data = json.encode({
-      "audio": base64Encode(audio.readAsBytesSync()),
-      "receiver": receiver,
-    });
-
-    _socketIO?.emit("send_audio", data);
-    chatProvider.addMessage(AudioContent(content: audio) , authUser.username, receiver);
-  }
-
-  void sendMessage(String message, String receiver) {
+  void sendMessage(dynamic message, String type, String receiver) {
     debugPrint("Sending $message to $receiver");
     final data = json.encode({
-      "message": message,
+      "message": type == "text" ? message : base64Encode(message.readAsBytesSync()),
       "receiver": receiver,
+      "type": type,
+      if (type != "text") "filename": (message as File).path.split('/').last
     });
 
     _socketIO?.emit("send_message", data);
-    chatProvider.addMessage(TextContent(content: message), authUser.username, receiver);
+    chatProvider.addMessage(
+      Content.createContentInstance(type, message),
+      authUser.username,
+      receiver,
+    );
   }
 
   // PRIVATE METHODS
@@ -81,7 +75,6 @@ class SocketProvider with ChangeNotifier {
     _socketIO?.on("friend_deleted", _deleteFriend);
     // CHAT
     _socketIO?.on('receive_message', _receiveMessage);
-    _socketIO?.on('receive_audio', _receiveAudio);
   }
 
   void _userConnected(jsonData) {
@@ -108,13 +101,17 @@ class SocketProvider with ChangeNotifier {
     friendsProvider.deleteFriend(jsonData["id"]);
   }
 
-  void _receiveMessage(jsonData) {
+  void _receiveMessage(jsonData) async {
     debugPrint("RECEIVED MESSAGE $jsonData");
 
     if (jsonData["sender"] == authUser.username) return;
 
+    Content content = jsonData["type"] == "text"
+        ? TextContent(content: jsonData["message"])
+        : await _saveAndCreateFileMessage(jsonData);
+
     chatProvider.addMessage(
-      TextContent(content: jsonData["message"]),
+      content,
       jsonData["sender"],
       authUser.username == jsonData["receiver"]
           ? jsonData["sender"]
@@ -122,23 +119,16 @@ class SocketProvider with ChangeNotifier {
     );
   }
 
-  void _receiveAudio(jsonData) async {
-    debugPrint("RECEIVED AUDIO $jsonData");
-
-    if (jsonData["sender"] == authUser.username) return;
+  Future<Content> _saveAndCreateFileMessage(jsonData) async {
+    String type = jsonData["type"];
+    String filename = "${jsonData["sender"]}_${jsonData["filename"]}";
 
     final directory = await getApplicationDocumentsDirectory();
-    final audio = await File(
-            '${directory.path}/media/audio/${jsonData["sender"]}_${const Uuid().v1()}.m4a')
-        .create(recursive: true);
-    await audio.writeAsBytes(base64Decode(jsonData["audio"]));
+    final file = await File(
+      '${directory.path}/media/$type/$filename',
+    ).create(recursive: true);
+    await file.writeAsBytes(base64Decode(jsonData["message"]));
 
-    chatProvider.addMessage(
-      AudioContent(content: audio),
-      jsonData["sender"],
-      authUser.username == jsonData["receiver"]
-          ? jsonData["sender"]
-          : jsonData["receiver"],
-    );
+    return Content.createContentInstance(type, file);
   }
 }

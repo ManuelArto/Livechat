@@ -96,10 +96,10 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
         selectedLeadingIcon: Icon(Icons.person_pin_rounded),
         tab: FriendsTab(),
       ),
-      TabItem(
+      const TabItem(
         onTap: null,
-        title: const Text("Suggested"),
-        selectedLeadingIcon: const Icon(Icons.emoji_people),
+        title: Text("Suggested"),
+        selectedLeadingIcon: Icon(Icons.emoji_people),
         tab: SuggestedFriendsTab(),
       ),
       const TabItem(
