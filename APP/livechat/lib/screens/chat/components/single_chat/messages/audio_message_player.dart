@@ -5,27 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:livechat/models/chat/messages/content/audio_content.dart';
 
-import '../../../../../models/chat/messages/message.dart';
-
-class MessageAudio extends StatefulWidget {
-  final Message message;
+class AudioMessagePlayer extends StatefulWidget {
   final AudioContent audio;
-  final String imageUrl;
-  final bool isMe;
 
-  const MessageAudio({
-    required this.message,
+  const AudioMessagePlayer({
     required this.audio,
-    required this.isMe,
-    required this.imageUrl,
     Key? key,
   }) : super(key: key);
   
   @override
-  MessageAudioState createState() => MessageAudioState();
+  AudioMessagePlayerState createState() => AudioMessagePlayerState();
 }
 
-class MessageAudioState extends State<MessageAudio> {
+class AudioMessagePlayerState extends State<AudioMessagePlayer> {
   late final AudioSource source;
   final _audioPlayer = AudioPlayer();
   late StreamSubscription<PlayerState> _playerStateChangedSubscription;
