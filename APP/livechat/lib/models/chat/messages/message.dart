@@ -21,8 +21,10 @@ class Message<T extends Content> {
 
   Message({this.id, this.sender, this.time, this.content, this.contentString}) {
     if (content != null) {
+      // Adding a new message
       contentString = json.encode(content?.toJson(), toEncodable: (c) => c.toString());
     } else if (contentString != null) {
+      // Loading a message from memory
       Map<String, dynamic> contentMap = json.decode(contentString!);
       content = _createContentInstance(contentMap);
     }
