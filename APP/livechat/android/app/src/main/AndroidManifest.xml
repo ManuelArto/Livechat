@@ -2,6 +2,7 @@
     package="com.example.livechat">
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
    <application
         android:label="livechat"
         android:name="${applicationName}"
