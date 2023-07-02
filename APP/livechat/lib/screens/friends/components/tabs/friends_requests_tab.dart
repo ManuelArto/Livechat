@@ -47,17 +47,21 @@ class _FriendsRequestsTabState extends State<FriendsRequestsTab> {
                       ),
                       GestureDetector(
                         onTap: () => _showBottomModal(context, theme),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Sended",
-                              style: TextStyle(
-                                fontSize: theme.textTheme.bodyMedium!.fontSize,
-                                fontWeight: FontWeight.bold,
+                        behavior: HitTestBehavior.translucent,
+                        child: Container(
+                          margin: const EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Sended",
+                                style: TextStyle(
+                                  fontSize: theme.textTheme.bodyMedium!.fontSize,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const Icon(Icons.arrow_forward_ios_sharp, size: 14),
-                          ],
+                              const Icon(Icons.arrow_forward_ios_sharp, size: 14),
+                            ],
+                          ),
                         ),
                       ),
                     ],
