@@ -1,18 +1,20 @@
-import 'package:livechat/models/chat/message.dart';
-import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
+
+import '../../../../../models/chat/messages/message.dart';
 
 class MessageBubble extends StatelessWidget {
   final Message message;
   final String imageUrl;
   final bool isMe;
+  final Widget messageWidget;
 
   const MessageBubble({
     required this.message,
     required this.isMe,
     required this.imageUrl,
+    required this.messageWidget,
     Key? key,
   }) : super(key: key);
 
@@ -26,8 +28,6 @@ class MessageBubble extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
-              constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.5),
               decoration: BoxDecoration(
                 color: isMe ? Colors.green : Colors.grey[300],
                 borderRadius: BorderRadius.only(
@@ -59,13 +59,7 @@ class MessageBubble extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    message.content!,
-                    style: TextStyle(
-                      color: isMe ? Colors.white : Colors.black,
-                    ),
-                    textAlign: TextAlign.justify,
-                  ),
+                  messageWidget,
                 ],
               ),
             ),
@@ -73,15 +67,8 @@ class MessageBubble extends StatelessWidget {
               top: -5,
               right: isMe ? null : -10,
               left: isMe ? -10 : null,
-              child: GestureDetector(
-                onTap: isMe
-                    ? () {}
-                    : () => Navigator.of(context, rootNavigator: false)
-                        .pushReplacementNamed(SingleChatScreen.routeName,
-                            arguments: message.sender),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(imageUrl),
-                ),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(imageUrl),
               ),
             ),
           ],

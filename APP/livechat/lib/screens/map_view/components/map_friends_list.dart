@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:livechat/widgets/custom_search_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../../../models/friend.dart';
+import '../../../providers/friends_provider.dart';
+
+class MapFriendsList extends StatefulWidget {
+  const MapFriendsList({
+    super.key,
+    required this.mapController,
+    required this.panelController,
+  });
+
+  
+  final MapController mapController;
+  final PanelController panelController;
+
+  @override
+  State<MapFriendsList> createState() => _MapFriendsListState();
+}
+
+class _MapFriendsListState extends State<MapFriendsList> {
+  String _searchingString = "";
+  final TextEditingController _searchController = TextEditingController();
+
+  late FriendsProvider _friendsProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(
+      () => setState(() => _searchingString = _searchController.text),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _friendsProvider = Provider.of<FriendsProvider>(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          const Text(
+            'Friends',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Divider(thickness: 1),
+          CustomSearchBar(
+            text: "Find a friends",
+            searchController: _searchController,
+          ),
+          Expanded(
+            child: _buildUsersTile(),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUsersTile() {
+    List<Friend> friendsFiltered = _friendsProvider.friends
+        .where(
+          (friends) => friends.username
+              .toLowerCase()
+              .contains(_searchingString.toLowerCase()),
+        )
+        .toList();
+
+    return ListView.separated(
+      separatorBuilder: (context, index) => const Divider(),
+      itemCount: friendsFiltered.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(friendsFiltered[index].username),
+          subtitle: Text('Steps: 100'),
+          leading: CircleAvatar(
+            backgroundImage: NetworkImage(friendsFiltered[index].imageUrl),
+          ),
+          onTap: () {
+              final LatLng friendLocation = LatLng(44.546082, 11.193692);
+              widget.mapController.move(friendLocation, 13.0);
+              widget.panelController.close();
+          },
+        );
+      },
+    );
+  }
+}

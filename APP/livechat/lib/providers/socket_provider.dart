@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/providers/friends_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
+import '../models/chat/messages/content/content.dart';
 import 'auth_provider.dart';
 import 'chat_provider.dart';
 import '../constants.dart';
@@ -28,27 +32,33 @@ class SocketProvider with ChangeNotifier {
   }
 
   void init() {
-    _socketIO = io(SERVER_URL,
-      OptionBuilder()
-          .setTransports(['websocket', 'polling'])
-          .setAuth({"x-access-token": authUser.token})
-          .enableForceNew()
-          // .enableReconnection()
-          .build()
-    );
+    _socketIO = io(
+        SERVER_URL,
+        OptionBuilder()
+            .setTransports(['websocket', 'polling'])
+            .setAuth({"x-access-token": authUser.token})
+            .enableForceNew()
+            // .enableReconnection()
+            .build());
 
     _initListeners();
   }
-  
-  void sendMessage(String message, String receiver) {
+
+  void sendMessage(dynamic message, String type, String receiver) {
     debugPrint("Sending $message to $receiver");
     final data = json.encode({
-      "message": message,
+      "message": type == "text" ? message : base64Encode(message.readAsBytesSync()),
       "receiver": receiver,
+      "type": type,
+      if (type != "text") "filename": (message as File).path.split('/').last
     });
 
     _socketIO?.emit("send_message", data);
-    chatProvider.addMessage(message, authUser.username, receiver);
+    chatProvider.addMessage(
+      Content.createContentInstance(type, message),
+      authUser.username,
+      receiver,
+    );
   }
 
   // PRIVATE METHODS
@@ -68,7 +78,8 @@ class SocketProvider with ChangeNotifier {
   }
 
   void _userConnected(jsonData) {
-    (jsonData as List<dynamic>).removeWhere((friend) => friend == authUser.username);
+    (jsonData as List<dynamic>)
+        .removeWhere((friend) => friend == authUser.username);
 
     debugPrint("UPDATE ONLINE USERS");
     friendsProvider.updateOnlineFriends(jsonData);
@@ -77,7 +88,7 @@ class SocketProvider with ChangeNotifier {
   void _userDisconnected(jsonData) {
     debugPrint("${jsonData['username']} DISCONNECTED");
     if (jsonData["username"] == authUser.username) return;
-    
+
     friendsProvider.userDisconnected(jsonData["username"]);
   }
 
@@ -90,13 +101,15 @@ class SocketProvider with ChangeNotifier {
     friendsProvider.deleteFriend(jsonData["id"]);
   }
 
-  void _receiveMessage(jsonData) {
-    debugPrint("RECEIVED MESSAGE $jsonData");
-    
+  void _receiveMessage(jsonData) async {
     if (jsonData["sender"] == authUser.username) return;
 
+    Content content = jsonData["type"] == "text"
+        ? TextContent(content: jsonData["message"])
+        : await _saveAndCreateFileMessage(jsonData);
+
     chatProvider.addMessage(
-      jsonData["message"],
+      content,
       jsonData["sender"],
       authUser.username == jsonData["receiver"]
           ? jsonData["sender"]
@@ -104,4 +117,16 @@ class SocketProvider with ChangeNotifier {
     );
   }
 
+  Future<Content> _saveAndCreateFileMessage(jsonData) async {
+    String type = jsonData["type"];
+    String filename = "${jsonData["sender"]}_${jsonData["filename"]}";
+
+    final directory = await getApplicationDocumentsDirectory();
+    final file = await File(
+      '${directory.path}/media/$type/$filename',
+    ).create(recursive: true);
+    await file.writeAsBytes(base64Decode(jsonData["message"]));
+
+    return Content.createContentInstance(type, file);
+  }
 }

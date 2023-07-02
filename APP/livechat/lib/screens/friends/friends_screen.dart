@@ -2,6 +2,7 @@ import 'package:floating_tabbar/Models/tab_item.dart';
 import 'package:floating_tabbar/floating_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:livechat/screens/friends/components/tabs/find_users_tab.dart';
+import 'package:livechat/widgets/custom_search_bar.dart';
 import 'package:livechat/widgets/top_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,8 @@ class FriendsScreen extends StatefulWidget {
   State<FriendsScreen> createState() => _FriendsScreenState();
 }
 
-class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveClientMixin {
+class _FriendsScreenState extends State<FriendsScreen>
+    with AutomaticKeepAliveClientMixin {
   String _searchString = "";
 
   final TextEditingController _searchController = TextEditingController();
@@ -49,26 +51,9 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            SearchBar(
-              hintText: "Find a new friend",
-              shape: MaterialStateProperty.all(
-                const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-              textStyle: MaterialStateProperty.all(
-                const TextStyle(backgroundColor: Colors.transparent),
-              ),
-              controller: _searchController,
-              leading: const Icon(Icons.search_rounded),
-              trailing: _searchController.text.isNotEmpty
-                  ? [
-                      IconButton(
-                        icon: const Icon(Icons.clear_rounded),
-                        onPressed: _searchController.clear
-                      ),
-                    ]
-                  : null,
+            CustomSearchBar(
+              text: "Find a new friend",
+              searchController: _searchController,
             ),
             if (_searchString.isEmpty) ...[
               ShareCard(user: user),
@@ -96,10 +81,10 @@ class _FriendsScreenState extends State<FriendsScreen> with AutomaticKeepAliveCl
         selectedLeadingIcon: Icon(Icons.person_pin_rounded),
         tab: FriendsTab(),
       ),
-      TabItem(
+      const TabItem(
         onTap: null,
-        title: const Text("Suggested"),
-        selectedLeadingIcon: const Icon(Icons.emoji_people),
+        title: Text("Suggested"),
+        selectedLeadingIcon: Icon(Icons.emoji_people),
         tab: SuggestedFriendsTab(),
       ),
       const TabItem(

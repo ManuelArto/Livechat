@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 
-import 'message.dart';
+import 'messages/message.dart';
 
 part 'chat.g.dart';
 

@@ -25,7 +25,7 @@ class FriendsProvider with ChangeNotifier {
   // FRIENDS
 
   void newFriend(Map<String, dynamic> data) {
-    authUser!.friends.add(Friend.fromJson(data)..isOnline = true);
+    authUser!.friends.add(Friend.fromJson(data));
     IsarService.instance.insertOrUpdate<AuthUser>(authUser!);
 
     notifyListeners();
@@ -38,6 +38,7 @@ class FriendsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: add usernameList to FriendsProvider anc check when add newFriend
   void updateOnlineFriends(List<dynamic> usernameList) {
     for (Friend friend in authUser!.friends) {
         friend.isOnline = usernameList.contains(friend.username);

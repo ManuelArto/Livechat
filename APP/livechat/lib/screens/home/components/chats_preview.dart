@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import '../../../models/auth/auth_user.dart';
 import '../../../models/chat/chat.dart';
-import '../../../models/chat/message.dart';
+import '../../../models/chat/messages/content/audio_content.dart';
+import '../../../models/chat/messages/content/content.dart';
+import '../../../models/chat/messages/content/file_content.dart';
+import '../../../models/chat/messages/content/text_content.dart';
+import '../../../models/chat/messages/message.dart';
 import '../../../providers/chat_provider.dart';
 import '../../../providers/navbar_notifier.dart';
 
@@ -72,7 +77,7 @@ class _ChatsPreviewState extends State<ChatsPreview> {
                               NetworkImage(widget.authUser.imageUrl),
                         ),
                         title: Text(chat.chatName),
-                        subtitle: Text(lastMessage?.content ?? "No message"),
+                        subtitle: Text(getLastMessageContent(lastMessage)),
                         trailing: Text(time),
                       ),
                       const Divider(thickness: 1),
@@ -91,5 +96,17 @@ class _ChatsPreviewState extends State<ChatsPreview> {
         ],
       ),
     );
+  }
+
+  String getLastMessageContent(Message? lastMessage) {
+    if (lastMessage == null || lastMessage.content == null) return "No message";
+    
+    Content content = lastMessage.content!;
+
+    if (content is TextContent) return content.get();
+    if (content is AudioContent) return "Audio received";
+    if (content is FileContent) return "File received";
+
+    return "";
   }
 }

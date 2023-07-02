@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:livechat/screens/map_view/components/map_friends_list.dart';
 import 'package:livechat/screens/map_view/components/reposition_button.dart';
-import 'package:provider/provider.dart';
-import '../../models/auth/auth_user.dart';
-import '../../providers/auth_provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../widgets/top_bar.dart';
-import 'components/ranking/bar_menu.dart';
 import 'components/map_wiget.dart';
 
 class MapViewScreen extends StatefulWidget {
@@ -62,28 +60,49 @@ class _MapViewScreenState extends State<MapViewScreen>
     Friends('silvia89', 1500, -33.9258, 18.4232,
         "https://media.gettyimages.com/id/1227937549/it/vettoriale/icona-avatar-volto-umano-profilo-per-social-network-donna-illustrazione-vettoriale.jpg?s=1024x1024&w=gi&k=20&c=wfIkutGuWLyhEG_qvrmva3BNu2UIayytf1_1bbtYDso="), // Cape Town
   ];
+
   final MapController _mapController = MapController();
+  final PanelController _panelController = PanelController();
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
-    AuthUser authUser = authProvider.authUser!;
     double userLat = 44.546082;
     double userLong = 11.193692;
     int steps = 11200;
-   
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: const TopBar(),
-      body: Stack(
-        children: [
-          MapWidget(mapController: _mapController, userLat: userLat, userLong: userLong, authUser: authUser, steps: steps, friendsOnMap: friendsOnMap),
-          BarMenu(mapController: _mapController, friendsOnMap: friendsOnMap),
-          RepositionButton(mapController: _mapController, userLat: userLat, userLong: userLong)
-        ],
+      body: SlidingUpPanel(
+        backdropEnabled: true,
+        controller: _panelController,
+        minHeight: 128,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40.0)),
+        body: Stack(
+          children: [
+            MapWidget(
+              mapController: _mapController,
+              userLat: userLat,
+              userLong: userLong,
+              steps: steps,
+              friendsOnMap: friendsOnMap,
+            ),
+            Positioned(
+              bottom: 240,
+              right: 0,
+              child: RepositionButton(
+                mapController: _mapController,
+                userLat: userLat,
+                userLong: userLong,
+              ),
+            )
+          ],
+        ),
+        panel: MapFriendsList(
+          mapController: _mapController,
+          panelController: _panelController,
+        ),
       ),
     );
   }

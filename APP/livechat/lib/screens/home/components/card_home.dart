@@ -6,12 +6,12 @@ import '../../../providers/navbar_notifier.dart';
 class CardHome extends StatefulWidget {
   const CardHome({
     Key? key,
-    required this.imgURL,
+    required this.imgPath,
     required this.nameCard,
     required this.description,
   }) : super(key: key);
 
-  final String imgURL;
+  final String imgPath;
   final String nameCard;
   final String description;
 
@@ -57,8 +57,8 @@ class _CardHomeState extends State<CardHome> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.network(
-                widget.imgURL,
+              Image.asset(
+                "assets/images/${widget.imgPath}",
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,

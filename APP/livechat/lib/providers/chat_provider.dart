@@ -4,7 +4,8 @@ import 'package:livechat/database/isar_service.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/auth/auth_user.dart';
-import '../models/chat/message.dart';
+import '../models/chat/messages/content/content.dart';
+import '../models/chat/messages/message.dart';
 
 class ChatProvider with ChangeNotifier {
   AuthUser? authUser;
@@ -45,14 +46,13 @@ class ChatProvider with ChangeNotifier {
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
   }
 
-  void addMessage(String message, String sender, String chatName) {
+  void addMessage(Content content, String sender, String chatName) {
     Message newMessage = Message(
-      content: message,
       sender: sender,
       time: DateTime.now(),
       id: const Uuid().v1(),
+      content: content,
     );
-
     _chats[chatName]?.messages.add(newMessage);
 
     if (currentChat != chatName) _chats[chatName]?.toRead += 1;
@@ -74,8 +74,7 @@ class ChatProvider with ChangeNotifier {
   }
 
   void _loadChatsFromMemory() async {
-    List<Chat> chatsList =
-        await IsarService.instance.getAll<Chat>(authUser!.isarId);
+    List<Chat> chatsList = await IsarService.instance.getAll<Chat>(authUser!.isarId);
     if (chatsList.isEmpty) {
       _chats = {
         for (var friend in authUser!.friends)
