@@ -14,7 +14,7 @@ class MongoDB:
 
         try:
             conn = client.server_info()
-            print('Connected to MongoDB %s', conn.get("version"))
+            print(f'Connected to MongoDB {conn.get("version")}')
         except Exception:
             print("Unable to connect to the MongoDB server.")
 
