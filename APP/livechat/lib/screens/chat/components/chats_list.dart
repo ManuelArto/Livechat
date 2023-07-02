@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:livechat/models/chat/messages/content/audio_content.dart';
 import 'package:livechat/models/chat/messages/content/file_content.dart';
+import 'package:livechat/models/chat/messages/content/image_content.dart';
 import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/providers/sections_provider.dart';
 import 'package:provider/provider.dart';
@@ -101,8 +102,9 @@ class ChatsList extends StatelessWidget {
     Content content = lastMessage.content!;
 
     if (content is TextContent) return content.get();
-    if (content is AudioContent) return "Audio received";
-    if (content is FileContent) return "File received";
+    if (content is AudioContent) return "Audio message";
+    if (content is FileContent) return "File message";
+    if (content is ImageContent) return "Media message";
 
     return "";
   }

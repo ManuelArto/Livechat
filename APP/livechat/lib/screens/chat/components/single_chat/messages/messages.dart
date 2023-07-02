@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/messages/content/audio_content.dart';
 import 'package:livechat/models/chat/messages/content/content.dart';
+import 'package:livechat/models/chat/messages/content/image_content.dart';
 import 'package:livechat/models/chat/messages/content/text_content.dart';
+import 'package:livechat/screens/chat/components/single_chat/messages/image_message.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../models/auth/auth_user.dart';
@@ -40,7 +42,8 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
     super.build(context);
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
-    final friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
+    final friendsProvider =
+        Provider.of<FriendsProvider>(context, listen: false);
     final chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages(widget.chatName);
 
@@ -67,20 +70,27 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildChildMessageWidget(Message<Content> message, bool isMe) {
-    return message.content is TextContent
-        ? Text(
-            message.content!.get(),
-            style: TextStyle(
-              color: isMe ? Colors.white : Colors.black,
-            ),
-            textAlign: TextAlign.justify,
-          )
-        : message.content is AudioContent
-            ? AudioMessagePlayer(
-                audio: message.content as AudioContent,
-                key: ValueKey(message.id),
-              )
-            : Container();
+    switch (message.content.runtimeType) {
+      case TextContent:
+        return Text(
+          message.content!.get(),
+          style: TextStyle(
+            color: isMe ? Colors.white : Colors.black,
+          ),
+          textAlign: TextAlign.justify,
+        );
+      case AudioContent:
+        return AudioMessagePlayer(
+          audio: message.content as AudioContent,
+          key: ValueKey(message.id),
+        );
+      case ImageContent:
+        return ImageMessage(image: message.content as ImageContent);
+      default:
+        throw UnsupportedError(
+          "Message content ${message.content.runtimeType} not supported",
+        );
+    }
   }
 
   @override

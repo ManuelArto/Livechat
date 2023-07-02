@@ -102,8 +102,6 @@ class SocketProvider with ChangeNotifier {
   }
 
   void _receiveMessage(jsonData) async {
-    debugPrint("RECEIVED MESSAGE $jsonData");
-
     if (jsonData["sender"] == authUser.username) return;
 
     Content content = jsonData["type"] == "text"

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:livechat/providers/auth_provider.dart';
 import 'package:livechat/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:livechat/screens/chat/components/single_chat/image_picker_button.dart';
 import 'package:livechat/screens/chat/components/single_chat/record_button.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,15 +39,8 @@ class SendMessageState extends State<SendMessage> {
     setState(() => _controller.text = "");
   }
 
-  // FILE ? IMAGE
-
-  void _selectFromGallery() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        attachment = File(pickedFile.path);
-      });
-    }
+  void _sendImage(File image) {
+    socketProvider.sendMessage(image, "image", widget.chatName);
   }
 
   // AUDIO
@@ -91,9 +85,10 @@ class SendMessageState extends State<SendMessage> {
       ),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.attach_file),
-            onPressed: _selectFromGallery,
+          ImagePickerButton(_sendImage),
+          GestureDetector(
+            onTap: () {},
+            child: const Icon(Icons.attach_file),
           ),
           Expanded(
             child: TextField(
