@@ -4,7 +4,7 @@ import 'package:livechat/screens/map_view/components/map_friends_list.dart';
 import 'package:livechat/screens/map_view/components/reposition_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../widgets/top_bar.dart';
-import 'components/map_wiget.dart';
+import 'components/map_widget.dart';
 
 class MapViewScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -77,7 +77,7 @@ class _MapViewScreenState extends State<MapViewScreen>
       body: SlidingUpPanel(
         backdropEnabled: true,
         controller: _panelController,
-        minHeight: 128,
+        minHeight: 48,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(40.0)),
         body: Stack(
           children: [
@@ -89,7 +89,7 @@ class _MapViewScreenState extends State<MapViewScreen>
               friendsOnMap: friendsOnMap,
             ),
             Positioned(
-              bottom: 240,
+              bottom: 150,
               right: 0,
               child: RepositionButton(
                 mapController: _mapController,
