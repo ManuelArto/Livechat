@@ -12,7 +12,7 @@ class AudioMessagePlayer extends StatefulWidget {
     required this.audio,
     Key? key,
   }) : super(key: key);
-  
+
   @override
   AudioMessagePlayerState createState() => AudioMessagePlayerState();
 }
@@ -101,11 +101,18 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
       stream: _audioPlayer.positionStream,
       builder: (context, snapshot) {
         if (snapshot.hasData && duration != null) {
-          return CupertinoSlider(
-            value: snapshot.data!.inMicroseconds / duration.inMicroseconds,
-            onChanged: (val) {
-              _audioPlayer.seek(duration * val);
-            },
+          return Row(
+            children: [
+              CupertinoSlider(
+                value: snapshot.data!.inMicroseconds / duration.inMicroseconds,
+                onChanged: (val) {
+                  _audioPlayer.seek(duration * val);
+                },
+              ),
+              Text(
+                "${_formatDuration(snapshot.data!.inSeconds)}/${_formatDuration(duration.inSeconds)}",
+              ),
+            ],
           );
         } else {
           return const SizedBox.shrink();
@@ -125,5 +132,13 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
   Future<void> reset() async {
     await _audioPlayer.stop();
     return _audioPlayer.seek(const Duration(milliseconds: 0));
+  }
+
+  String _formatDuration(int seconds) {
+    final minutes = seconds ~/ 60;
+    final remainingSeconds = seconds % 60;
+    final formattedMinutes = minutes.toString();
+    final formattedSeconds = remainingSeconds.toString().padLeft(2, '0');
+    return '$formattedMinutes:$formattedSeconds';
   }
 }
