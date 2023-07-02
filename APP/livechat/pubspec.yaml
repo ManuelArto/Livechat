@@ -54,6 +54,7 @@ dependencies:
   record: 4.4.4
   share_plus: ^4.0.3
   shared_preferences: ^2.1.0
+  sliding_up_panel: ^2.0.0+1
   smooth_page_indicator: ^1.1.0
   socket_io_client: ^2.0.2
   sqflite: ^2.2.8+1
