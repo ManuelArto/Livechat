@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:livechat/providers/auth_provider.dart';
 import 'package:livechat/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,15 @@ class SendMessageState extends State<SendMessage> {
 
   void _sendImage(File image) {
     socketProvider.sendMessage(image, "image", widget.chatName);
+  }
+
+  Future<void> _selectAndSendFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      socketProvider.sendMessage(file, "file", widget.chatName);
+    }
   }
 
   // AUDIO
@@ -87,7 +97,7 @@ class SendMessageState extends State<SendMessage> {
         children: [
           ImagePickerButton(_sendImage),
           GestureDetector(
-            onTap: () {},
+            onTap: _selectAndSendFile,
             child: const Icon(Icons.attach_file),
           ),
           Expanded(

@@ -7,11 +7,13 @@ import 'package:livechat/screens/chat/components/single_chat/messages/image_mess
 import 'package:provider/provider.dart';
 
 import '../../../../../models/auth/auth_user.dart';
+import '../../../../../models/chat/messages/content/file_content.dart';
 import '../../../../../models/chat/messages/message.dart';
 import '../../../../../providers/auth_provider.dart';
 import '../../../../../providers/chat_provider.dart';
 import '../../../../../providers/friends_provider.dart';
 import 'audio_message_player.dart';
+import 'file_message.dart';
 import 'message_bubble.dart';
 
 class Messages extends StatefulWidget {
@@ -29,6 +31,9 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
 
   _scrollToBottom() {
     _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
   }
 
   @override
@@ -86,6 +91,9 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
         );
       case ImageContent:
         return ImageMessage(image: message.content as ImageContent);
+      case FileContent:
+        return FileMessage(
+            file: message.content as FileContent, sender: widget.chatName);
       default:
         throw UnsupportedError(
           "Message content ${message.content.runtimeType} not supported",
