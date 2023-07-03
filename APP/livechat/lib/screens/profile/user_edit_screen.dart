@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:livechat/models/settings.dart';
+import 'package:livechat/providers/settings_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/auth/auth_user.dart';
@@ -13,11 +15,14 @@ class UserEditScreen extends StatefulWidget {
 }
 
 class _UserEditScreenState extends State<UserEditScreen> {
+  late final Settings _settings;
   bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
-    AuthUser authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
+    AuthUser authUser =
+        Provider.of<AuthProvider>(context, listen: false).authUser!;
+    _settings = Provider.of<SettingsProvider>(context).settings;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,13 +52,6 @@ class _UserEditScreenState extends State<UserEditScreen> {
                         border: Border.all(
                             width: 4,
                             color: Theme.of(context).scaffoldBackgroundColor),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                              color: Colors.black.withOpacity(0.1),
-                              offset: const Offset(0, 10))
-                        ],
                         shape: BoxShape.circle,
                         image: DecorationImage(
                             fit: BoxFit.cover,
@@ -100,7 +98,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
     );
   }
 
-  Widget buildTextField( String labelText, String placeholder, bool isDate, bool isPassword) {
+  Widget buildTextField(String labelText, String placeholder, bool isDate, bool isPassword) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
@@ -116,18 +114,21 @@ class _UserEditScreenState extends State<UserEditScreen> {
                   },
                   icon: const Icon(
                     Icons.remove_red_eye,
-                    color: Colors.grey,
                   ),
                 )
               : null,
-          contentPadding: const EdgeInsets.only(bottom: 3),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          contentPadding: const EdgeInsets.all(10),
           labelText: labelText,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           hintText: placeholder,
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: _settings.darkMode ? Colors.white : Colors.black,
           ),
         ),
       ),
