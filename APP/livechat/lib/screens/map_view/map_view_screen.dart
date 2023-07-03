@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:livechat/screens/map_view/components/map_friends_list.dart';
-import 'package:livechat/screens/map_view/components/reposition_button.dart';
+import 'package:livechat/providers/location_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../widgets/top_bar.dart';
+import 'components/map_friends_list.dart';
 import 'components/map_widget.dart';
+import 'components/reposition_button.dart';
 
 class MapViewScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -14,8 +16,7 @@ class MapViewScreen extends StatefulWidget {
   State<MapViewScreen> createState() => _MapViewScreenState();
 }
 
-class _MapViewScreenState extends State<MapViewScreen>
-    with AutomaticKeepAliveClientMixin {
+class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static List<Friends> friendsOnMap = [
@@ -67,42 +68,72 @@ class _MapViewScreenState extends State<MapViewScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    double userLat = 44.546082;
-    double userLong = 11.193692;
     int steps = 11200;
+
+    LocationProvider locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    ThemeData theme = Theme.of(context);
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: const TopBar(),
-      body: SlidingUpPanel(
-        backdropEnabled: true,
-        controller: _panelController,
-        minHeight: 48,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(40.0)),
-        body: Stack(
-          children: [
-            MapWidget(
-              mapController: _mapController,
-              userLat: userLat,
-              userLong: userLong,
-              steps: steps,
-              friendsOnMap: friendsOnMap,
-            ),
-            Positioned(
-              bottom: 150,
-              right: 0,
-              child: RepositionButton(
-                mapController: _mapController,
-                userLat: userLat,
-                userLong: userLong,
+      body: FutureBuilder(
+        future: locationProvider.canAccessLocationService(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!(snapshot.hasData && snapshot.data!)) {
+            return _buildNoPermissionPage();
+          } else {
+            return SlidingUpPanel(
+              backdropEnabled: true,
+              color: theme.cardColor,
+              controller: _panelController,
+              minHeight: screenHeight * 0.05,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(40.0)),
+              body: Stack(
+                children: [
+                  MapWidget(
+                    mapController: _mapController,
+                    steps: steps,
+                    friendsOnMap: friendsOnMap,
+                  ),
+                  Positioned(
+                    top: screenHeight * 0.70,
+                    right: 0,
+                    child: RepositionButton(mapController: _mapController),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-        panel: MapFriendsList(
-          mapController: _mapController,
-          panelController: _panelController,
-        ),
+              panel: MapFriendsList(
+                mapController: _mapController,
+                panelController: _panelController,
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildNoPermissionPage() {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text(
+            "No location permission found",
+            style: TextStyle(fontSize: Theme.of(context).textTheme.labelLarge?.fontSize),
+          ),
+          TextButton(
+            onPressed: () => setState(() {}),
+            child: const Text("Enable permission"),
+          ),
+        ],
       ),
     );
   }

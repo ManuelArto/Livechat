@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:livechat/providers/location_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../models/auth/auth_user.dart';
 import '../../../providers/auth_provider.dart';
@@ -11,21 +12,18 @@ class MapWidget extends StatelessWidget {
   const MapWidget({
     super.key,
     required MapController mapController,
-    required this.userLat,
-    required this.userLong,
     required this.steps,
     required this.friendsOnMap,
   }) : _mapController = mapController;
 
   final MapController _mapController;
-  final double userLat;
-  final double userLong;
   final int steps;
   final List<Friends> friendsOnMap;
 
   @override
   Widget build(BuildContext context) {
     AuthUser authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
+    LocationProvider locationProvider = Provider.of<LocationProvider>(context);
 
     return FlutterMap(
       options: MapOptions(
@@ -45,10 +43,10 @@ class MapWidget extends StatelessWidget {
             Marker(
               width: 50.0,
               height: 50.0,
-              point: LatLng(userLat, userLong), // qui andranno authUser.lat e authUser.long
+              point: LatLng(locationProvider.userLat, locationProvider.userLong),
               builder: (ctx) => Tooltip(
                 triggerMode: TooltipTriggerMode.tap,
-                message: '${authUser.username}\n$steps steps', // qui andrà authUser.steps
+                message: '${authUser.username}\n$steps steps', // TODO: qui andrà authUser.steps
                 preferBelow: false,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),

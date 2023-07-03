@@ -13,7 +13,7 @@ class HeadingHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
         color: Theme.of(context).secondaryHeaderColor,
         boxShadow: [
           BoxShadow(

@@ -47,13 +47,14 @@ dependencies:
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   just_audio: ^0.9.34
+  location: ^4.4.0
   open_file: ^3.3.2
   path_provider: ^2.0.15
   pedometer: ^4.0.1
   permission_handler: ^10.3.0
   provider: ^6.0.5
-  sensors: ^2.0.3
   record: 4.4.4
+  sensors: ^2.0.3
   share_plus: ^4.0.3
   shared_preferences: ^2.1.0
   sliding_up_panel: ^2.0.0+1
