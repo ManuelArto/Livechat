@@ -1,21 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:location/location.dart';
+import 'package:format/format.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:livechat/services/http_requester.dart';
 
+import '../constants.dart';
 import '../models/auth/auth_user.dart';
 
 class LocationProvider extends ChangeNotifier {
-  final Location _location = Location();
   bool _serviceEnabled = false;
-  PermissionStatus? _permissionGranted;
-  StreamSubscription<LocationData>? _listener;
+  LocationPermission? _permission;
+  StreamSubscription<Position>? _positionListener;
+  final LocationSettings locationSettings = const LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 10,
+  );
 
   AuthUser? _authUser;
-  late LocationData _locationData;
+  late Position _position;
 
-  double get userLat => _locationData.latitude!;
-  double get userLong => _locationData.longitude!;
+  double get userLat => _position.latitude;
+  double get userLong => _position.longitude;
 
   // Called everytime AuthProvider changes
   void update(AuthUser? authUser) {
@@ -28,43 +34,46 @@ class LocationProvider extends ChangeNotifier {
   }
 
   @override
-  void dispose() async {
-    await _listener?.cancel();
+  void dispose() {
+    _positionListener?.cancel();
     super.dispose();
   }
 
-  Future<bool> canAccessLocationService() async {
-    // Check if the location service is enabled
-    _serviceEnabled = await _location.serviceEnabled();
+  Future<Position> getCurrentPosition() async {
+    // Test if location services are enabled
+    _serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!_serviceEnabled) {
-      _serviceEnabled = await _location.requestService();
-      if (!_serviceEnabled) {
-        debugPrint("SERVICEEEEEE");
-        return false;
+      return Future.error('Location services are disabled.');
+    }
+
+    _permission = await Geolocator.checkPermission();
+    if (_permission == LocationPermission.denied) {
+      _permission = await Geolocator.requestPermission();
+      if (_permission == LocationPermission.denied ||
+          _permission == LocationPermission.deniedForever) {
+        return Future.error('Location permissions are denied');
       }
     }
 
-    // Check if the required permission is granted
-    _permissionGranted = await _location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await _location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        debugPrint("PERMISSIONNNN");
-        return false;
-      }
-    }
-
-    _locationData = await _location.getLocation();
-    _location.enableBackgroundMode(enable: true);
+    _position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     _startListener();
 
-    return true;
+    return _position;
   }
 
   void _startListener() {
-    _listener = _location.onLocationChanged.listen(
-      (LocationData currentLocation) {
-        _locationData = currentLocation;
+    _positionListener = Geolocator.getPositionStream(locationSettings: locationSettings)
+      .listen((Position? position) {
+        _position = position ?? _position;
+        debugPrint(
+            "Update Location ${position?.latitude} ${position?.longitude}");
+
+        HttpRequester.post(
+          {},
+          URL_UPDATE_LOCATION.format(_position.latitude, _position.longitude),
+          token: _authUser?.token,
+        );
         notifyListeners();
       },
     );

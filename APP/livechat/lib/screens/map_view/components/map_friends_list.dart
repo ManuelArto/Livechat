@@ -78,14 +78,15 @@ class _MapFriendsListState extends State<MapFriendsList> {
       separatorBuilder: (context, index) => const Divider(),
       itemCount: friendsFiltered.length,
       itemBuilder: (context, index) {
+        Friend friend = friendsFiltered[index];
         return ListTile(
-          title: Text(friendsFiltered[index].username),
+          title: Text(friend.username),
           subtitle: Text('Steps: 100'),
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(friendsFiltered[index].imageUrl),
+            backgroundImage: NetworkImage(friend.imageUrl),
           ),
           onTap: () {
-              final LatLng friendLocation = LatLng(44.546082, 11.193692);
+              final LatLng friendLocation = LatLng(friend.lat, friend.long);
               widget.mapController.move(friendLocation, 13.0);
               widget.panelController.close();
           },

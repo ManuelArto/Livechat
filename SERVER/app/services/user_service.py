@@ -39,11 +39,16 @@ class UserService:
         return [UserDocument(id=str(user["_id"]), **user) for user in users]
 
     @staticmethod
-    def update_location(user_id: ObjectId, lat: float, long: float) -> None:
+    def update_location(user_id: ObjectId, lat: float, long: float) -> UserDocument:
         db.USER.update_one(
             filter={"_id": user_id},
             update={"$set": {"location": {"lat": lat, "long": long}}},
         )
+
+        user = db.USER.find_one(filter={"_id": user_id})
+
+        return UserDocument(id=str(user["_id"]), **user)
+
 
     # DOCUMENT -> RESPONSE
 

@@ -28,13 +28,23 @@ const FriendSchema = Schema(
       name: r'imageUrl',
       type: IsarType.string,
     ),
-    r'phoneNumber': PropertySchema(
+    r'lat': PropertySchema(
       id: 3,
+      name: r'lat',
+      type: IsarType.double,
+    ),
+    r'long': PropertySchema(
+      id: 4,
+      name: r'long',
+      type: IsarType.double,
+    ),
+    r'phoneNumber': PropertySchema(
+      id: 5,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'username',
       type: IsarType.string,
     )
@@ -68,8 +78,10 @@ void _friendSerialize(
   writer.writeString(offsets[0], object.email);
   writer.writeString(offsets[1], object.id);
   writer.writeString(offsets[2], object.imageUrl);
-  writer.writeString(offsets[3], object.phoneNumber);
-  writer.writeString(offsets[4], object.username);
+  writer.writeDouble(offsets[3], object.lat);
+  writer.writeDouble(offsets[4], object.long);
+  writer.writeString(offsets[5], object.phoneNumber);
+  writer.writeString(offsets[6], object.username);
 }
 
 Friend _friendDeserialize(
@@ -82,8 +94,10 @@ Friend _friendDeserialize(
     email: reader.readStringOrNull(offsets[0]) ?? '',
     id: reader.readStringOrNull(offsets[1]) ?? '',
     imageUrl: reader.readStringOrNull(offsets[2]) ?? '',
-    phoneNumber: reader.readStringOrNull(offsets[3]) ?? '',
-    username: reader.readStringOrNull(offsets[4]) ?? '',
+    lat: reader.readDoubleOrNull(offsets[3]) ?? 0,
+    long: reader.readDoubleOrNull(offsets[4]) ?? 0,
+    phoneNumber: reader.readStringOrNull(offsets[5]) ?? '',
+    username: reader.readStringOrNull(offsets[6]) ?? '',
   );
   return object;
 }
@@ -102,8 +116,12 @@ P _friendDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 3:
-      return (reader.readStringOrNull(offset) ?? '') as P;
+      return (reader.readDoubleOrNull(offset) ?? 0) as P;
     case 4:
+      return (reader.readDoubleOrNull(offset) ?? 0) as P;
+    case 5:
+      return (reader.readStringOrNull(offset) ?? '') as P;
+    case 6:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -495,6 +513,130 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'imageUrl',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> latEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lat',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> latGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lat',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> latLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lat',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> latBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lat',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> longEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'long',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> longGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'long',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> longLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'long',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> longBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'long',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
