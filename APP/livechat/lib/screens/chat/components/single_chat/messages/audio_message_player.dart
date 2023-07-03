@@ -20,7 +20,6 @@ class AudioMessagePlayer extends StatefulWidget {
 class AudioMessagePlayerState extends State<AudioMessagePlayer> {
   late final AudioSource source;
   final _audioPlayer = AudioPlayer();
-  late StreamSubscription<PlayerState> _playerStateChangedSubscription;
 
   late Future<Duration?> futureDuration;
 
@@ -28,9 +27,6 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
   void initState() {
     super.initState();
     source = AudioSource.uri(Uri.parse(widget.audio.get().path));
-
-    _playerStateChangedSubscription =
-        _audioPlayer.playerStateStream.listen(playerStateListener);
 
     futureDuration = _audioPlayer.setAudioSource(source);
   }
@@ -43,7 +39,6 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
 
   @override
   void dispose() {
-    _playerStateChangedSubscription.cancel();
     _audioPlayer.dispose();
     super.dispose();
   }

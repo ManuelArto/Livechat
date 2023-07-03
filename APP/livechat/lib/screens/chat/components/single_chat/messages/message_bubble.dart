@@ -20,6 +20,9 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    ThemeData theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment:
           isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -29,7 +32,9 @@ class MessageBubble extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: isMe ? Colors.green : Colors.grey[300],
+                color: isMe
+                    ? theme.primaryColor.withOpacity(0.7)
+                    : theme.secondaryHeaderColor.withOpacity(0.7),
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(20),
                   topRight: const Radius.circular(20),
@@ -43,6 +48,7 @@ class MessageBubble extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              constraints: BoxConstraints(maxWidth: size.width * 0.8),
               child: Column(
                 crossAxisAlignment:
                     isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -52,10 +58,7 @@ class MessageBubble extends StatelessWidget {
                     alignment: isMe ? Alignment.topRight : Alignment.topLeft,
                     child: Text(
                       message.sender!,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isMe ? Colors.black : Colors.grey[900],
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 10),

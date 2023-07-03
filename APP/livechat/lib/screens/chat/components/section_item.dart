@@ -36,8 +36,8 @@ class SectionItem extends StatelessWidget {
       child: Row(
         children: [
           if (sectionsProvider.currentSection == page)
-            CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.secondary,
+            const CircleAvatar(
+              backgroundColor: Colors.black,
               radius: 6.0,
             ),
           const SizedBox(width: 10.0),
@@ -59,11 +59,13 @@ class SectionItem extends StatelessWidget {
             content: Text('Are you sure to remove the section $section?'),
             actions: <Widget>[
               TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Yes')),
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Yes'),
+              ),
               TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('No'))
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('No'),
+              )
             ],
           );
         });

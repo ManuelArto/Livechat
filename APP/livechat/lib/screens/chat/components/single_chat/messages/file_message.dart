@@ -19,7 +19,12 @@ class FileMessage extends StatelessWidget {
             Icons.file_present_rounded,
             size: 48,
           ),
-          Text(file.get().path.split('/').last.replaceAll("${sender}_", "")),
+          Flexible(
+            child: Text(
+              file.get().path.split('/').last.replaceAll("${sender}_", ""),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
