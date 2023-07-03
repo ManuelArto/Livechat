@@ -3,7 +3,6 @@ from pydantic import BaseModel, EmailStr, constr, Field
 
 # HTTP SCHEMAS
 
-
 class UserSchema(BaseModel):
     username: constr(min_length=6, max_length=30)
     email: EmailStr
@@ -28,6 +27,7 @@ class UserLoginSchema(BaseModel):
 class UserResponse(UserSchema):
     id: str
     imageUrl: str
+    location: dict  # {"lat": 0.0, "long": 0.0}
 
 
 class AuthUserResponse(UserResponse):
@@ -54,6 +54,7 @@ class FriendRequestReceivedResponse(BaseModel):
 class UserDocument(UserSchema):
     id: str
     password: str
+    location: dict  # {"lat": 0.0, "long": 0.0}
     friends: list  # ObjectId | UserDocument
 
 

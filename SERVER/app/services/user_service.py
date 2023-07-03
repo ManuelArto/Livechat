@@ -1,10 +1,6 @@
+from bson import ObjectId
 from app.config import settings
-from app.schemas import (
-    UserCreateSchema,
-    UserDocument,
-    AuthUserResponse,
-    UserResponse,
-)
+from app.schemas import UserCreateSchema, UserDocument, AuthUserResponse, UserResponse
 from app.helpers import hashing, jwt_helper
 from app.db import db
 
@@ -18,13 +14,14 @@ class UserService:
         document_user = user.dict() | {
             "created_at": user._created_at,
             "updated_at": user._updated_at,
+            "location": {},
             "friends": [],
         }
 
         user_id = db.USER.insert_one(document_user).inserted_id
 
         return UserService.create_auth_user_response(
-            UserDocument(id=str(user_id), friends=[], **user.dict())
+            UserDocument(id=str(user_id), friends=[], location={}, **user.dict())
         )
 
     @staticmethod
@@ -40,6 +37,13 @@ class UserService:
         users = db.USER.find(filter={"_id": {"$in": ids}})
 
         return [UserDocument(id=str(user["_id"]), **user) for user in users]
+
+    @staticmethod
+    def update_location(user_id: ObjectId, lat: float, long: float) -> None:
+        db.USER.update_one(
+            filter={"_id": user_id},
+            update={"$set": {"location": {"lat": lat, "long": long}}},
+        )
 
     # DOCUMENT -> RESPONSE
 
