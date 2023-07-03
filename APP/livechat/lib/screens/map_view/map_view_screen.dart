@@ -72,7 +72,7 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
 
     LocationProvider locationProvider = Provider.of<LocationProvider>(context, listen: false);
     ThemeData theme = Theme.of(context);
-    double screenHeight = MediaQuery.of(context).size.height;
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -90,21 +90,27 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
               backdropEnabled: true,
               color: theme.cardColor,
               controller: _panelController,
-              minHeight: screenHeight * 0.05,
+              minHeight: size.height * 0.05,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(40.0)),
-              body: Stack(
-                children: [
-                  MapWidget(
-                    mapController: _mapController,
-                    steps: steps,
-                    friendsOnMap: friendsOnMap,
-                  ),
-                  Positioned(
-                    top: screenHeight * 0.70,
-                    right: 0,
-                    child: RepositionButton(mapController: _mapController),
-                  )
-                ],
+              body: Padding(
+                padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+                child: Stack(
+                  children: [
+                    MapWidget(
+                      mapController: _mapController,
+                      steps: steps,
+                      friendsOnMap: friendsOnMap,
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: size.height * 0.08 + kBottomNavigationBarHeight),
+                        child: RepositionButton(mapController: _mapController),
+                      ),
+                    )
+                  ],
+                ),
               ),
               panel: MapFriendsList(
                 mapController: _mapController,
