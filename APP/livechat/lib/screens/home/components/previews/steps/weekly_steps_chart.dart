@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class StepWindows extends StatefulWidget {
-  const StepWindows({
+class WeeklyStepsChart extends StatefulWidget {
+  const WeeklyStepsChart({
     super.key,
   });
 
   @override 
-  State<StepWindows> createState() => _StepWindowsState();
+  State<WeeklyStepsChart> createState() => _WeeklyStepsChartState();
 }
 
-class _StepWindowsState extends State<StepWindows> {
+class _WeeklyStepsChartState extends State<WeeklyStepsChart> {
   late List<StepsData> _chartData;
 
   @override
@@ -55,9 +55,9 @@ class _StepWindowsState extends State<StepWindows> {
                 ),
               ),
             ),
-            Text("Total steps of week: $totalStepsOfWeek"),
+            Text("Total steps: $totalStepsOfWeek"),
             const SizedBox(height: 3),
-            Text("Calories burned: $totalkCal kcal"), // passi totali * 3
+            Text("Burned calories: $totalkCal kcal"), // passi totali * 3
             const SizedBox(height: 3),
             Text("Kilometers: $totalKm km"), // passi totali * 0.6
           ],

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../models/auth/auth_user.dart';
+import '../../../../../models/auth/auth_user.dart';
 
-class RankingSteps extends StatelessWidget {
-  const RankingSteps({
+class UserRankTile extends StatelessWidget {
+  const UserRankTile({
     Key? key,
     required this.username,
     required this.position,

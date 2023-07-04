@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/widgets/top_bar.dart';
-import 'components/ranking/classifica_totale.dart';
+import 'components/previews/ranking/classifica_totale.dart';
 
 class RankingScreen extends StatefulWidget {
   static const routeName = "/rankingScreen";

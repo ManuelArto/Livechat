@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../models/auth/auth_user.dart';
-import '../../../../providers/auth_provider.dart';
+import '../../../../../models/auth/auth_user.dart';
+import '../../../../../providers/auth_provider.dart';
 
 class ClassificaTotale extends StatelessWidget {
   const ClassificaTotale({Key? key, required this.dailyRanking, required this.weeklyRanking}) : super(key: key);

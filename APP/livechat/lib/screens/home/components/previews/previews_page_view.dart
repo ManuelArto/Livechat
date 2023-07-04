@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:livechat/screens/home/components/preview_ranking.dart';
-import 'package:livechat/screens/home/components/preview_steps.dart';
+import 'package:livechat/screens/home/components/previews/preview_ranking.dart';
+import 'package:livechat/screens/home/components/previews/preview_steps.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../../../models/auth/auth_user.dart';
-import 'chats_preview.dart';
+import '../../../../models/auth/auth_user.dart';
+import 'preview_chats.dart';
 
-class PageViewHome extends StatefulWidget {
-  const PageViewHome({super.key, required this.authUser});
+class PreviewsPageView extends StatefulWidget {
+  const PreviewsPageView({super.key, required this.authUser});
 
   final AuthUser authUser;
 
   @override
-  State<PageViewHome> createState() => _PageViewHomeState();
+  State<PreviewsPageView> createState() => _PreviewsPageViewState();
 }
 
-class _PageViewHomeState extends State<PageViewHome> {
+class _PreviewsPageViewState extends State<PreviewsPageView> {
   final int totalPages = 3;
 
   final PageController pageController = PageController(
@@ -51,7 +51,7 @@ class _PageViewHomeState extends State<PageViewHome> {
               } else if (pageIndex == 1) {
                 return const PreviewSteps();
               } else if (pageIndex == 2) {
-                return ChatsPreview(authUser: widget.authUser);
+                return PreviewChats(authUser: widget.authUser);
               } else {
                 return Container();
               }

@@ -7,7 +7,7 @@ import '../../providers/auth_provider.dart';
 import 'ranking_screen.dart';
 import 'components/card_home.dart';
 import 'components/heading_home.dart';
-import 'components/page_view_home.dart';
+import 'components/previews/previews_page_view.dart';
 
 class HomeScreen extends StatefulWidget {
   final GlobalKey navigatorKey;
@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: PageViewHome(authUser: authUser),
+              child: PreviewsPageView(authUser: authUser),
             ),
           ],
         ),

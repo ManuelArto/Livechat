@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/auth/auth_user.dart';
-import '../../../models/chat/chat.dart';
-import '../../../models/chat/messages/content/audio_content.dart';
-import '../../../models/chat/messages/content/content.dart';
-import '../../../models/chat/messages/content/file_content.dart';
-import '../../../models/chat/messages/content/text_content.dart';
-import '../../../models/chat/messages/message.dart';
-import '../../../providers/chat_provider.dart';
-import '../../../providers/navbar_notifier.dart';
+import '../../../../models/auth/auth_user.dart';
+import '../../../../models/chat/chat.dart';
+import '../../../../models/chat/messages/content/audio_content.dart';
+import '../../../../models/chat/messages/content/content.dart';
+import '../../../../models/chat/messages/content/file_content.dart';
+import '../../../../models/chat/messages/content/text_content.dart';
+import '../../../../models/chat/messages/message.dart';
+import '../../../../providers/chat_provider.dart';
+import '../../../../providers/navbar_notifier.dart';
 
-class ChatsPreview extends StatefulWidget {
-  const ChatsPreview({
+class PreviewChats extends StatefulWidget {
+  const PreviewChats({
     Key? key,
     required this.authUser,
   }) : super(key: key);
@@ -21,10 +21,10 @@ class ChatsPreview extends StatefulWidget {
   final AuthUser authUser;
 
   @override
-  State<ChatsPreview> createState() => _ChatsPreviewState();
+  State<PreviewChats> createState() => _PreviewChatsState();
 }
 
-class _ChatsPreviewState extends State<ChatsPreview> {
+class _PreviewChatsState extends State<PreviewChats> {
   @override
   Widget build(BuildContext context) {
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);

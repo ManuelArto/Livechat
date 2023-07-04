@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:provider/provider.dart';
-import 'package:sensors/sensors.dart'; 
-import '../../../providers/settings_provider.dart';
+
+import '../../../../../providers/settings_provider.dart';
 
 class CircularSteps extends StatefulWidget {
   const CircularSteps({

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:livechat/screens/home/components/ranking/ranking_steps.dart';
+import 'package:livechat/screens/home/components/previews/ranking/user_rank_tile.dart';
 
-import '../../../models/auth/auth_user.dart';
-import '../ranking_screen.dart';
+import '../../../../models/auth/auth_user.dart';
+import '../../ranking_screen.dart';
 
 class PreviewRanking extends StatelessWidget {
   const PreviewRanking({
@@ -32,21 +32,21 @@ class PreviewRanking extends StatelessWidget {
             ),
           ),
           const Divider(thickness: 1),
-          RankingSteps(
+          UserRankTile(
             username: "naepols-01",
             position: 1,
             totalSteps: 1973,
             authUser: authUser,
           ),
           const Divider(thickness: 1),
-          RankingSteps(
+          UserRankTile(
             username: "franco",
             position: 2,
             totalSteps: 1720,
             authUser: authUser,
           ),
           const Divider(thickness: 1),
-          RankingSteps(
+          UserRankTile(
             username: "ueuemanu",
             position: 3,
             totalSteps: 1202,

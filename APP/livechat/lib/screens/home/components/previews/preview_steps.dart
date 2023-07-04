@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:livechat/screens/home/components/step_bar/step_window.dart';
+import 'package:livechat/screens/home/components/previews/steps/weekly_steps_chart.dart';
 
-import '../../profile/components/circular_steps.dart';
+import 'steps/circular_steps.dart';
 
 class PreviewSteps extends StatelessWidget {
   const PreviewSteps({
@@ -43,9 +43,7 @@ class PreviewSteps extends StatelessWidget {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (BuildContext context) {
-                      return const StepWindows();
-                    },
+                    builder: (BuildContext context) => const WeeklyStepsChart(),
                   );
                 },
                 child: const Text('View more details'),
@@ -57,4 +55,3 @@ class PreviewSteps extends StatelessWidget {
     );
   }
 }
-
