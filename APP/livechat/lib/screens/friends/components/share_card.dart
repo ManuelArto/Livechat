@@ -27,7 +27,7 @@ class ShareCard extends StatelessWidget {
         subtitle: Text("livechat/${user.username}"),
         trailing: IconButton(
           onPressed: () {
-            Share.share("Discover LiveChat, the ultimate communication app. Download now!\nhttps://www.facebook.com/watch/?v=298873375806313&extid=CL-UNK-UNK-UNK-AN_GK0T-GK1C&mibextid=2Rb1fB&ref=sharing");
+            Share.share("Discover Livechat, the ultimate communication app. Download now!\nhttps://www.facebook.com/watch/?v=298873375806313&extid=CL-UNK-UNK-UNK-AN_GK0T-GK1C&mibextid=2Rb1fB&ref=sharing");
           },
           icon: const Icon(Icons.share_rounded),
         ),

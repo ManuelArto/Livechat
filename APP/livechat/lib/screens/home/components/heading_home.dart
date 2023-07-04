@@ -45,7 +45,7 @@ class HeadingHome extends StatelessWidget {
                   padding: EdgeInsets.only(left: 2.0, top: 5.0),
                   child: Row(
                     children: [
-                      Text("LiveChat: Where Connections Come Alive!", style: TextStyle(fontSize: 15)),
+                      Text("Livechat: Where Connections Come Alive!", style: TextStyle(fontSize: 15)),
                     ],
                   ),
                 ),

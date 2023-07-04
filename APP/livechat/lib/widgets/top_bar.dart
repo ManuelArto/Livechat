@@ -13,7 +13,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
           Image.asset('assets/images/logo_nobg.png', height: 35),
           const SizedBox(width: 8),
           const Text(
-            'LiveChat',
+            'Livechat',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

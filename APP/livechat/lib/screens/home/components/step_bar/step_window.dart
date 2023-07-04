@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -35,27 +33,25 @@ class _StepWindowsState extends State<StepWindows> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                child: SfCartesianChart(
-                  series: <ChartSeries>[
-                    BarSeries<StepsData, int>(
-                      dataSource: _chartData,
-                      xValueMapper: (StepsData data, _) =>
-                          data.day,
-                      yValueMapper: (StepsData data, _) =>
-                          data.steps,
-                      dataLabelSettings:
-                          const DataLabelSettings(
-                        isVisible: true,
-                      ),
+              child: SfCartesianChart(
+                series: <ChartSeries>[
+                  BarSeries<StepsData, int>(
+                    dataSource: _chartData,
+                    xValueMapper: (StepsData data, _) =>
+                        data.day,
+                    yValueMapper: (StepsData data, _) =>
+                        data.steps,
+                    dataLabelSettings:
+                        const DataLabelSettings(
+                      isVisible: true,
                     ),
-                  ],
-                  primaryXAxis: CategoryAxis(),
-                  primaryYAxis: NumericAxis(
-                    edgeLabelPlacement:
-                        EdgeLabelPlacement.shift,
-                    title: AxisTitle(text: 'Steps'),
                   ),
+                ],
+                primaryXAxis: CategoryAxis(),
+                primaryYAxis: NumericAxis(
+                  edgeLabelPlacement:
+                      EdgeLabelPlacement.shift,
+                  title: AxisTitle(text: 'Steps'),
                 ),
               ),
             ),
