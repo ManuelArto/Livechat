@@ -15,20 +15,23 @@ class UserSettingsScreen extends StatefulWidget {
 }
 
 class _UserSettingsScreenState extends State<UserSettingsScreen> {
-  int goalStep = 10000;
   int pin = 0000;
   bool appLock = false;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controllerPIN = TextEditingController();
+
   late SettingsProvider _settingsProvider;
+  late Settings _settings;
 
   @override
   Widget build(BuildContext context) {
-    Settings settings = Provider.of<SettingsProvider>(context, listen: false).settings;
+    _settingsProvider = Provider.of<SettingsProvider>(context);
+    _settings = _settingsProvider.settings;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.6),
+        backgroundColor:
+            Theme.of(context).colorScheme.secondary.withOpacity(0.6),
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
@@ -43,8 +46,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             const SizedBox(height: 25),
             Row(
               children: [
-                Icon(Icons.person,
-                    color: settings.schemeColor.secondary),
+                Icon(Icons.person, color: _settings.schemeColor.secondary),
                 const SizedBox(
                   width: 8,
                 ),
@@ -59,8 +61,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             ),
             Row(
               children: [
-                Icon(Icons.lock,
-                    color: settings.schemeColor.secondary),
+                Icon(Icons.lock, color: _settings.schemeColor.secondary),
                 const SizedBox(
                   width: 8,
                 ),
@@ -83,7 +84,8 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   }
 
   Widget changeStep(BuildContext context) {
-    _settingsProvider = Provider.of<SettingsProvider>(context);
+    int stepsGoal = _settings.goalSteps;
+
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -101,11 +103,9 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                   onPressed: () {
                     String numberText = _controller.text;
                     int number = int.tryParse(numberText) ?? 0;
-                    setState((){
-                      goalStep = number;
-                    });
+                    setState(() => stepsGoal = number);
+                    _settingsProvider.setNewGoalSteps(stepsGoal);
                     Navigator.of(context).pop();
-                    _settingsProvider.setNewGoalSteps(goalStep);
                   },
                 ),
               ],
@@ -126,8 +126,10 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
           ),
           Row(
             children: [
-              Text(goalStep.toString(),
-                  style: const TextStyle(color: Colors.grey)),
+              Text(
+                stepsGoal.toString(),
+                style: const TextStyle(color: Colors.grey),
+              ),
               const Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.grey,
