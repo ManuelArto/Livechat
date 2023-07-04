@@ -19,6 +19,7 @@ class LocationProvider extends ChangeNotifier {
 
   AuthUser? _authUser;
   late Position _position;
+  late Function _errorCallBack;
 
   double get userLat => _position.latitude;
   double get userLong => _position.longitude;
@@ -39,7 +40,9 @@ class LocationProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<Position> getCurrentPosition() async {
+  Future<Position> getCurrentPosition(Function errorCallBack) async {
+    _errorCallBack = errorCallBack;
+
     // Test if location services are enabled
     _serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!_serviceEnabled) {
@@ -55,8 +58,7 @@ class LocationProvider extends ChangeNotifier {
       }
     }
 
-    _position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     _startListener();
 
     return _position;
@@ -77,5 +79,6 @@ class LocationProvider extends ChangeNotifier {
         notifyListeners();
       },
     );
+    _positionListener?.onError((_) => _errorCallBack());
   }
 }

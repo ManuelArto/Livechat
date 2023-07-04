@@ -22,6 +22,10 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
   final MapController _mapController = MapController();
   final PanelController _panelController = PanelController();
 
+  void onLocationError() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -33,22 +37,24 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
       key: _scaffoldKey,
       appBar: const TopBar(),
       body: FutureBuilder(
-        future: locationProvider.getCurrentPosition(),
+        future: locationProvider.getCurrentPosition(onLocationError),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if ((snapshot.hasError)) {
-            return _buildNoPermissionPage();
+          if ((snapshot.hasError && snapshot.error is String)) {
+            return _buildNoPermissionPage(snapshot.error as String);
           } else {
             return SlidingUpPanel(
               backdropEnabled: true,
               color: Theme.of(context).cardColor,
               controller: _panelController,
               minHeight: size.height * 0.05,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(40.0)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(40.0)),
               body: Padding(
-                padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+                padding:
+                    const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
                 child: Stack(
                   children: [
                     MapWidget(mapController: _mapController),
@@ -56,7 +62,9 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
                       right: 0,
                       bottom: 0,
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: size.height * 0.1 + kBottomNavigationBarHeight),
+                        padding: EdgeInsets.only(
+                            bottom:
+                                size.height * 0.1 + kBottomNavigationBarHeight),
                         child: RepositionButton(mapController: _mapController),
                       ),
                     )
@@ -74,7 +82,7 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
     );
   }
 
-  Widget _buildNoPermissionPage() {
+  Widget _buildNoPermissionPage(String errorMessage) {
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -83,13 +91,15 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
         mainAxisSize: MainAxisSize.max,
         children: [
           Text(
-            "No location permission given",
-            style: TextStyle(fontSize: Theme.of(context).textTheme.labelLarge?.fontSize),
+            errorMessage,
+            style: TextStyle(
+              fontSize: Theme.of(context).textTheme.labelLarge?.fontSize,
+            ),
           ),
-          TextButton(
-            onPressed: () => setState(() {}),
-            child: const Text("Enable permission"),
-          ),
+            TextButton(
+              onPressed: () => setState(() {}),
+              child: const Text("Reload"),
+            ),
         ],
       ),
     );
