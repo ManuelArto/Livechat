@@ -22,8 +22,13 @@ const SettingsSchema = CollectionSchema(
       name: r'darkMode',
       type: IsarType.bool,
     ),
-    r'themeString': PropertySchema(
+    r'goalSteps': PropertySchema(
       id: 1,
+      name: r'goalSteps',
+      type: IsarType.long,
+    ),
+    r'themeString': PropertySchema(
+      id: 2,
       name: r'themeString',
       type: IsarType.string,
     )
@@ -59,7 +64,8 @@ void _settingsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.darkMode);
-  writer.writeString(offsets[1], object.themeString);
+  writer.writeLong(offsets[1], object.goalSteps);
+  writer.writeString(offsets[2], object.themeString);
 }
 
 Settings _settingsDeserialize(
@@ -70,8 +76,9 @@ Settings _settingsDeserialize(
 ) {
   final object = Settings();
   object.darkMode = reader.readBool(offsets[0]);
+  object.goalSteps = reader.readLong(offsets[1]);
   object.id = id;
-  object.themeString = reader.readString(offsets[1]);
+  object.themeString = reader.readString(offsets[2]);
   return object;
 }
 
@@ -85,6 +92,8 @@ P _settingsDeserializeProp<P>(
     case 0:
       return (reader.readBool(offset)) as P;
     case 1:
+      return (reader.readLong(offset)) as P;
+    case 2:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -186,6 +195,59 @@ extension SettingsQueryFilter
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'darkMode',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition> goalStepsEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'goalSteps',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition> goalStepsGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'goalSteps',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition> goalStepsLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'goalSteps',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition> goalStepsBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'goalSteps',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -394,6 +456,18 @@ extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
     });
   }
 
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByGoalSteps() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'goalSteps', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByGoalStepsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'goalSteps', Sort.desc);
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterSortBy> sortByThemeString() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeString', Sort.asc);
@@ -418,6 +492,18 @@ extension SettingsQuerySortThenBy
   QueryBuilder<Settings, Settings, QAfterSortBy> thenByDarkModeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'darkMode', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByGoalSteps() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'goalSteps', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByGoalStepsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'goalSteps', Sort.desc);
     });
   }
 
@@ -454,6 +540,12 @@ extension SettingsQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Settings, Settings, QDistinct> distinctByGoalSteps() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'goalSteps');
+    });
+  }
+
   QueryBuilder<Settings, Settings, QDistinct> distinctByThemeString(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -473,6 +565,12 @@ extension SettingsQueryProperty
   QueryBuilder<Settings, bool, QQueryOperations> darkModeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'darkMode');
+    });
+  }
+
+  QueryBuilder<Settings, int, QQueryOperations> goalStepsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'goalSteps');
     });
   }
 

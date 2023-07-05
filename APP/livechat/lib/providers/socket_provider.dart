@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/providers/friends_provider.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:livechat/services/file_service.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import '../models/chat/messages/content/content.dart';
@@ -73,6 +73,7 @@ class SocketProvider with ChangeNotifier {
     _socketIO?.on("user_disconnected", _userDisconnected);
     _socketIO?.on("new_friend", _newFriend);
     _socketIO?.on("friend_deleted", _deleteFriend);
+    _socketIO?.on("friend_location_update", _updatefriendLocation);
     // CHAT
     _socketIO?.on('receive_message', _receiveMessage);
   }
@@ -97,6 +98,10 @@ class SocketProvider with ChangeNotifier {
     chatProvider.newUserChat(jsonData);
   }
 
+  void _updatefriendLocation(jsonData) {
+    friendsProvider.updateFriendLocation(jsonData);
+  }
+
   void _deleteFriend(jsonData) {
     friendsProvider.deleteFriend(jsonData["id"]);
   }
@@ -106,7 +111,7 @@ class SocketProvider with ChangeNotifier {
 
     Content content = jsonData["type"] == "text"
         ? TextContent(content: jsonData["message"])
-        : await _saveAndCreateFileMessage(jsonData);
+        : await FileService.saveAndCreateFileMessage(jsonData);
 
     chatProvider.addMessage(
       content,
@@ -115,18 +120,5 @@ class SocketProvider with ChangeNotifier {
           ? jsonData["sender"]
           : jsonData["receiver"],
     );
-  }
-
-  Future<Content> _saveAndCreateFileMessage(jsonData) async {
-    String type = jsonData["type"];
-    String filename = "${jsonData["sender"]}_${jsonData["filename"]}";
-
-    final directory = await getApplicationDocumentsDirectory();
-    final file = await File(
-      '${directory.path}/media/$type/$filename',
-    ).create(recursive: true);
-    await file.writeAsBytes(base64Decode(jsonData["message"]));
-
-    return Content.createContentInstance(type, file);
   }
 }

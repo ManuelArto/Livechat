@@ -10,6 +10,9 @@ const URL_AUTH_SIGN_UP = "$SERVER_URL/api/auth/register";
 const URL_AUTH_SIGN_IN = "$SERVER_URL/api/auth/login";
 const URL_AUTH_REFRESH_TOKEN = "$SERVER_URL/api/auth/refreshToken";
 
+// LOCATION
+const URL_UPDATE_LOCATION = "$SERVER_URL/api/location/update?lat={}&long={}";
+
 // FRIENDS
 const URL_FRIENDS_LIST = "$SERVER_URL/api/friends/list";
 const URL_REMOVE_FRIEND = "$SERVER_URL/api/friends/{}";

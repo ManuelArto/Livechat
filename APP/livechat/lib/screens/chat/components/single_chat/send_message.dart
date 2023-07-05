@@ -87,6 +87,8 @@ class SendMessageState extends State<SendMessage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       decoration: BoxDecoration(
@@ -98,7 +100,10 @@ class SendMessageState extends State<SendMessage> {
           ImagePickerButton(_sendImage),
           GestureDetector(
             onTap: _selectAndSendFile,
-            child: const Icon(Icons.attach_file),
+            child: const Icon(
+              Icons.attach_file,
+              color: Colors.black,
+            ),
           ),
           Expanded(
             child: TextField(
@@ -106,12 +111,12 @@ class SendMessageState extends State<SendMessage> {
               textCapitalization: TextCapitalization.sentences,
               enableSuggestions: true,
               controller: _controller,
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: _hasRecorded || (_timer?.isActive ?? false)
                     ? _formatDuration(_seconds)
                     : "Type a message...",
                 labelStyle: const TextStyle(color: Colors.black),
-                fillColor: Colors.grey[200],
                 border: InputBorder.none,
               ),
               maxLines: null,
@@ -131,13 +136,13 @@ class SendMessageState extends State<SendMessage> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30.0),
-                color: Theme.of(context).colorScheme.secondary,
+                color: theme.colorScheme.secondary,
               ),
               child: _controller.text.isNotEmpty || _hasRecorded
                   ? IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.send,
-                        color: Theme.of(context).iconTheme.color,
+                        color: Colors.black,
                       ),
                       onPressed: _hasRecorded
                           ? _sendAudio

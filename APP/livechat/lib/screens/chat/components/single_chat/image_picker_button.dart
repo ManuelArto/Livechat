@@ -30,7 +30,10 @@ class ImagePickerButtonState extends State<ImagePickerButton> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: GestureDetector(
         onTap: _pickImage,
-        child: const Icon(Icons.camera_alt_rounded),
+        child: const Icon(
+          Icons.camera_alt_rounded,
+          color: Colors.black,
+        ),
       ),
     );
   }

@@ -54,21 +54,21 @@ class _CircularStepsState extends State<CircularSteps> {
   }
 
   void initPlatformState() {
-    gyroscopeEvents.listen((GyroscopeEvent event) {
-      setState(() {
-        _steps = event.x.toString();
-      });
-    });
+    // gyroscopeEvents.listen((GyroscopeEvent event) {
+    //   setState(() {
+    //     _steps = event.x.toString();
+    //   });
+    // });
 
-    _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream
-        .listen(onPedestrianStatusChanged)
-        .onError(onPedestrianStatusError);
+    // _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
+    // _pedestrianStatusStream
+    //     .listen(onPedestrianStatusChanged)
+    //     .onError(onPedestrianStatusError);
 
-    _stepCountStream = Pedometer.stepCountStream;
-    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+    // _stepCountStream = Pedometer.stepCountStream;
+    // _stepCountStream.listen(onStepCount).onError(onStepCountError);
 
-    if (!mounted) return;
+    // if (!mounted) return;
   }
 
   @override

@@ -87,7 +87,11 @@ class ChatsList extends StatelessWidget {
                           ? const TextStyle(fontWeight: FontWeight.bold)
                           : const TextStyle(fontStyle: FontStyle.italic),
                     ),
-                    subtitle: Text(getLastMessageContent(lastMessage)),
+                    subtitle: Text(
+                      getLastMessageContent(lastMessage),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     trailing: Text(time),
                   ),
                 ),

@@ -50,7 +50,7 @@ class RecordButtonState extends State<RecordButton> {
         _isRecording ? Icons.stop : Icons.mic,
         color: _isRecording
             ? Colors.red.withOpacity(0.3)
-            : Theme.of(context).iconTheme.color,
+            : Colors.black,
       ),
       onPressed: _isRecording ? _stop : _start,
     );

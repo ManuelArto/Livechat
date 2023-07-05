@@ -38,11 +38,20 @@ class FriendsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: add usernameList to FriendsProvider anc check when add newFriend
+  // TODO: add usernameList to FriendsProvider and check when add newFriend
   void updateOnlineFriends(List<dynamic> usernameList) {
     for (Friend friend in authUser!.friends) {
-        friend.isOnline = usernameList.contains(friend.username);
+      friend.isOnline = usernameList.contains(friend.username);
     }
+
+    notifyListeners();
+  }
+
+  void updateFriendLocation(Map<String, dynamic> friendLocation) {
+    authUser!.friends
+        .firstWhere((friend) => friend.username == friendLocation["username"])
+      ..lat = friendLocation["lat"]
+      ..long = friendLocation["long"];
 
     notifyListeners();
   }

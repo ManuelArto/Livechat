@@ -79,9 +79,6 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
       case TextContent:
         return Text(
           message.content!.get(),
-          style: TextStyle(
-            color: isMe ? Colors.white : Colors.black,
-          ),
           textAlign: TextAlign.justify,
         );
       case AudioContent:
