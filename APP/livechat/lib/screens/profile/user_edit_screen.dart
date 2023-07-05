@@ -84,12 +84,12 @@ class _UserEditScreenState extends State<UserEditScreen> {
                 ),
               ),
               const SizedBox(height: 35),
-              buildTextField("Username", authUser.username, false, false),
+              buildTextField("Username", authUser.username, false),
               buildTextField(
-                  "Phone Number", authUser.phoneNumber, false, false),
-              buildTextField("Email", authUser.email, false, false),
-              // buildTextField("New Password", "********", false, true),
-              // buildTextField("Confirm Password", "********", false, true),
+                  "Phone Number", authUser.phoneNumber, false),
+              buildTextField("Email", authUser.email, false),
+              // buildTextField("New Password", "********", true),
+              // buildTextField("Confirm Password", "********", true),
               // _buildbuttons(),
             ],
           ),
@@ -98,7 +98,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
     );
   }
 
-  Widget buildTextField(String labelText, String placeholder, bool isDate, bool isPassword) {
+  Widget buildTextField(String labelText, String placeholder, bool isPassword) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(

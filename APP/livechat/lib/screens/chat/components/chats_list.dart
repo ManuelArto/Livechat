@@ -87,11 +87,24 @@ class ChatsList extends StatelessWidget {
                           ? const TextStyle(fontWeight: FontWeight.bold)
                           : const TextStyle(fontStyle: FontStyle.italic),
                     ),
-                    subtitle: Text(
-                      getLastMessageContent(lastMessage),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    subtitle: lastMessage?.content is TextContent
+                        ? Text(
+                            getLastMessageContent(lastMessage),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : Row(
+                            children: [
+                              Icon(lastMessage?.content is AudioContent
+                                  ? Icons.music_note
+                                  : lastMessage?.content is FileContent
+                                      ? Icons.file_copy
+                                      : lastMessage?.content is ImageContent
+                                          ? Icons.image
+                                          : null),
+                              Text(getLastMessageContent(lastMessage)),
+                            ],
+                          ),
                     trailing: Text(time),
                   ),
                 ),
@@ -102,7 +115,7 @@ class ChatsList extends StatelessWidget {
 
   String getLastMessageContent(Message? lastMessage) {
     if (lastMessage == null || lastMessage.content == null) return "No message";
-    
+
     Content content = lastMessage.content!;
 
     if (content is TextContent) return content.get();

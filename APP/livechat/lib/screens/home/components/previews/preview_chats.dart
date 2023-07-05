@@ -7,6 +7,7 @@ import '../../../../models/chat/chat.dart';
 import '../../../../models/chat/messages/content/audio_content.dart';
 import '../../../../models/chat/messages/content/content.dart';
 import '../../../../models/chat/messages/content/file_content.dart';
+import '../../../../models/chat/messages/content/image_content.dart';
 import '../../../../models/chat/messages/content/text_content.dart';
 import '../../../../models/chat/messages/message.dart';
 import '../../../../providers/chat_provider.dart';
@@ -64,8 +65,8 @@ class _PreviewChatsState extends State<PreviewChats> {
                 itemCount: chats.length > 3 ? 3 : chats.length,
                 itemBuilder: (context, index) {
                   Chat chat = chats[index];
-                  Message? lastMessage =
-                      chat.messages.isNotEmpty ? chat.messages.last : null;
+                  Message? lastMessage = chat.messages.isNotEmpty ? chat.messages.last : null;
+                  Content? content = lastMessage?.content;
                   String time = lastMessage?.time != null
                       ? DateFormat("jm").format(lastMessage!.time!)
                       : "";
@@ -77,7 +78,15 @@ class _PreviewChatsState extends State<PreviewChats> {
                               NetworkImage(widget.authUser.imageUrl),
                         ),
                         title: Text(chat.chatName),
-                        subtitle: Text(getLastMessageContent(lastMessage)),
+                        subtitle: content is TextContent ? Text(getLastMessageContent(lastMessage, content))  
+                        : Row(
+                            children: [
+                              Icon(content is AudioContent ? Icons.music_note
+                                : content is FileContent ? Icons.file_copy 
+                                : content is ImageContent ? Icons.image : null),
+                              Text(getLastMessageContent(lastMessage, content)),
+                            ],
+                          ),
                         trailing: Text(time),
                       ),
                       const Divider(thickness: 1),
@@ -98,15 +107,15 @@ class _PreviewChatsState extends State<PreviewChats> {
     );
   }
 
-  String getLastMessageContent(Message? lastMessage) {
-    if (lastMessage == null || lastMessage.content == null) return "No message";
+  String getLastMessageContent(Message? lastMessage, Content? content) {
+    if (lastMessage == null || content == null) return "No message";
     
-    Content content = lastMessage.content!;
-
     if (content is TextContent) return content.get();
     if (content is AudioContent) return "Audio received";
     if (content is FileContent) return "File received";
+    if (content is ImageContent) return "Media message";
 
     return "";
   }
 }
+
