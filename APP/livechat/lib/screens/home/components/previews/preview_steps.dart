@@ -1,54 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:livechat/screens/home/components/previews/steps/weekly_steps_chart.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../providers/steps_provider.dart';
 import 'steps/circular_steps.dart';
 
-class PreviewSteps extends StatelessWidget {
+class PreviewSteps extends StatefulWidget {
   const PreviewSteps({
     super.key,
   });
 
   @override
+  State<PreviewSteps> createState() => _PreviewStepsState();
+}
+
+class _PreviewStepsState extends State<PreviewSteps> {
+
+  void onPedometerError() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+    StepsProvider stepsProvider = Provider.of<StepsProvider>(context, listen: false);
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
+      child: FutureBuilder(
+        future: stepsProvider.initPedometer(onPedometerError),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return (snapshot.hasError || !snapshot.data!)
+              ? _buildNoPermissionPage("No pedometer permission given")
+              : const CircularSteps();
+        },
+      ),
+    );
+  }
+
+  Widget _buildNoPermissionPage(String errorMessage) {
+    return SizedBox(
+      width: double.infinity,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              'Today Steps',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+          Text(
+            errorMessage,
+            style: TextStyle(
+              fontSize: Theme.of(context).textTheme.labelLarge?.fontSize,
             ),
           ),
-          const Divider(thickness: 1),
-          const Expanded(
-            child: Center(
-              child: CircularSteps(),
-            ),
-          ),
-          Column(
-            children: [
-              const Text("Burned calories: 18 kcal"), // passi totali * 3
-              const SizedBox(height: 5),
-              const Text("Kilometers: 3.6 km"), // passi totali * 0.6
-              const Divider(thickness: 1),
-              TextButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) => const WeeklyStepsChart(),
-                  );
-                },
-                child: const Text('View more details'),
-              ),
-            ],
+          TextButton(
+            onPressed: () => setState(() {}),
+            child: const Text("Reload"),
           ),
         ],
       ),

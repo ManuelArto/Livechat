@@ -66,7 +66,6 @@ class _PreviewChatsState extends State<PreviewChats> {
                 itemBuilder: (context, index) {
                   Chat chat = chats[index];
                   Message? lastMessage = chat.messages.isNotEmpty ? chat.messages.last : null;
-                  Content? content = lastMessage?.content;
                   String time = lastMessage?.time != null
                       ? DateFormat("jm").format(lastMessage!.time!)
                       : "";
@@ -78,15 +77,7 @@ class _PreviewChatsState extends State<PreviewChats> {
                               NetworkImage(widget.authUser.imageUrl),
                         ),
                         title: Text(chat.chatName),
-                        subtitle: content is TextContent ? Text(getLastMessageContent(lastMessage, content))  
-                        : Row(
-                            children: [
-                              Icon(content is AudioContent ? Icons.music_note
-                                : content is FileContent ? Icons.file_copy 
-                                : content is ImageContent ? Icons.image : null),
-                              Text(getLastMessageContent(lastMessage, content)),
-                            ],
-                          ),
+                        subtitle: getLastMessageContent(lastMessage),
                         trailing: Text(time),
                       ),
                       const Divider(thickness: 1),
@@ -107,15 +98,42 @@ class _PreviewChatsState extends State<PreviewChats> {
     );
   }
 
-  String getLastMessageContent(Message? lastMessage, Content? content) {
-    if (lastMessage == null || content == null) return "No message";
-    
-    if (content is TextContent) return content.get();
-    if (content is AudioContent) return "Audio received";
-    if (content is FileContent) return "File received";
-    if (content is ImageContent) return "Media message";
+  Widget getLastMessageContent(Message? lastMessage) {
+    textWidget(message) => Text(
+          message,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
 
-    return "";
+    if (lastMessage == null || lastMessage.content == null) return textWidget("No message");
+
+    Content content = lastMessage.content!;
+
+    if (content is TextContent) return textWidget(content.get());
+
+    IconData? icon;
+    String message = "";
+
+    if (content is AudioContent) {
+      message = "Audio message";
+      icon = Icons.music_note;
+    }
+    if (content is FileContent) {
+      message = "File message";
+      icon = Icons.file_copy;
+    }
+    if (content is ImageContent) {
+      message = "Media message";
+      icon = Icons.image;
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        if (icon != null) Icon(icon, size: 16),
+        textWidget(message),
+      ],
+    );
   }
 }
 
