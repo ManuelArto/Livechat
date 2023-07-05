@@ -13,8 +13,8 @@ class LocationProvider extends ChangeNotifier {
   LocationPermission? _permission;
   StreamSubscription<Position>? _positionListener;
   final LocationSettings locationSettings = const LocationSettings(
-    accuracy: LocationAccuracy.bestForNavigation,
-    distanceFilter: 10,
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 100,
   );
 
   AuthUser? _authUser;
