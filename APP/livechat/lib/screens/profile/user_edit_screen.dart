@@ -98,7 +98,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
     );
   }
 
-  Widget buildTextField(String labelText, String placeholder, bool isDate, bool isPassword) {
+  Widget buildTextField(String labelText, String placeholder, bool isPassword) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
