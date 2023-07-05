@@ -15,7 +15,8 @@ class CircularSteps extends StatefulWidget {
 class _CircularStepsState extends State<CircularSteps> {
   @override
   Widget build(BuildContext context) {
-    int steps = Provider.of<StepsProvider>(context).steps;
+    StepsProvider stepsProvider = Provider.of<StepsProvider>(context);
+    int steps = stepsProvider.steps;
     int goal = Provider.of<SettingsProvider>(context).settings.goalSteps;
 
     Color progressColor = _getProgressColor(steps, goal);
@@ -61,9 +62,9 @@ class _CircularStepsState extends State<CircularSteps> {
         ),
         Column(
           children: [
-            Text("Burned calories: ${steps * 3} kcal"),
+            Text("Burned calories: ${stepsProvider.kcal} kcal"),
             const SizedBox(height: 5),
-            Text("Kilometers: ${(steps / 1000 * 0.6).toStringAsFixed(2)} km"),
+            Text("Kilometers: ${stepsProvider.km} km"),
             const Divider(thickness: 1),
             TextButton(
               onPressed: () {

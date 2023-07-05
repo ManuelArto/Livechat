@@ -1,67 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:livechat/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
+import '../../../../../constants.dart';
+import '../../../../../models/chart_steps_data.dart';
+import '../../../../../services/http_requester.dart';
 
 class WeeklyStepsChart extends StatefulWidget {
   const WeeklyStepsChart({
     super.key,
   });
 
-  @override 
+  @override
   State<WeeklyStepsChart> createState() => _WeeklyStepsChartState();
 }
 
 class _WeeklyStepsChartState extends State<WeeklyStepsChart> {
-  late List<StepsData> _chartData;
+  late List<ChartStepsData> _chartData;
 
-  @override
-  void initState() {
-    _chartData = getChartData();
-    super.initState();
+  Future<void> getWeeklyChartData() async {
+    String token = Provider.of<AuthProvider>(context).authUser!.token;
+
+    _chartData = (await HttpRequester.get(
+      URL_WEEKLY_STEPS,
+      token,
+    ) as List)
+        .map((user) => ChartStepsData.fromJson(user))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final int totalStepsOfWeek = _chartData.fold(0, (int sum, StepsData data) => sum + data.steps);
-    final double totalkCal = totalStepsOfWeek * 3;
-    final double totalKm = totalStepsOfWeek * 0.6;
+    Size size = MediaQuery.of(context).size;
 
     return AlertDialog(
       title: const Text('Weekly Trend'),
-      content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.height * 0.6,
-        child: Column(
-          children: [
-            Expanded(
-              child: SfCartesianChart(
-                series: <ChartSeries>[
-                  BarSeries<StepsData, int>(
-                    dataSource: _chartData,
-                    xValueMapper: (StepsData data, _) =>
-                        data.day,
-                    yValueMapper: (StepsData data, _) =>
-                        data.steps,
-                    dataLabelSettings:
-                        const DataLabelSettings(
-                      isVisible: true,
+      content: FutureBuilder(
+        future: getWeeklyChartData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if ((snapshot.hasError && snapshot.error is String)) {
+            return Center(child: Text(snapshot.error as String));
+          }
+
+          final int totalStepsOfWeek = _chartData.fold(0, (int sum, ChartStepsData data) => sum + data.steps);
+          final String totalkCal = (totalStepsOfWeek / 1000 * 3).toStringAsFixed(2);
+          final String totalKm = (totalStepsOfWeek / 1000 * 0.6).toStringAsFixed(2);
+          return SizedBox(
+            width: size.width * 0.8,
+            height: size.height * 0.6,
+            child: Column(
+              children: [
+                Expanded(
+                  child: SfCartesianChart(
+                    series: <ChartSeries>[
+                      BarSeries<ChartStepsData, int>(
+                        dataSource: _chartData,
+                        xValueMapper: (ChartStepsData data, _) => data.day,
+                        yValueMapper: (ChartStepsData data, _) => data.steps,
+                        dataLabelSettings:
+                            const DataLabelSettings(isVisible: true),
+                      ),
+                    ],
+                    primaryXAxis: CategoryAxis(),
+                    primaryYAxis: NumericAxis(
+                      edgeLabelPlacement: EdgeLabelPlacement.shift,
+                      title: AxisTitle(text: 'Steps'),
                     ),
                   ),
-                ],
-                primaryXAxis: CategoryAxis(),
-                primaryYAxis: NumericAxis(
-                  edgeLabelPlacement:
-                      EdgeLabelPlacement.shift,
-                  title: AxisTitle(text: 'Steps'),
                 ),
-              ),
+                Text("Total steps: $totalStepsOfWeek"),
+                const SizedBox(height: 3),
+                Text("Burned calories: $totalkCal kcal"),
+                const SizedBox(height: 3),
+                Text("Kilometers: $totalKm km"),
+              ],
             ),
-            Text("Total steps: $totalStepsOfWeek"),
-            const SizedBox(height: 3),
-            Text("Burned calories: $totalkCal kcal"), // passi totali * 3
-            const SizedBox(height: 3),
-            Text("Kilometers: $totalKm km"), // passi totali * 0.6
-          ],
-        ),
+          );
+        },
       ),
       actions: [
         TextButton(
@@ -73,26 +92,4 @@ class _WeeklyStepsChartState extends State<WeeklyStepsChart> {
       ],
     );
   }
-
-  List<StepsData> getChartData() {
-    final List<StepsData> chartData = [];
-    final DateTime today = DateTime.now();
-    
-    for (int i = 0; i < 7; i++) {
-      final DateTime date = today.subtract(Duration(days: i));
-      final int day = date.day;
-      final int steps = 1500; // bisogna prelevare i passi giornalieri
-      
-      final StepsData data = StepsData(day, steps);
-      chartData.add(data);
-    }
-    
-    return chartData;
-  }
-}
-
-class StepsData {
-  StepsData(this.day, this.steps);
-  final int day;
-  final int steps;
 }

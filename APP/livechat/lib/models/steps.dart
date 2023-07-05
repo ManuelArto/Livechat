@@ -13,8 +13,8 @@ class Steps {
 
   int? userId;
 
-  void updateSteps(StepCount event) {
-    if (offset == null) {
+  void updateSteps(StepCount event, bool isSameDay) {
+    if (offset == null || !isSameDay) {
       steps = 0;
       offset = event.steps;
     } else {

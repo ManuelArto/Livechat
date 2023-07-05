@@ -14,9 +14,12 @@ class StepsProvider extends ChangeNotifier {
   late Stream<StepCount> _stepCountStream;
 
   AuthUser? _authUser;
-  late Steps _steps;
+  Steps? _steps;
 
-  int get steps => _steps.steps ?? 0;
+  int get steps => _steps?.steps ?? 0;
+
+  get kcal => (steps / 1000 * 3).toStringAsFixed(2);
+  get km => (steps / 1000 * 0.6).toStringAsFixed(2);
 
   // Called everytime AuthProvider changes
   void update(AuthUser? authUser) {
@@ -29,11 +32,11 @@ class StepsProvider extends ChangeNotifier {
 
   void onStepCount(StepCount event) {
     debugPrint('$event');
-    _steps.updateSteps(event);
+    _steps?.updateSteps(event, _steps?.timeStamp != null ? isSameDayAccess(event.timeStamp, _steps!.timeStamp!) : false);
 
     _updateSteps();
     notifyListeners();
-    IsarService.instance.insertOrUpdate<Steps>(_steps);
+    IsarService.instance.insertOrUpdate<Steps>(_steps!);
   }
 
   void onStepCountError(error) {
@@ -57,17 +60,18 @@ class StepsProvider extends ChangeNotifier {
   }
 
   Future<void> _loadStepsFromMemory() async {
-    Steps? steps = await IsarService.instance.getSingle<Steps>(_authUser!.isarId);
+    _steps = await IsarService.instance.getSingle<Steps>(_authUser!.isarId);
 
-    if (steps != null && isSameDayAccess(steps.timeStamp!)) {
-      _steps = steps;
-    } else {
+    if (_steps == null || !isSameDayAccess(_steps!.timeStamp!, DateTime.now())) {
+      if (_steps != null) {
+        await IsarService.instance.delete<Steps>(_steps!.id);
+      }
       _steps = Steps(userId: _authUser!.isarId);
     }
   }
 
-  bool isSameDayAccess(DateTime date) {
-    return date.day == DateTime.now().day;
+  bool isSameDayAccess(DateTime date, DateTime compare) {
+    return date.day == compare.day;
   }
 
   void _updateSteps() {

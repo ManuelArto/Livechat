@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from bson import ObjectId
 
 from app.db import db
@@ -66,3 +66,25 @@ class StepsService:
 
         data_dict = {steps["userId"]: steps["steps"] for steps in data}
         return {id: data_dict.get(id, 0) for id in ids}
+
+    @staticmethod
+    def get_user_weekly_charts(user_id: ObjectId):
+        current_date = datetime.combine(date.today(), datetime.min.time())
+        last_week = current_date - timedelta(days=6)
+        data = db.USERS_STEPS.find(
+            filter={
+                "userId": user_id,
+                "day": {"$gte": last_week, "$lte": current_date},
+            },
+            projection={"day": 1, "steps": 1}
+        )
+
+        step_days = {steps["day"].day: steps["steps"] for steps in data}
+
+        weekly_charts = []
+        for i in range(7):
+            day = (current_date - timedelta(days=i)).day
+            steps = step_days.get(day, 0)
+            weekly_charts.append({"day": day, "steps": steps})
+
+        return weekly_charts

@@ -56,6 +56,14 @@ class FriendsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateFriendSteps(Map<String, dynamic> friendLocation) {
+    authUser!.friends
+        .firstWhere((friend) => friend.username == friendLocation["username"])
+        .steps = friendLocation["steps"];
+
+    notifyListeners();
+  }
+
   void userDisconnected(String username) {
     authUser!.friends
         .firstWhere((friend) => friend.username == username)

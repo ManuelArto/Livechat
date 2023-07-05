@@ -26,3 +26,9 @@ async def update_steps(
         )
 
     return {"message": "Steps updated"}
+
+@router.get("/weeklyCharts")
+async def get_weekly_charts(user_data: Annotated[dict, Depends(jwt_helper.get_current_user)]):
+    weekly_charts = StepsService.get_user_weekly_charts(ObjectId(user_data["id"]))
+
+    return {"data": weekly_charts}

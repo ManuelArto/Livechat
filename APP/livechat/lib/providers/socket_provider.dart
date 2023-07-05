@@ -74,6 +74,7 @@ class SocketProvider with ChangeNotifier {
     _socketIO?.on("new_friend", _newFriend);
     _socketIO?.on("friend_deleted", _deleteFriend);
     _socketIO?.on("friend_location_update", _updatefriendLocation);
+    _socketIO?.on("friend_steps_update", _updatefriendSteps);
     // CHAT
     _socketIO?.on('receive_message', _receiveMessage);
   }
@@ -100,6 +101,10 @@ class SocketProvider with ChangeNotifier {
 
   void _updatefriendLocation(jsonData) {
     friendsProvider.updateFriendLocation(jsonData);
+  }
+
+  void _updatefriendSteps(jsonData) {
+    friendsProvider.updateFriendSteps(jsonData);
   }
 
   void _deleteFriend(jsonData) {
