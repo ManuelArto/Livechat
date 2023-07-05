@@ -117,7 +117,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Change goal steps",
+            "Change daily steps goal",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,

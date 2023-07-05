@@ -87,24 +87,7 @@ class ChatsList extends StatelessWidget {
                           ? const TextStyle(fontWeight: FontWeight.bold)
                           : const TextStyle(fontStyle: FontStyle.italic),
                     ),
-                    subtitle: lastMessage?.content is TextContent
-                        ? Text(
-                            getLastMessageContent(lastMessage),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : Row(
-                            children: [
-                              Icon(lastMessage?.content is AudioContent
-                                  ? Icons.music_note
-                                  : lastMessage?.content is FileContent
-                                      ? Icons.file_copy
-                                      : lastMessage?.content is ImageContent
-                                          ? Icons.image
-                                          : null),
-                              Text(getLastMessageContent(lastMessage)),
-                            ],
-                          ),
+                    subtitle: getLastMessageContent(lastMessage),
                     trailing: Text(time),
                   ),
                 ),
@@ -113,19 +96,43 @@ class ChatsList extends StatelessWidget {
           );
   }
 
-  String getLastMessageContent(Message? lastMessage) {
-    if (lastMessage == null || lastMessage.content == null) return "No message";
+  Widget getLastMessageContent(Message? lastMessage) {
+    textWidget(message) => Text(
+          message,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+
+    if (lastMessage == null || lastMessage.content == null) return textWidget("No message");
 
     Content content = lastMessage.content!;
 
-    if (content is TextContent) return content.get();
-    if (content is AudioContent) return "Audio message";
-    if (content is FileContent) return "File message";
-    if (content is ImageContent) return "Media message";
+    if (content is TextContent) return textWidget(content.get());
 
-    return "";
+    IconData? icon;
+    String message = "";
+
+    if (content is AudioContent) {
+      message = "Audio message";
+      icon = Icons.music_note;
+    }
+    if (content is FileContent) {
+      message = "File message";
+      icon = Icons.file_copy;
+    }
+    if (content is ImageContent) {
+      message = "Media message";
+      icon = Icons.image;
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        if (icon != null) Icon(icon, size: 16),
+        textWidget(message),
+      ],
+    );
   }
-
 
   Future<List<String>?> _selectSectionsDialog(BuildContext context, Chat chat) async {
     Size screenSize = MediaQuery.of(context).size;
@@ -134,8 +141,8 @@ class ChatsList extends StatelessWidget {
             .where((section) => section != "All")
             .toList();
     List<String> selectedSections = List.of(chat.sections)
-            .where((section) => section != "All")
-            .toList();
+        .where((section) => section != "All")
+        .toList();
 
     return await showDialog<List<String>>(
       context: context,
@@ -160,10 +167,10 @@ class ChatsList extends StatelessWidget {
                           value: selectedSections.contains(section),
                           onChanged: (bool? value) {
                             if (value == null) return;
-                            setState(() => value && !selectedSections.contains(section) 
-                              ? selectedSections.add(section)
-                              : selectedSections.remove(section)
-                            );
+                            setState(() =>
+                                value && !selectedSections.contains(section)
+                                    ? selectedSections.add(section)
+                                    : selectedSections.remove(section));
                           },
                           title: Text(section),
                         );

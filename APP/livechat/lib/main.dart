@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_foreground_service/flutter_foreground_service.dart';
 import 'package:livechat/database/isar_service.dart';
 import 'package:livechat/providers/settings_provider.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   IsarService.instance;
+  ForegroundService().start();
 
   runApp(const MyApp());
 }

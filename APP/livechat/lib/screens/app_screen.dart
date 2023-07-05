@@ -3,6 +3,7 @@ import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/providers/location_provider.dart';
 import 'package:livechat/providers/navbar_notifier.dart';
 import 'package:livechat/providers/friends_provider.dart';
+import 'package:livechat/providers/steps_provider.dart';
 import 'package:livechat/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -65,6 +66,10 @@ class _AppScreenState extends State<AppScreen> {
         ChangeNotifierProxyProvider<AuthProvider, LocationProvider>(
           create: (_) => LocationProvider(),
           update:(context, auth, location) => location!..update(auth.authUser),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, StepsProvider>(
+          create: (_) => StepsProvider(),
+          update:(context, auth, steps) => steps!..update(auth.authUser),
         ),
       ],
       builder: (context, child) {
