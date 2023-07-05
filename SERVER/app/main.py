@@ -21,13 +21,14 @@ app.add_middleware(
 )
 
 # Routers
-from app.routers import auth, friends, friend_requests, location
+from app.routers import auth, friends, friend_requests, location, steps
 from app.routers.ws import chat
 
 app.include_router(auth.router, tags=["Auth"], prefix="/api/auth")
 app.include_router(friends.router, tags=["Friends"], prefix="/api/friends")
 app.include_router(friend_requests.router, tags=["Friends Requests"], prefix="/api/requests")
 app.include_router(location.router, tags=["User Location"], prefix="/api/location")
+app.include_router(steps.router, tags=["User Steps"], prefix="/api/steps")
 app.mount('/', app=chat.sio_app)
 
 

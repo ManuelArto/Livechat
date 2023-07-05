@@ -28,6 +28,7 @@ class UserResponse(UserSchema):
     id: str
     imageUrl: str
     location: dict  # {"lat": 0.0, "long": 0.0}
+    steps: int
 
 
 class AuthUserResponse(UserResponse):
@@ -54,6 +55,7 @@ class FriendRequestReceivedResponse(BaseModel):
 class UserDocument(UserSchema):
     id: str
     password: str
+    steps: int
     location: dict  # {"lat": 0.0, "long": 0.0}
     friends: list  # ObjectId | UserDocument
 
@@ -61,3 +63,9 @@ class UserDocument(UserSchema):
 class FriendRequest(BaseModel):
     sender: str
     receiver: str
+
+
+class UsersSteps(BaseModel):
+    steps: int
+    day: datetime
+    user: str

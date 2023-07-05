@@ -3,6 +3,7 @@ from app.config import settings
 from app.schemas import UserCreateSchema, UserDocument, AuthUserResponse, UserResponse
 from app.helpers import hashing, jwt_helper
 from app.db import db
+from app.services.steps_service import StepsService
 
 
 class UserService:
@@ -21,7 +22,13 @@ class UserService:
         user_id = db.USER.insert_one(document_user).inserted_id
 
         return UserService.create_auth_user_response(
-            UserDocument(id=str(user_id), friends=[], location={}, **user.dict())
+            UserDocument(
+                id=str(user_id),
+                friends=[],
+                location={},
+                steps=0,
+                **user.dict(),
+            )
         )
 
     @staticmethod
@@ -30,13 +37,20 @@ class UserService:
         if not user:
             return None
 
-        return UserDocument(id=str(user["_id"]), **user)
+        steps = StepsService.retrieve_steps(user_id=user["_id"])
+
+        return UserDocument(id=str(user["_id"]), steps=steps, **user)
 
     @staticmethod
     def retrieve_users(ids: list) -> UserDocument:
         users = db.USER.find(filter={"_id": {"$in": ids}})
 
-        return [UserDocument(id=str(user["_id"]), **user) for user in users]
+        users_steps = StepsService.retrieve_users_steps(ids)
+
+        return [
+            UserDocument(id=str(user["_id"]), steps=users_steps[user["_id"]], **user)
+            for user in users
+        ]
 
     @staticmethod
     def update_location(user_id: ObjectId, lat: float, long: float) -> UserDocument:
@@ -47,8 +61,7 @@ class UserService:
 
         user = db.USER.find_one(filter={"_id": user_id})
 
-        return UserDocument(id=str(user["_id"]), **user)
-
+        return UserDocument(id=str(user["_id"]), steps=0, **user)
 
     # DOCUMENT -> RESPONSE
 
