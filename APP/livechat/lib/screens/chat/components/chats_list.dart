@@ -21,7 +21,8 @@ class ChatsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
+    final FriendsProvider friendsProvider =
+        Provider.of<FriendsProvider>(context);
 
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
     final List<Chat> chats = chatProvider.chatsBySection(section);
@@ -34,7 +35,8 @@ class ChatsList extends StatelessWidget {
             itemCount: chats.length,
             itemBuilder: (context, index) {
               Chat chat = chats[index];
-              Message? lastMessage = chat.messages.isNotEmpty ? chat.messages.last : null;
+              Message? lastMessage =
+                  chat.messages.isNotEmpty ? chat.messages.last : null;
               String time = lastMessage?.time != null
                   ? DateFormat("jm").format(lastMessage!.time!)
                   : "";
@@ -56,8 +58,11 @@ class ChatsList extends StatelessWidget {
                         }
                       : null,
                   onLongPress: () async {
-                    final List<String>? selectedSections = await _selectSectionsDialog(context, chat);
-                    if (selectedSections != null) chatProvider.updateSelectedSections(chat, selectedSections);
+                    final List<String>? selectedSections =
+                        await _selectSectionsDialog(context, chat);
+                    if (selectedSections != null)
+                      chatProvider.updateSelectedSections(
+                          chat, selectedSections);
                   },
                   child: ListTile(
                     leading: Stack(
@@ -87,11 +92,24 @@ class ChatsList extends StatelessWidget {
                           ? const TextStyle(fontWeight: FontWeight.bold)
                           : const TextStyle(fontStyle: FontStyle.italic),
                     ),
-                    subtitle: Text(
-                      getLastMessageContent(lastMessage),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    subtitle: lastMessage?.content is TextContent
+                        ? Text(
+                            getLastMessageContent(lastMessage),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : Row(
+                            children: [
+                              Icon(lastMessage?.content is AudioContent
+                                  ? Icons.music_note
+                                  : lastMessage?.content is FileContent
+                                      ? Icons.file_copy
+                                      : lastMessage?.content is ImageContent
+                                          ? Icons.image
+                                          : null),
+                              Text(getLastMessageContent(lastMessage)),
+                            ],
+                          ),
                     trailing: Text(time),
                   ),
                 ),
@@ -102,7 +120,7 @@ class ChatsList extends StatelessWidget {
 
   String getLastMessageContent(Message? lastMessage) {
     if (lastMessage == null || lastMessage.content == null) return "No message";
-    
+
     Content content = lastMessage.content!;
 
     if (content is TextContent) return content.get();
@@ -113,16 +131,16 @@ class ChatsList extends StatelessWidget {
     return "";
   }
 
-
-  Future<List<String>?> _selectSectionsDialog(BuildContext context, Chat chat) async {
+  Future<List<String>?> _selectSectionsDialog(
+      BuildContext context, Chat chat) async {
     Size screenSize = MediaQuery.of(context).size;
-    List<String> sections = Provider.of<SectionsProvider>(context, listen: false)
+    List<String> sections =
+        Provider.of<SectionsProvider>(context, listen: false)
             .sections
             .where((section) => section != "All")
             .toList();
-    List<String> selectedSections = List.of(chat.sections)
-            .where((section) => section != "All")
-            .toList();
+    List<String> selectedSections =
+        List.of(chat.sections).where((section) => section != "All").toList();
 
     return await showDialog<List<String>>(
       context: context,
@@ -147,10 +165,10 @@ class ChatsList extends StatelessWidget {
                           value: selectedSections.contains(section),
                           onChanged: (bool? value) {
                             if (value == null) return;
-                            setState(() => value && !selectedSections.contains(section) 
-                              ? selectedSections.add(section)
-                              : selectedSections.remove(section)
-                            );
+                            setState(() =>
+                                value && !selectedSections.contains(section)
+                                    ? selectedSections.add(section)
+                                    : selectedSections.remove(section));
                           },
                           title: Text(section),
                         );
