@@ -13,6 +13,9 @@ const URL_AUTH_REFRESH_TOKEN = "$SERVER_URL/api/auth/refreshToken";
 // LOCATION
 const URL_UPDATE_LOCATION = "$SERVER_URL/api/location/update?lat={}&long={}";
 
+// STEPS
+const URL_UPDATE_STEPS = "$SERVER_URL/api/steps/update?steps={}";
+
 // FRIENDS
 const URL_FRIENDS_LIST = "$SERVER_URL/api/friends/list";
 const URL_REMOVE_FRIEND = "$SERVER_URL/api/friends/{}";

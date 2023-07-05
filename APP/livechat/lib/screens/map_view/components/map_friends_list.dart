@@ -81,7 +81,7 @@ class _MapFriendsListState extends State<MapFriendsList> {
         Friend friend = friendsFiltered[index];
         return ListTile(
           title: Text(friend.username),
-          subtitle: Text('Steps: 100'),
+          subtitle: Text('Steps: ${friend.steps}'),
           leading: CircleAvatar(
             backgroundImage: NetworkImage(friend.imageUrl),
           ),

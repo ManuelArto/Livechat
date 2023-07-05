@@ -1,10 +1,12 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:livechat/providers/steps_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../models/auth/auth_user.dart';
+import '../../../models/friend.dart';
 import '../../../models/user.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/friends_provider.dart';
@@ -19,6 +21,7 @@ class MapMarkers extends StatefulWidget {
 
 class _MapMarkersState extends State<MapMarkers> {
   late LocationProvider locationProvider;
+  late StepsProvider stepsProvider;
   late FriendsProvider friendsProvider;
   late AuthUser authUser;
   late ThemeData theme;
@@ -28,6 +31,7 @@ class _MapMarkersState extends State<MapMarkers> {
     authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
     friendsProvider = Provider.of<FriendsProvider>(context);
     locationProvider = Provider.of<LocationProvider>(context);
+    stepsProvider = Provider.of<StepsProvider>(context);
 
     theme = Theme.of(context);
 
@@ -56,13 +60,15 @@ class _MapMarkersState extends State<MapMarkers> {
     required LatLng location,
     required bool isMe,
   }) {
+    final steps = isMe ? stepsProvider.steps : (user as Friend).steps;
+
     return Marker(
       width: size,
       height: size,
       point: location,
       builder: (ctx) => Tooltip(
         triggerMode: TooltipTriggerMode.tap,
-        message: '${user.username}\n10000 steps', // TODO: qui andrà user.steps
+        message: '${user.username}\n$steps steps',
         preferBelow: false,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),

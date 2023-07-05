@@ -6,9 +6,9 @@ import 'package:path_provider/path_provider.dart';
 import '../models/chat/chat.dart';
 import '../models/chat/section.dart';
 import '../models/settings.dart';
+import '../models/steps.dart';
 
 class IsarService {
-
   // SINGLETON
   static IsarService? _instance;
   static IsarService get instance {
@@ -26,8 +26,16 @@ class IsarService {
       final dir = await getApplicationDocumentsDirectory();
 
       return await Isar.open(
-          [ChatSchema, SectionSchema, AuthUserSchema, SettingsSchema],
-          inspector: !kReleaseMode, directory: dir.path);
+        [
+          ChatSchema,
+          SectionSchema,
+          AuthUserSchema,
+          SettingsSchema,
+          StepsSchema
+        ],
+        inspector: !kReleaseMode,
+        directory: dir.path,
+      );
     }
 
     return Future.value(Isar.getInstance());
@@ -46,6 +54,11 @@ class IsarService {
           ),
         )
         .findAll();
+  }
+
+  Future<T?> getSingle<T>(int authUserId) async {
+    List<T> list = await getAll<T>(authUserId);
+    return list.isNotEmpty ? list.first : null;
   }
 
   Future<void> saveAll<T>(List<T> data) async {
@@ -70,14 +83,12 @@ class IsarService {
   }
 
   // AUTHUSER
-
   Future<AuthUser?> getLoggedUser() async {
     final isar = await db;
     return await isar.authUsers.filter().isLoggedEqualTo(true).findFirst();
   }
 
   // SETTINGS
-
   Future<Settings?> getSettings() async {
     final isar = await db;
     return await isar.settings.buildQuery().findFirst();
