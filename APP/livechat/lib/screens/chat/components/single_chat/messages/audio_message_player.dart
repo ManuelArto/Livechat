@@ -20,6 +20,7 @@ class AudioMessagePlayer extends StatefulWidget {
 class AudioMessagePlayerState extends State<AudioMessagePlayer> {
   late final AudioSource source;
   final _audioPlayer = AudioPlayer();
+  late StreamSubscription<PlayerState> _playerStateChangedSubscription;
 
   late Future<Duration?> futureDuration;
 
@@ -27,7 +28,8 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
   void initState() {
     super.initState();
     source = AudioSource.uri(Uri.parse(widget.audio.get().path));
-
+    
+    _playerStateChangedSubscription = _audioPlayer.playerStateStream.listen(playerStateListener);
     futureDuration = _audioPlayer.setAudioSource(source);
   }
 
@@ -39,6 +41,7 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
 
   @override
   void dispose() {
+    _playerStateChangedSubscription.cancel();
     _audioPlayer.dispose();
     super.dispose();
   }
@@ -96,11 +99,10 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
       stream: _audioPlayer.positionStream,
       builder: (context, snapshot) {
         if (snapshot.hasData && duration != null) {
-          final progress = snapshot.data!.inMicroseconds / duration.inMicroseconds;
           return Row(
             children: [
               CupertinoSlider(
-                value: progress > 1 ? 1 : progress,
+                value: snapshot.data!.inMicroseconds / duration.inMicroseconds,
                 onChanged: (val) {
                   _audioPlayer.seek(duration * val);
                 },
