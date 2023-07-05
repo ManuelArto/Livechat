@@ -75,25 +75,23 @@ class ChatProvider with ChangeNotifier {
 
   void _loadChatsFromMemory() async {
     List<Chat> chatsList = await IsarService.instance.getAll<Chat>(authUser!.isarId);
-    if (chatsList.isEmpty) {
-      _chats = {
-        for (var friend in authUser!.friends)
-          friend.username: Chat(
-            chatName: friend.username,
-            messages: [],
-            toRead: 0,
-          )..userId = authUser!.isarId
-      };
+    
+    // * Bisogna ricreare la list dei messaggi a causa di un errore di ISAR https://github.com/isar/isar/discussions/781
+    _chats = {
+      for (var chat in chatsList)
+        chat.chatName: chat..messages = List.from(chat.messages)
+    };
 
-      IsarService.instance.saveAll<Chat>(_chats.values.toList());
-    } else {
-      _chats = {
-        for (var chat in chatsList)
-          chat.chatName: chat..messages = List.from(chat.messages)
-      };
-      // * Bisogna ricreare la list dei messaggi a causa di un errore di ISAR https://github.com/isar/isar/discussions/781
+    // Add every new friend not in chatsList to _chats
+    for (var friend in authUser!.friends.skipWhile((friend) => _chats.keys.contains(friend.username))) {
+      _chats[friend.username] = Chat(
+        chatName: friend.username,
+        messages: [],
+        toRead: 0,
+      )..userId = authUser!.isarId;
     }
 
+    IsarService.instance.saveAll<Chat>(_chats.values.toList());
     notifyListeners();
   }
 }
