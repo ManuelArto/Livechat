@@ -13,7 +13,7 @@ class LocationProvider extends ChangeNotifier {
   LocationPermission? _permission;
   StreamSubscription<Position>? _positionListener;
   final LocationSettings locationSettings = const LocationSettings(
-    accuracy: LocationAccuracy.high,
+    accuracy: LocationAccuracy.bestForNavigation,
     distanceFilter: 10,
   );
 
@@ -58,7 +58,9 @@ class LocationProvider extends ChangeNotifier {
       }
     }
 
-    _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .onError((error, stackTrace) => Future.error(error.toString()));
+    _updateLocation();
     _startListener();
 
     return _position;
@@ -68,17 +70,20 @@ class LocationProvider extends ChangeNotifier {
     _positionListener = Geolocator.getPositionStream(locationSettings: locationSettings)
       .listen((Position? position) {
         _position = position ?? _position;
-        debugPrint(
-            "Update Location ${position?.latitude} ${position?.longitude}");
+        debugPrint("Update Location ${position?.latitude} ${position?.longitude}");
 
-        HttpRequester.post(
-          {},
-          URL_UPDATE_LOCATION.format(_position.latitude, _position.longitude),
-          token: _authUser?.token,
-        );
+        _updateLocation();
         notifyListeners();
       },
     );
     _positionListener?.onError((_) => _errorCallBack());
+  }
+
+  void _updateLocation() {
+    HttpRequester.post(
+      {},
+      URL_UPDATE_LOCATION.format(_position.latitude, _position.longitude),
+      token: _authUser?.token,
+    );
   }
 }
