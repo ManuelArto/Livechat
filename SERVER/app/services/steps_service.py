@@ -16,7 +16,7 @@ class StepsService:
             steps (int): The number of steps to update.
         """
         current_date = datetime.combine(date.today(), datetime.min.time())
-        db.STEPS_USERS.update_one(
+        db.USERS_STEPS.update_one(
         filter={"userId": user_id, "day": current_date},
             update={"$set": {"steps": steps}},
             upsert=True,
@@ -38,7 +38,7 @@ class StepsService:
             int: The number of steps for the user. Returns 0 if no steps are found.
         """
         current_date = datetime.combine(date.today(), datetime.min.time())
-        user_steps = db.STEPS_USERS.find_one(
+        user_steps = db.USERS_STEPS.find_one(
             filter={
                 "userId": user_id,
                 "day": current_date,
@@ -56,7 +56,7 @@ class StepsService:
         Retrieve the number of steps for a list of users for the current day
         """
         current_date = datetime.combine(date.today(), datetime.min.time())
-        data = db.STEPS_USERS.find(
+        data = db.USERS_STEPS.find(
             filter={
                 "userId": {"$in": ids},
                 "day": current_date,

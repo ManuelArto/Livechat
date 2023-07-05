@@ -6,7 +6,7 @@ from app.config import settings
 class MongoDB:
     USER: collection.Collection
     REQUEST: collection.Collection
-    STEPS_USERS: collection.Collection
+    USERS_STEPS: collection.Collection
 
     def setup(self):
         client = mongo_client.MongoClient(
@@ -32,8 +32,8 @@ class MongoDB:
         self.USER.create_index([("username", pymongo.ASCENDING)], unique=True)
         self.USER.create_index([("phoneNumber", pymongo.ASCENDING)], unique=True)
 
-        self.STEPS_USERS = db.steps_users
-        self.STEPS_USERS.create_index(
+        self.USERS_STEPS = db.users_steps
+        self.USERS_STEPS.create_index(
             [("day", pymongo.ASCENDING), ("userId", pymongo.ASCENDING)],
             unique=True
         )
