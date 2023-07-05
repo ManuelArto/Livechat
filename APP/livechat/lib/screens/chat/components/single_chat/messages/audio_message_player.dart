@@ -96,10 +96,11 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
       stream: _audioPlayer.positionStream,
       builder: (context, snapshot) {
         if (snapshot.hasData && duration != null) {
+          final progress = snapshot.data!.inMicroseconds / duration.inMicroseconds;
           return Row(
             children: [
               CupertinoSlider(
-                value: snapshot.data!.inMicroseconds / duration.inMicroseconds,
+                value: progress > 1 ? 1 : progress,
                 onChanged: (val) {
                   _audioPlayer.seek(duration * val);
                 },
