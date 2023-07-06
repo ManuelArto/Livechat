@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../models/auth/auth_user.dart';
+import '../../../providers/auth_provider.dart';
 
 class HeadingHome extends StatelessWidget {
-  const HeadingHome({
-    super.key,
-    required this.authUser,
-  });
-
-  final AuthUser authUser;
+  const HeadingHome({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AuthUser authUser = Provider.of<AuthProvider>(context).authUser!;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
@@ -36,16 +35,28 @@ class HeadingHome extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Text("Welcome", style: TextStyle(fontSize: 25, fontFamily: "Roboto"),),
+                    const Text(
+                      "Welcome",
+                      style: TextStyle(fontSize: 25, fontFamily: "Roboto"),
+                    ),
                     const SizedBox(width: 8),
-                    Text(authUser.username, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold))
+                    Text(
+                      authUser.username,
+                      style: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
                   ],
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 2.0, top: 5.0),
                   child: Row(
                     children: [
-                      Text("Livechat: Where Connections Come Alive!", style: TextStyle(fontSize: 15)),
+                      Text(
+                        "Livechat: Where Connections Come Alive!",
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ],
                   ),
                 ),

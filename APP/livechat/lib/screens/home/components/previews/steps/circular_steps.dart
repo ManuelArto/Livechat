@@ -44,7 +44,7 @@ class _CircularStepsState extends State<CircularSteps> {
               message: "The steps will be\ncounted starting from\nthe first daily access",
               showDuration: Duration(seconds: 3),
               child: Padding(
-                padding: EdgeInsets.only(left: 4.0),
+                padding: EdgeInsets.only(right: 12.0),
                 child: Icon(Icons.info_outlined),
               ),
             )

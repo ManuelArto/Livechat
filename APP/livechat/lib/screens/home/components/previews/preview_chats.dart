@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../models/auth/auth_user.dart';
 import '../../../../models/chat/chat.dart';
 import '../../../../models/chat/messages/content/audio_content.dart';
 import '../../../../models/chat/messages/content/content.dart';
@@ -11,15 +10,11 @@ import '../../../../models/chat/messages/content/image_content.dart';
 import '../../../../models/chat/messages/content/text_content.dart';
 import '../../../../models/chat/messages/message.dart';
 import '../../../../providers/chat_provider.dart';
+import '../../../../providers/friends_provider.dart';
 import '../../../../providers/navbar_notifier.dart';
 
 class PreviewChats extends StatefulWidget {
-  const PreviewChats({
-    Key? key,
-    required this.authUser,
-  }) : super(key: key);
-
-  final AuthUser authUser;
+  const PreviewChats({super.key});
 
   @override
   State<PreviewChats> createState() => _PreviewChatsState();
@@ -28,10 +23,13 @@ class PreviewChats extends StatefulWidget {
 class _PreviewChatsState extends State<PreviewChats> {
   @override
   Widget build(BuildContext context) {
+    final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
+    
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
-    final List<Chat> chats = chatProvider.chatsBySection("All");
-    NavbarNotifier navbarNotifier =
-        Provider.of<NavbarNotifier>(context, listen: false);
+    final List<Chat> chats = chatProvider.chatsBySection("All")
+      ..removeWhere((chat) => !friendsProvider.isFriend(chat.chatName));
+    
+    NavbarNotifier navbarNotifier = Provider.of<NavbarNotifier>(context, listen: false);
 
     return Card(
       elevation: 2,
@@ -65,7 +63,8 @@ class _PreviewChatsState extends State<PreviewChats> {
                 itemCount: chats.length > 3 ? 3 : chats.length,
                 itemBuilder: (context, index) {
                   Chat chat = chats[index];
-                  Message? lastMessage = chat.messages.isNotEmpty ? chat.messages.last : null;
+                  Message? lastMessage =
+                      chat.messages.isNotEmpty ? chat.messages.last : null;
                   String time = lastMessage?.time != null
                       ? DateFormat("jm").format(lastMessage!.time!)
                       : "";
@@ -73,8 +72,9 @@ class _PreviewChatsState extends State<PreviewChats> {
                     children: [
                       ListTile(
                         leading: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(widget.authUser.imageUrl),
+                          backgroundImage: NetworkImage(
+                            friendsProvider.getFriend(chat.chatName).imageUrl,
+                          ),
                         ),
                         title: Text(chat.chatName),
                         subtitle: getLastMessageContent(lastMessage),
@@ -136,4 +136,3 @@ class _PreviewChatsState extends State<PreviewChats> {
     );
   }
 }
-

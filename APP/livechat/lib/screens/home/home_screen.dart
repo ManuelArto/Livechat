@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/widgets/top_bar.dart';
-import 'package:provider/provider.dart';
 
-import '../../models/auth/auth_user.dart';
-import '../../providers/auth_provider.dart';
 import 'ranking_screen.dart';
 import 'components/card_home.dart';
 import 'components/heading_home.dart';
@@ -35,18 +32,14 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
  Scaffold _buildOnScreen(BuildContext context) {
     super.build(context);
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
 
-    AuthUser authUser = authProvider.authUser!;
-
-    return Scaffold(
-      appBar: const TopBar(),
+    return const Scaffold(
+      appBar: TopBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeadingHome(authUser: authUser),
-            const Padding(
+            HeadingHome(),
+            Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
@@ -70,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                 ],
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
@@ -95,8 +88,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: PreviewsPageView(authUser: authUser),
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: PreviewsPageView(),
             ),
           ],
         ),
