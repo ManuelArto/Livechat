@@ -23,13 +23,15 @@ class PreviewChats extends StatefulWidget {
 class _PreviewChatsState extends State<PreviewChats> {
   @override
   Widget build(BuildContext context) {
-    final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
-    
+    final FriendsProvider friendsProvider =
+        Provider.of<FriendsProvider>(context);
+
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
     final List<Chat> chats = chatProvider.chatsBySection("All")
       ..removeWhere((chat) => !friendsProvider.isFriend(chat.chatName));
-    
-    NavbarNotifier navbarNotifier = Provider.of<NavbarNotifier>(context, listen: false);
+
+    NavbarNotifier navbarNotifier =
+        Provider.of<NavbarNotifier>(context, listen: false);
 
     return Card(
       elevation: 2,
@@ -57,10 +59,12 @@ class _PreviewChatsState extends State<PreviewChats> {
             )
           else
             Expanded(
-              child: ListView.builder(
+              child: ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: chats.length > 3 ? 3 : chats.length,
+                separatorBuilder: (context, index) =>
+                    index == 2 ? Container() : const Divider(thickness: 1),
                 itemBuilder: (context, index) {
                   Chat chat = chats[index];
                   Message? lastMessage =
@@ -68,20 +72,15 @@ class _PreviewChatsState extends State<PreviewChats> {
                   String time = lastMessage?.time != null
                       ? DateFormat("jm").format(lastMessage!.time!)
                       : "";
-                  return Column(
-                    children: [
-                      ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                            friendsProvider.getFriend(chat.chatName).imageUrl,
-                          ),
-                        ),
-                        title: Text(chat.chatName),
-                        subtitle: getLastMessageContent(lastMessage),
-                        trailing: Text(time),
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        friendsProvider.getFriend(chat.chatName).imageUrl,
                       ),
-                      const Divider(thickness: 1),
-                    ],
+                    ),
+                    title: Text(chat.chatName),
+                    subtitle: getLastMessageContent(lastMessage),
+                    trailing: Text(time),
                   );
                 },
               ),
