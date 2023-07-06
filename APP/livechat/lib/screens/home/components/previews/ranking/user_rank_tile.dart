@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../../../../models/auth/auth_user.dart';
+import 'package:livechat/models/settings.dart';
+import 'package:livechat/providers/settings_provider.dart';
+import 'package:provider/provider.dart';
 
 class UserRankTile extends StatelessWidget {
   const UserRankTile({
@@ -8,19 +9,21 @@ class UserRankTile extends StatelessWidget {
     required this.username,
     required this.position,
     required this.totalSteps,
-    required this.authUser,
+    required this.imageUrl,
   }) : super(key: key);
 
-  final AuthUser authUser;
   final String username;
   final int position;
   final int totalSteps;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
+    Settings settings = Provider.of<SettingsProvider>(context).settings;
+
     return ListTile(
       leading: SizedBox(
-        width:90,
+        width: 90,
         child: Row(
           children: [
             Container(
@@ -28,15 +31,25 @@ class UserRankTile extends StatelessWidget {
               height: 30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: position == 1 ? Colors.yellow[400] : 
-                position == 2 ? Colors.grey[400] : Colors.brown[400],
+                color: position == 1
+                    ? Colors.yellow[400]
+                    : position == 2
+                        ? Colors.grey[400]
+                        : position == 3
+                            ? Colors.brown[400]
+                            : Colors.transparent,
               ),
               child: Center(
                 child: Text(
                   position.toString(),
                   style: TextStyle(
-                    color: position == 1 ? Colors.red :
-                    position == 2 ? Colors.black : Colors.white,
+                    color: position == 1
+                        ? Colors.red
+                        : position == 2
+                            ? Colors.black
+                            : position == 3 || settings.darkMode
+                                ? Colors.white
+                                : Colors.black,
                     fontSize: 20,
                   ),
                 ),
@@ -45,12 +58,13 @@ class UserRankTile extends StatelessWidget {
             const SizedBox(width: 20),
             CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(authUser.imageUrl),
+              backgroundImage: NetworkImage(imageUrl),
             ),
           ],
         ),
       ),
-      title: Text(username, style: const TextStyle(fontWeight: FontWeight.bold)),
+      title:
+          Text(username, style: const TextStyle(fontWeight: FontWeight.bold)),
       subtitle: Text('Total steps: ${totalSteps.toString()}'),
     );
   }

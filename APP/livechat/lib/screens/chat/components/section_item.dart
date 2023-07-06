@@ -36,8 +36,8 @@ class SectionItem extends StatelessWidget {
       child: Row(
         children: [
           if (sectionsProvider.currentSection == page)
-            const CircleAvatar(
-              backgroundColor: Colors.black,
+            CircleAvatar(
+              backgroundColor: Colors.blueGrey[900],
               radius: 6.0,
             ),
           const SizedBox(width: 10.0),

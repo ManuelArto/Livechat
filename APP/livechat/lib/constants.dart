@@ -17,6 +17,10 @@ const URL_UPDATE_LOCATION = "$SERVER_URL/api/location/update?lat={}&long={}";
 const URL_UPDATE_STEPS = "$SERVER_URL/api/steps/update?steps={}";
 const URL_WEEKLY_STEPS = "$SERVER_URL/api/steps/weeklyCharts";
 
+// RANKING
+const URL_DAILY_RANKING = "$SERVER_URL/api/ranking/daily";
+const URL_WEEKLY_RANKING = "$SERVER_URL/api/ranking/weekly";
+
 // FRIENDS
 const URL_FRIENDS_LIST = "$SERVER_URL/api/friends/list";
 const URL_REMOVE_FRIEND = "$SERVER_URL/api/friends/{}";
