@@ -31,6 +31,8 @@ class ChatProvider with ChangeNotifier {
   List<Chat> chatsBySection(String section) =>
       _chats.values.where((chat) => chat.sections.contains(section)).toList();
 
+  int get totalToRead => _chats.values.fold(0, (prev, chat) => prev + chat.toRead);
+
   // METHODS
 
   void newUserChat(Map<String, dynamic> data) {
