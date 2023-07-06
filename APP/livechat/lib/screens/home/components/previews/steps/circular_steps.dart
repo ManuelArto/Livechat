@@ -23,20 +23,18 @@ class _CircularStepsState extends State<CircularSteps> {
 
     return Column(
       children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        const Stack(
+          alignment: Alignment.centerRight,
           children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Today Steps',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Today Steps',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -44,8 +42,11 @@ class _CircularStepsState extends State<CircularSteps> {
             Tooltip(
               triggerMode: TooltipTriggerMode.tap,
               message: "The steps will be\ncounted starting from\nthe first daily access",
-              child: Icon(Icons.info_outlined),
               showDuration: Duration(seconds: 3),
+              child: Padding(
+                padding: EdgeInsets.only(left: 4.0),
+                child: Icon(Icons.info_outlined),
+              ),
             )
           ],
         ),
