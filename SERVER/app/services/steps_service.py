@@ -17,7 +17,7 @@ class StepsService:
         """
         current_date = datetime.combine(date.today(), datetime.min.time())
         db.USERS_STEPS.update_one(
-        filter={"userId": user_id, "day": current_date},
+            filter={"userId": user_id, "day": current_date},
             update={"$set": {"steps": steps}},
             upsert=True,
         )
@@ -61,10 +61,39 @@ class StepsService:
                 "userId": {"$in": ids},
                 "day": current_date,
             },
-            projection={"userId": 1, "steps": 1}
+            projection={"userId": 1, "steps": 1},
         )
 
         data_dict = {steps["userId"]: steps["steps"] for steps in data}
+        return {id: data_dict.get(id, 0) for id in ids}
+
+    @staticmethod
+    def retrieve_weekly_users_steps(ids: list) -> dict:
+        """
+        Retrieve the number of steps for a list of users for the current week
+        """
+        current_date = datetime.combine(date.today(), datetime.min.time())
+        last_week = current_date - timedelta(days=6)
+
+        # group by userId and sum all steps
+        data = db.USERS_STEPS.aggregate(
+            [
+                {
+                    "$match": {
+                        "userId": {"$in": ids},
+                        "day": {"$gte": last_week, "$lte": current_date},
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": "$userId",
+                        "steps": {"$sum": "$steps"},
+                    },
+                },
+            ]
+        )
+
+        data_dict = {steps["_id"]: steps["steps"] for steps in data}
         return {id: data_dict.get(id, 0) for id in ids}
 
     @staticmethod
@@ -76,7 +105,7 @@ class StepsService:
                 "userId": user_id,
                 "day": {"$gte": last_week, "$lte": current_date},
             },
-            projection={"day": 1, "steps": 1}
+            projection={"day": 1, "steps": 1},
         )
 
         step_days = {steps["day"].day: steps["steps"] for steps in data}
