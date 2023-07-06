@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/chat_provider.dart';
+import '../../providers/navbar_notifier.dart';
+import '../../services/notification_service.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/top_bar.dart';
 import 'components/active_users.dart';
@@ -14,7 +18,26 @@ class ChatsScreen extends StatefulWidget {
   State<ChatsScreen> createState() => _ChatsScreenState();
 }
 
-class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClientMixin{
+class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClientMixin {
+
+  void _listenForNotifications(BuildContext context) {
+    ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false);
+
+    NotificationService.instance.didReceiveLocalNotificationStream.stream
+        .listen((event) {
+          Provider.of<NavbarNotifier>(context, listen: false).changePage(Pages.chatsScreen);
+          chatProvider.readChat(event.payload!);
+
+          Navigator.of(context, rootNavigator: false)
+              .pushNamed(
+                SingleChatScreen.routeName,
+                arguments: event.payload!,
+              )
+              .then((_) => chatProvider.currentChat = "");
+        },
+    );
+  }
+
   Route<dynamic>? _buildRoute(settings) {
     switch (settings.name) {
       case SingleChatScreen.routeName:
@@ -29,6 +52,7 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
   }
 
   Scaffold _buildChatScreen(BuildContext context) {
+    _listenForNotifications(context);
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
