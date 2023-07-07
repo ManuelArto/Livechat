@@ -35,13 +35,13 @@ class SendMessageState extends State<SendMessage> {
         Provider.of<AuthProvider>(context, listen: false).authUser?.username;
   }
 
-  void _sendMessage() {
-    socketProvider.sendMessage(_controller.text, "text", widget.chatName);
+  void _sendMessage() async {
+    await socketProvider.sendMessage(_controller.text, "text", widget.chatName);
     setState(() => _controller.text = "");
   }
 
-  void _sendImage(File image) {
-    socketProvider.sendMessage(image, "image", widget.chatName);
+  void _sendImage(File image) async {
+    await socketProvider.sendMessage(image, "image", widget.chatName);
   }
 
   Future<void> _selectAndSendFile() async {
@@ -49,7 +49,7 @@ class SendMessageState extends State<SendMessage> {
 
     if (result != null) {
       File file = File(result.files.single.path!);
-      socketProvider.sendMessage(file, "file", widget.chatName);
+      await socketProvider.sendMessage(file, "file", widget.chatName);
     }
   }
 
@@ -80,8 +80,8 @@ class SendMessageState extends State<SendMessage> {
     });
   }
 
-  void _sendAudio() {
-    socketProvider.sendMessage(audio!, "audio", widget.chatName);
+  void _sendAudio() async {
+    await socketProvider.sendMessage(audio!, "audio", widget.chatName);
     _cleanAudio();
   }
 
@@ -128,6 +128,7 @@ class SendMessageState extends State<SendMessage> {
             IconButton(
               icon: const Icon(
                 Icons.delete,
+                color: Colors.black,
               ),
               onPressed: _cleanAudio,
             ),

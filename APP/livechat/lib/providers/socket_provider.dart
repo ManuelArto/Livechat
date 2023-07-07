@@ -44,18 +44,23 @@ class SocketProvider with ChangeNotifier {
     _initListeners();
   }
 
-  void sendMessage(dynamic message, String type, String receiver) {
+  Future<void> sendMessage(dynamic message, String type, String receiver) async {
     debugPrint("Sending $message to $receiver");
-    final data = json.encode({
+    final data = {
+      "sender": authUser.username,
       "message": type == "text" ? message : base64Encode(message.readAsBytesSync()),
       "receiver": receiver,
       "type": type,
       if (type != "text") "filename": (message as File).path.split('/').last
-    });
+    };
+    _socketIO?.emit("send_message", json.encode(data));
 
-    _socketIO?.emit("send_message", data);
+    Content content = type == "text"
+        ? TextContent(content: message)
+        : await FileService.saveAndCreateFileMessage(data);
+
     chatProvider.addMessage(
-      Content.createContentInstance(type, message),
+      content,
       authUser.username,
       receiver,
     );
