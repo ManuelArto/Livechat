@@ -89,8 +89,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
       case ImageContent:
         return ImageMessage(image: message.content as ImageContent);
       case FileContent:
-        return FileMessage(
-            file: message.content as FileContent, sender: widget.chatName);
+        return FileMessage(file: message.content as FileContent, sender: message.sender!);
       default:
         throw UnsupportedError(
           "Message content ${message.content.runtimeType} not supported",

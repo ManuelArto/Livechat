@@ -17,7 +17,7 @@ class ImagePickerButtonState extends State<ImagePickerButton> {
 
     final ImageSource? imageSource = await _showDialog();
     if (imageSource != null) {
-      final image = await picker.pickImage(source: imageSource);
+      final image = await picker.pickImage(source: imageSource, imageQuality: 20);
       if (image != null) {
         widget.sendImage(File(image.path));
       }

@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 
 const PORT = 8000;
-const SERVER_URL = kDebugMode ? "http://192.168.0.105:$PORT": "https://live-chat-fp.herokuapp.com";
+const SERVER_URL = kDebugMode ? "http://192.168.0.105:$PORT": "http://192.168.0.105:$PORT";
 
 // AUTH
 const URL_AUTH_SIGN_UP = "$SERVER_URL/api/auth/register";
@@ -33,3 +33,8 @@ const URL_REQUESTS_LIST = "$SERVER_URL/api/requests/list?sended={}";
 const URL_ADD_REQUEST = "$SERVER_URL/api/requests/{}/send";
 const URL_ACCEPT_REQUEST = "$SERVER_URL/api/requests/{}/accept";
 const URL_REMOVE_REQUEST = "$SERVER_URL/api/requests/{}";
+
+
+
+// FILE
+const MAX_FILE_SIZE = 950000;

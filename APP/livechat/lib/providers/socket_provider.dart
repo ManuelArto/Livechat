@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:livechat/models/chat/messages/content/text_content.dart';
 import 'package:livechat/providers/friends_provider.dart';
 import 'package:livechat/services/file_service.dart';
@@ -44,26 +46,24 @@ class SocketProvider with ChangeNotifier {
     _initListeners();
   }
 
-  Future<void> sendMessage(dynamic message, String type, String receiver) async {
-    debugPrint("Sending $message to $receiver");
+  void sendMessage(dynamic raw, String type, String receiver, {String? filename}) {
+    debugPrint("Sending $type to $receiver");
+    String message = type == "text"
+        ? raw
+        : type == "file"
+            ? base64Encode((raw as PlatformFile).bytes!)
+            : base64Encode((raw as File).readAsBytesSync());
+
     final data = {
       "sender": authUser.username,
-      "message": type == "text" ? message : base64Encode(message.readAsBytesSync()),
+      "message": message,
       "receiver": receiver,
       "type": type,
-      if (type != "text") "filename": (message as File).path.split('/').last
+      if (filename != null) "filename": filename
     };
     _socketIO?.emit("send_message", json.encode(data));
 
-    Content content = type == "text"
-        ? TextContent(content: message)
-        : await FileService.saveAndCreateFileMessage(data);
-
-    chatProvider.addMessage(
-      content,
-      authUser.username,
-      receiver,
-    );
+    _storeNewMessage(data);
   }
 
   // PRIVATE METHODS
@@ -117,8 +117,12 @@ class SocketProvider with ChangeNotifier {
   }
 
   void _receiveMessage(jsonData) async {
-    if (jsonData["sender"] == authUser.username) return;
+    if (jsonData["sender"] == authUser.username) return; // In teoria non serve, ma in caso di gruppi sì
 
+    _storeNewMessage(jsonData);
+  }
+
+  void _storeNewMessage(jsonData) async {
     Content content = jsonData["type"] == "text"
         ? TextContent(content: jsonData["message"])
         : await FileService.saveAndCreateFileMessage(jsonData);

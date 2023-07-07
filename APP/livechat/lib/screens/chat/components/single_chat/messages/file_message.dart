@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/messages/content/file_content.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 
 class FileMessage extends StatelessWidget {
   final FileContent file;
@@ -11,7 +11,7 @@ class FileMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => OpenFile.open(file.get().path),
+      onTap: () => OpenFilex.open(file.get().path),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

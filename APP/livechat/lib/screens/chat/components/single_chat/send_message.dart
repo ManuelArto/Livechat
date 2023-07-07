@@ -10,6 +10,8 @@ import 'package:livechat/screens/chat/components/single_chat/record_button.dart'
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../constants.dart';
+
 class SendMessage extends StatefulWidget {
   final String chatName;
 
@@ -36,20 +38,31 @@ class SendMessageState extends State<SendMessage> {
   }
 
   void _sendMessage() async {
-    await socketProvider.sendMessage(_controller.text, "text", widget.chatName);
+    socketProvider.sendMessage(_controller.text, "text", widget.chatName);
     setState(() => _controller.text = "");
   }
 
   void _sendImage(File image) async {
-    await socketProvider.sendMessage(image, "image", widget.chatName);
+    String filename = image.path.split('/').last;
+    socketProvider.sendMessage(image, "image", widget.chatName, filename: filename);
   }
 
   Future<void> _selectAndSendFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      withData: true,
+      type: FileType.custom,
+      allowedExtensions: ["pdf", "doc", "docx", "txt"],
+    );
 
     if (result != null) {
-      File file = File(result.files.single.path!);
-      await socketProvider.sendMessage(file, "file", widget.chatName);
+      PlatformFile file = result.files.first;
+      if (file.size > MAX_FILE_SIZE) {
+        _showSnackBar("File too large", isError: true);
+        return;
+      }
+
+      String filename = file.name;
+      socketProvider.sendMessage(file, "file", widget.chatName, filename: filename);
     }
   }
 
@@ -81,7 +94,8 @@ class SendMessageState extends State<SendMessage> {
   }
 
   void _sendAudio() async {
-    await socketProvider.sendMessage(audio!, "audio", widget.chatName);
+    String filename = audio!.path.split('/').last;
+    socketProvider.sendMessage(audio!, "audio", widget.chatName, filename: filename);
     _cleanAudio();
   }
 
@@ -169,4 +183,14 @@ class SendMessageState extends State<SendMessage> {
     final formattedSeconds = remainingSeconds.toString().padLeft(2, '0');
     return '$formattedMinutes:$formattedSeconds';
   }
+
+  void _showSnackBar(String text, {bool isError = false}) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text),
+      backgroundColor: isError ? Colors.red : Colors.green,
+    ));
+  }
+
 }

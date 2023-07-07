@@ -14,7 +14,7 @@ class FileService {
     final file = await File(
       '${directory.path}/media/$type/$filename',
     ).create(recursive: true);
-    await file.writeAsBytes(base64Decode(jsonData["message"]));
+    await file.writeAsBytes(base64Decode(jsonData["message"]), flush: true);
 
     return Content.createContentInstance(type, file);
   }

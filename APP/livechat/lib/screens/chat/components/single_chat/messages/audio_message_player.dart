@@ -27,10 +27,9 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
   @override
   void initState() {
     super.initState();
-    source = AudioSource.uri(Uri.parse(widget.audio.get().path));
     
+    source = AudioSource.uri(Uri.parse(widget.audio.get().path));
     _playerStateChangedSubscription = _audioPlayer.playerStateStream.listen(playerStateListener);
-    futureDuration = _audioPlayer.setAudioSource(source);
   }
 
   void playerStateListener(PlayerState state) async {
@@ -48,6 +47,8 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
 
   @override
   Widget build(BuildContext context) {
+    futureDuration = _audioPlayer.setAudioSource(source);
+    
     return FutureBuilder<Duration?>(
       future: futureDuration,
       builder: (context, snapshot) {
