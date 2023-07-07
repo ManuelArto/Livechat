@@ -13,6 +13,8 @@ class FriendsProvider with ChangeNotifier {
   List<Friend> get friends => authUser?.friends ?? [];
   List<Friend> get onlineUsers => friends.where((friend) => friend.isOnline).toList();
 
+  List<String> _onlineUsers = [];
+
   // Called everytime AuthProvider changes
   void update(AuthUser? authUser) {
     if (authUser == null) {
@@ -25,8 +27,14 @@ class FriendsProvider with ChangeNotifier {
   // FRIENDS
 
   void newFriend(Map<String, dynamic> data) {
-    authUser!.friends.add(Friend.fromJson(data));
+    Friend friend = Friend.fromJson(data);
+
+    authUser!.friends.add(friend);
     IsarService.instance.insertOrUpdate<AuthUser>(authUser!);
+
+    if (_onlineUsers.contains(friend.username)) {
+      friend.isOnline = true;
+    }
 
     notifyListeners();
   }
@@ -38,12 +46,12 @@ class FriendsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: add usernameList to FriendsProvider and check when add newFriend
   void updateOnlineFriends(List<dynamic> usernameList) {
     for (Friend friend in authUser!.friends) {
       friend.isOnline = usernameList.contains(friend.username);
     }
 
+    _onlineUsers = List.from(usernameList);
     notifyListeners();
   }
 
@@ -65,10 +73,13 @@ class FriendsProvider with ChangeNotifier {
   }
 
   void userDisconnected(String username) {
-    authUser!.friends
-        .firstWhere((friend) => friend.username == username)
-        .isOnline = false;
+    if (authUser!.friends.any((friend) => friend.username == username)) {
+      authUser!.friends
+          .firstWhere((friend) => friend.username == username)
+          .isOnline = false;
+    }
 
+    _onlineUsers.remove(username);
     notifyListeners();
   }
 
