@@ -31,36 +31,35 @@ class HeadingHome extends StatelessWidget {
               radius: 30.0,
               backgroundImage: NetworkImage(authUser.imageUrl),
             ),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      "Welcome",
-                      style: TextStyle(fontSize: 25, fontFamily: "Roboto"),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      authUser.username,
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ],
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 2.0, top: 5.0),
-                  child: Row(
+            FittedBox(
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        "Livechat: Where Connections Come Alive!",
-                        style: TextStyle(fontSize: 15),
+                      const Text(
+                        "Welcome",
+                        style: TextStyle(fontSize: 25, fontFamily: "Roboto"),
                       ),
+                      const SizedBox(width: 8),
+                      Text(
+                        authUser.username,
+                        style: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
                     ],
                   ),
-                ),
-              ],
+                  const Padding(
+                    padding: EdgeInsets.only(left: 2.0, top: 5.0),
+                    child: Row(
+                      children: [
+                        Text("Livechat: Where Connections Come Alive!"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

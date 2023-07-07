@@ -56,7 +56,7 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _controlButtons(),
-              _slider(snapshot.data),
+              Expanded(child: _slider(snapshot.data)),
             ],
           );
         }
@@ -84,8 +84,8 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
               }
             },
             child: SizedBox(
-              width: 40,
-              height: 40,
+              width: 25,
+              height: 25,
               child: Icon(icon, color: color, size: 30),
             ),
           ),
@@ -100,12 +100,15 @@ class AudioMessagePlayerState extends State<AudioMessagePlayer> {
       builder: (context, snapshot) {
         if (snapshot.hasData && duration != null) {
           return Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              CupertinoSlider(
-                value: snapshot.data!.inMicroseconds / duration.inMicroseconds,
-                onChanged: (val) {
-                  _audioPlayer.seek(duration * val);
-                },
+              Expanded(
+                child: CupertinoSlider(
+                  value: snapshot.data!.inMicroseconds / duration.inMicroseconds,
+                  onChanged: (val) {
+                    _audioPlayer.seek(duration * val);
+                  },
+                ),
               ),
               Text(
                 "${_formatDuration(snapshot.data!.inSeconds)}/${_formatDuration(duration.inSeconds)}",
