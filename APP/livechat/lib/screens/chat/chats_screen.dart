@@ -25,6 +25,8 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
 
     NotificationService.instance.didReceiveLocalNotificationStream.stream
         .listen((event) {
+          NotificationService.instance.clearAllNotification();
+
           Provider.of<NavbarNotifier>(context, listen: false).changePage(Pages.chatsScreen);
           chatProvider.readChat(event.payload!);
 
