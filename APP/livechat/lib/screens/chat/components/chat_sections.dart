@@ -87,7 +87,7 @@ class _ChatSectionsState extends State<ChatSections> {
               Expanded(
                 child: TextField(
                   controller: controller,
-                  autofocus: true,
+                  autofocus: false,
                   decoration: const InputDecoration(
                     labelText: "Section name",
                   ),
