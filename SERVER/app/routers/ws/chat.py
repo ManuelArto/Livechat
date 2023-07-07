@@ -46,11 +46,13 @@ async def disconnect(sid):
 
 @sio_server.on("send_message")
 async def handle_msg(sid, input_data):
-    print(f"WEBSOCKET: [MESSAGE] {input_data}")
-    username = (await sio_server.get_session(sid))["username"]
-
     body = json.loads(input_data)
 
+    body_print = dict(body)
+    body_print.pop("message")
+    print(f"WEBSOCKET: [MESSAGE] {body_print}")
+
+    username = (await sio_server.get_session(sid))["username"]
     data = {
         "sender": username,
         **body
