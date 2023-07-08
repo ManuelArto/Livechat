@@ -44,7 +44,10 @@ class LocationProvider extends ChangeNotifier {
     _errorCallBack = errorCallBack;
 
     // Test if location services are enabled
-    _serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    _serviceEnabled = await Geolocator.isLocationServiceEnabled().timeout(
+      const Duration(seconds: 2),
+      onTimeout: () => false,
+    );
     if (!_serviceEnabled) {
       return Future.error('Location services are disabled.');
     }

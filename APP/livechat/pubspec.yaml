@@ -37,7 +37,6 @@ dependencies:
     sdk: flutter
   flutter_charts: ^0.5.1
   flutter_contacts: ^1.1.6
-  flutter_foreground_service: ^0.3.0
   flutter_local_notifications: ^15.0.1
   flutter_map: ^4.0.0
   flutter_rating_bar: ^4.0.1
@@ -108,8 +107,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: true

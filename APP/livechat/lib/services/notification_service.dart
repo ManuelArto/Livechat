@@ -47,6 +47,7 @@ class NotificationService {
           importance: Importance.high,
           priority: Priority.max,
           groupKey: groupKey,
+          enableVibration: true,
           styleInformation: imagePath != null
               ? BigPictureStyleInformation(
                   FilePathAndroidBitmap(imagePath),

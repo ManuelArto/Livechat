@@ -414,14 +414,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.6"
-  flutter_foreground_service:
-    dependency: "direct main"
-    description:
-      name: flutter_foreground_service
-      sha256: a094e8715f3f72fa395fa0fdaa8b375e1d8b284ca7418babe6dbab456a9a8dd9
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:

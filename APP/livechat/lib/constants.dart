@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 
 const PORT = 8000;
-const SERVER_URL = kDebugMode ? "http://192.168.0.105:$PORT": "https://livechat-api.onrender.com";
+const SERVER_URL = kDebugMode ? "http://host:$PORT": "https://livechat-api.onrender.com";
 
 // AUTH
 const URL_AUTH_SIGN_UP = "$SERVER_URL/api/auth/register";
@@ -35,6 +35,8 @@ const URL_ACCEPT_REQUEST = "$SERVER_URL/api/requests/{}/accept";
 const URL_REMOVE_REQUEST = "$SERVER_URL/api/requests/{}";
 
 
-
 // FILE
 const MAX_FILE_SIZE = 950000;
+
+// SHARE LINK
+const DOWNLOAD_LINK = "https://drive.google.com/file/d/1p6CDsgj8xyJc192Gn4C1V3d5hR6L9yZV/view?usp=drive_link";
