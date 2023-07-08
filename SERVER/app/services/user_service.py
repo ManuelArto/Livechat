@@ -32,6 +32,10 @@ class UserService:
         )
 
     @staticmethod
+    def remove(user_id: ObjectId):
+        db.USER.delete_one({"_id": user_id})
+
+    @staticmethod
     def retrieve_user_by(key: str, value: any) -> UserDocument:
         user = db.USER.find_one(filter={key: value})
         if not user:

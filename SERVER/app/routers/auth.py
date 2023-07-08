@@ -1,5 +1,6 @@
 import base64
 from typing import Annotated
+from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Request, Response, status, Depends
 from pymongo.errors import DuplicateKeyError
 
@@ -24,6 +25,12 @@ async def register(body: UserCreateSchema, _: Request) -> AuthUserResponse:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"User already exists, duplicate {', '.join(duplicate_fields)}",
+        )
+    except Exception as _:
+        UserService.remove(ObjectId(user.id))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error",
         )
 
     return user
