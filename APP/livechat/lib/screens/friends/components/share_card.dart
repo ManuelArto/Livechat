@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../constants.dart';
 import '../../../models/auth/auth_user.dart';
 
 class ShareCard extends StatelessWidget {
@@ -27,7 +28,7 @@ class ShareCard extends StatelessWidget {
         subtitle: Text("livechat/${user.username}"),
         trailing: IconButton(
           onPressed: () {
-            Share.share("Discover Livechat, the ultimate communication app. Download now!\nhttps://example.com");
+            Share.share("Discover Livechat, the ultimate communication app. Download now!\n$DOWNLOAD_LINK");
           },
           icon: const Icon(Icons.share_rounded),
         ),
