@@ -25,7 +25,7 @@ class UserService:
             UserDocument(
                 id=str(user_id),
                 friends=[],
-                location={},
+                location={"lat": 0.0, "long": 0.0},
                 steps=0,
                 **user.dict(),
             )
