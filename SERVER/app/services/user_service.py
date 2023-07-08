@@ -15,7 +15,7 @@ class UserService:
         document_user = user.dict() | {
             "created_at": user._created_at,
             "updated_at": user._updated_at,
-            "location": {},
+            "location": {"lat": 0.0, "long": 0.0},
             "friends": [],
         }
 
@@ -25,7 +25,7 @@ class UserService:
             UserDocument(
                 id=str(user_id),
                 friends=[],
-                location={"lat": 0.0, "long": 0.0},
+                location={},
                 steps=0,
                 **user.dict(),
             )
