@@ -49,7 +49,10 @@ class LocationProvider extends ChangeNotifier {
       return Future.error('Location services are disabled.');
     }
 
-    _permission = await Geolocator.checkPermission();
+    _permission = await Geolocator.checkPermission().timeout(
+      const Duration(seconds: 2),
+      onTimeout: () => LocationPermission.denied,
+    );
     if (_permission == LocationPermission.denied) {
       _permission = await Geolocator.requestPermission();
       if (_permission == LocationPermission.denied ||
