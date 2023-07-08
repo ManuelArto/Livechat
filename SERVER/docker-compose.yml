@@ -2,7 +2,10 @@ version: '3.7'
 services:
 
   livechat_api:
-    build: ./
+    build: 
+      context: ./
+      # args:
+        # ENV_FILE: .env.prod
     ports:
       - 8000:80
     depends_on:
