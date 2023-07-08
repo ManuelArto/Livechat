@@ -1,9 +1,16 @@
 from os import path
+import os
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import storage
 
-cred = credentials.Certificate(path.join(path.dirname(__file__), "credentials.json"))
+from app.config import Settings
+
+cred = credentials.Certificate(
+    path.join(path.dirname(__file__), "credentials.json")
+    if Settings.DEBUG_MODE
+    else os.getenv("credentials_path")
+)
 firebase_admin.initialize_app(cred, {"storageBucket": "livechat-e7db8.appspot.com"})
 
 bucket = storage.bucket()
