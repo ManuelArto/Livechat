@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 
 const PORT = 8000;
-const SERVER_URL = kDebugMode ? "http://192.168.0.105:$PORT": "http://192.168.0.105:$PORT";
+const SERVER_URL = kDebugMode ? "http://192.168.0.105:$PORT": "https://livechat-api.onrender.com";
 
 // AUTH
 const URL_AUTH_SIGN_UP = "$SERVER_URL/api/auth/register";
