@@ -1,9 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-const PORT = 8000;
-const SERVER_URL = kDebugMode ? "http://host:$PORT": "https://livechat-api.onrender.com";
+// const PORT = 8000;
+// const SERVER_URL = kDebugMode ? "http://host:$PORT": "https://livechat-api.onrender.com";
+const SERVER_URL = "https://livechat-api.onrender.com";
 
 // AUTH
 const URL_AUTH_SIGN_UP = "$SERVER_URL/api/auth/register";
