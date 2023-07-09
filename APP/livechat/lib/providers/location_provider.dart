@@ -74,9 +74,9 @@ class LocationProvider extends ChangeNotifier {
 
   void _startListener() {
     _positionListener = Geolocator.getPositionStream(locationSettings: locationSettings)
-      .listen((Position? position) {
-        _position = position ?? _position;
-        debugPrint("Update Location ${position?.latitude} ${position?.longitude}");
+      .listen((Position position) {
+        _position = position;
+        debugPrint("Update Location ${position.latitude} ${position.longitude}");
 
         _updateLocation();
         notifyListeners();
