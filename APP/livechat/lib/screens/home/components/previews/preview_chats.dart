@@ -23,15 +23,14 @@ class PreviewChats extends StatefulWidget {
 class _PreviewChatsState extends State<PreviewChats> {
   @override
   Widget build(BuildContext context) {
-    final FriendsProvider friendsProvider =
-        Provider.of<FriendsProvider>(context);
+    final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
 
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
     final List<Chat> chats = chatProvider.chatsBySection("All")
-      ..removeWhere((chat) => !friendsProvider.isFriend(chat.chatName));
+      ..removeWhere((chat) => !friendsProvider.isFriend(chat.chatName))
+      ..sort();
 
-    NavbarNotifier navbarNotifier =
-        Provider.of<NavbarNotifier>(context, listen: false);
+    NavbarNotifier navbarNotifier = Provider.of<NavbarNotifier>(context, listen: false);
 
     return Card(
       elevation: 2,

@@ -19,22 +19,12 @@ class ChatsList extends StatelessWidget {
 
   const ChatsList({Key? key, required this.section}) : super(key: key);
 
-  int chatSort(Chat a, Chat b) {
-    if (a.messages.isEmpty && b.messages.isEmpty) return 0;
-    if (a.messages.isEmpty) return 1;
-    if (b.messages.isEmpty) return -1;
-
-    return b.messages.last.time!.compareTo(a.messages.last.time!);
-  }
-
   @override
   Widget build(BuildContext context) {
     final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
 
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
-    final List<Chat> chats = chatProvider.chatsBySection(section);
-
-    chats.sort(chatSort);
+    final List<Chat> chats = chatProvider.chatsBySection(section)..sort();
 
     return chats.isEmpty
         ? Center(

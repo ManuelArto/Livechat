@@ -5,7 +5,7 @@ import 'messages/message.dart';
 part 'chat.g.dart';
 
 @collection
-class Chat {
+class Chat implements Comparable<Chat> {
   Id id = Isar.autoIncrement;
 
   String chatName;
@@ -20,4 +20,13 @@ class Chat {
     required this.messages,
     this.toRead = 0,
   });
+  
+  @override
+  int compareTo(Chat other) {
+    if (messages.isEmpty && other.messages.isEmpty) return 0;
+    if (messages.isEmpty) return 1;
+    if (other.messages.isEmpty) return -1;
+
+    return other.messages.last.time!.compareTo(messages.last.time!);
+  }
 }
