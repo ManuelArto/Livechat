@@ -4,6 +4,8 @@ Livechat is a mobile messaging application with advanced social features such as
 
 The app is developed using Flutter, a cross-platform framework that allows for the creation of native applications for both Android and iOS. It utilizes various packages and technologies to provide a seamless user experience and real-time data updates.
 
+Link for the APK Android app: [link](https://drive.google.com/file/d/1p6CDsgj8xyJc192Gn4C1V3d5hR6L9yZV/view)
+
 ## Source Code
 The source code of the app can be found in the ***/lib*** folder
 
