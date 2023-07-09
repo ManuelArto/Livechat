@@ -15,11 +15,14 @@ class StepsProvider extends ChangeNotifier {
 
   AuthUser? _authUser;
   Steps? _steps;
+  PermissionStatus? _permission;
 
   int get steps => _steps?.steps ?? 0;
 
   get kcal => (steps / 1000 * 3).toStringAsFixed(2);
   get km => (steps / 1000 * 0.6).toStringAsFixed(2);
+
+  void setPermission(PermissionStatus permission) => _permission = permission;
 
   // Called everytime AuthProvider changes
   void update(AuthUser? authUser) {
@@ -44,19 +47,21 @@ class StepsProvider extends ChangeNotifier {
     _errorCallBack();
   }
 
-  Future<bool> initPedometer(Function errorCallBack) async {
+  Future<void> initPedometer(Function errorCallBack) async {
     _errorCallBack = errorCallBack;
 
     await _loadStepsFromMemory();
 
-    if (await Permission.activityRecognition.request().isGranted) {
-      _stepCountStream = Pedometer.stepCountStream;
-      _stepCountStream.listen(onStepCount).onError(onStepCountError);
-
-      return true;
+    _permission = _permission ?? await Permission.activityRecognition.status;
+    if (_permission == PermissionStatus.denied) {
+      return Future.error('Pedometer permissions are denied');
+    }
+    if (_permission == PermissionStatus.permanentlyDenied) {
+      return Future.error('Pedometer permissions are permanently denied');
     }
 
-    return false;
+    _stepCountStream = Pedometer.stepCountStream;
+    _stepCountStream.listen(onStepCount).onError(onStepCountError);
   }
 
   Future<void> _loadStepsFromMemory() async {

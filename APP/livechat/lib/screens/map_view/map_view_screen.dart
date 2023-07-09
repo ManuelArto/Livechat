@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:livechat/providers/location_provider.dart';
+import 'package:livechat/services/permission_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../widgets/top_bar.dart';
@@ -19,8 +21,15 @@ class MapViewScreen extends StatefulWidget {
 class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  late LocationProvider _locationProvider;
   final MapController _mapController = MapController();
   final PanelController _panelController = PanelController();
+
+  @override
+  void initState() {
+    super.initState();
+    _locationProvider = Provider.of<LocationProvider>(context, listen: false);
+  }
 
   void onLocationError() {
     setState(() {});
@@ -29,15 +38,13 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    LocationProvider locationProvider = Provider.of<LocationProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: const TopBar(),
       body: FutureBuilder(
-        future: locationProvider.getCurrentPosition(onLocationError),
+        future: _locationProvider.getCurrentPosition(onLocationError),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -96,10 +103,16 @@ class _MapViewScreenState extends State<MapViewScreen> with AutomaticKeepAliveCl
               fontSize: Theme.of(context).textTheme.labelLarge?.fontSize,
             ),
           ),
-            TextButton(
-              onPressed: () => setState(() {}),
-              child: const Text("Reload"),
-            ),
+          TextButton(
+            onPressed: () async {
+              await PermissionService.checkSinglePermission(
+                Permission.location,
+                _locationProvider.setPermission,
+              );
+              setState(() {});
+            },
+            child: const Text("Reload"),
+          ),
         ],
       ),
     );

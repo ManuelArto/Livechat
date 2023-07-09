@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:livechat/services/permission_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/steps_provider.dart';
@@ -14,6 +16,13 @@ class PreviewSteps extends StatefulWidget {
 }
 
 class _PreviewStepsState extends State<PreviewSteps> {
+  late StepsProvider _stepsProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _stepsProvider = Provider.of<StepsProvider>(context, listen: false);
+  }
 
   void onPedometerError() {
     setState(() {});
@@ -21,22 +30,21 @@ class _PreviewStepsState extends State<PreviewSteps> {
 
   @override
   Widget build(BuildContext context) {
-    StepsProvider stepsProvider = Provider.of<StepsProvider>(context, listen: false);
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       child: FutureBuilder(
-        future: stepsProvider.initPedometer(onPedometerError),
+        future: _stepsProvider.initPedometer(onPedometerError),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          return (snapshot.hasError || !snapshot.data!)
-              ? _buildNoPermissionPage("No pedometer permission given")
-              : const CircularSteps();
+          if ((snapshot.hasError && snapshot.error is String)) {
+            return _buildNoPermissionPage(snapshot.error as String);
+          }
+          return const CircularSteps();
         },
       ),
     );
@@ -57,7 +65,13 @@ class _PreviewStepsState extends State<PreviewSteps> {
             ),
           ),
           TextButton(
-            onPressed: () => setState(() {}),
+            onPressed: () async {
+              await PermissionService.checkSinglePermission(
+                Permission.activityRecognition,
+                _stepsProvider.setPermission,
+              );
+              setState(() {});
+            },
             child: const Text("Reload"),
           ),
         ],

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:livechat/services/isar_service.dart';
 import 'package:livechat/providers/settings_provider.dart';
 import 'package:livechat/services/notification_service.dart';
+import 'package:livechat/services/permission_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:livechat/screens/app_screen.dart';
@@ -63,7 +64,15 @@ class AppLoginWrapper extends StatelessWidget {
       theme: context.watch<SettingsProvider>().settings.theme,
       home: Consumer<AuthProvider>(
         builder: (context, auth, _) => auth.isAuth
-            ? const AppScreen()
+            ? FutureBuilder(
+                future: PermissionService.checkAllPermissions(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return const AppScreen();
+                },
+              )
             : FutureBuilder(
                 future: auth.tryAutoLogin(),
                 builder: (context, snapshot) =>
