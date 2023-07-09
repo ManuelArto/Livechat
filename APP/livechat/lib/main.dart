@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:livechat/services/isar_service.dart';
 import 'package:livechat/providers/settings_provider.dart';
+import 'package:livechat/services/isar_service.dart';
 import 'package:livechat/services/notification_service.dart';
 import 'package:livechat/services/permission_service.dart';
 import 'package:provider/provider.dart';
@@ -15,10 +15,14 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+  runApp(const MyApp());
+}
+
+Future<void> _loadAllSettings(SettingsProvider settingsProvider) async {
+  await settingsProvider.loadSettings();
+  await PermissionService.checkAllPermissions();
   IsarService.instance;
   NotificationService.instance.initNotification();
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +44,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       builder: (context, child) => FutureBuilder(
-        future: context.read<SettingsProvider>().loadSettings(),
+        future: _loadAllSettings(context.read<SettingsProvider>()),
         builder: (context, snapshot) {
           return snapshot.connectionState == ConnectionState.waiting
               ? const Center(child: CircularProgressIndicator())
@@ -64,15 +68,7 @@ class AppLoginWrapper extends StatelessWidget {
       theme: context.watch<SettingsProvider>().settings.theme,
       home: Consumer<AuthProvider>(
         builder: (context, auth, _) => auth.isAuth
-            ? FutureBuilder(
-                future: PermissionService.checkAllPermissions(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  return const AppScreen();
-                },
-              )
+            ? const AppScreen()
             : FutureBuilder(
                 future: auth.tryAutoLogin(),
                 builder: (context, snapshot) =>
