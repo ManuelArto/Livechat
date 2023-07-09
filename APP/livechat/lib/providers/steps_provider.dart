@@ -5,7 +5,7 @@ import 'package:livechat/models/steps.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../database/isar_service.dart';
+import '../services/isar_service.dart';
 import '../models/auth/auth_user.dart';
 import '../services/http_requester.dart';
 

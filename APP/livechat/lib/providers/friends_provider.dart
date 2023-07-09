@@ -3,7 +3,7 @@ import 'package:format/format.dart';
 import 'package:livechat/models/friend.dart';
 
 import '../constants.dart';
-import '../database/isar_service.dart';
+import '../services/isar_service.dart';
 import '../models/auth/auth_user.dart';
 import '../services/http_requester.dart';
 

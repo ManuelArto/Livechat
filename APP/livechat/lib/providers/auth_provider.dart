@@ -6,7 +6,7 @@ import 'package:livechat/services/http_requester.dart';
 import '../constants.dart';
 import '../models/auth/auth_request.dart';
 import '../models/auth/auth_user.dart';
-import '../database/isar_service.dart';
+import '../services/isar_service.dart';
 import '../models/friend.dart';
 
 class AuthProvider with ChangeNotifier {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/section.dart';
 
 import '../models/auth/auth_user.dart';
-import '../database/isar_service.dart';
+import '../services/isar_service.dart';
 
 class SectionsProvider with ChangeNotifier {
   AuthUser? authUser;

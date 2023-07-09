@@ -1,7 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
-import '../database/isar_service.dart';
+import '../services/isar_service.dart';
 import '../models/settings.dart';
 
 class SettingsProvider extends ChangeNotifier {
