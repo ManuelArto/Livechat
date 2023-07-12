@@ -4,7 +4,7 @@ from pydantic import BaseModel, EmailStr, constr, Field
 # HTTP SCHEMAS
 
 class UserSchema(BaseModel):
-    username: constr(min_length=6, max_length=10)
+    username: constr(min_length=6, max_length=15)
     email: EmailStr
     phoneNumber: constr(min_length=10, max_length=10)
     _created_at: datetime = datetime.utcnow()

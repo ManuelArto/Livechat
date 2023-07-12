@@ -96,8 +96,8 @@ class AuthFormState extends State<AuthForm>
                               ? "Username must not be empty"
                               : value.contains(" ")
                                   ? "Username must no contain spaces"
-                                  : value.length < 6 || value.length > 10
-                                      ? "Username must be 6-10 characters long"
+                                  : value.length < 6 || value.length > 15
+                                      ? "Username must be 6-15 characters long"
                                       : null;
                         },
                         decoration: InputDecoration(
