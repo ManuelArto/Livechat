@@ -31,6 +31,9 @@ class MessageBubble extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              constraints: BoxConstraints(maxWidth: size.width * 0.8),
               decoration: BoxDecoration(
                 color: isMe
                     ? theme.primaryColor.withOpacity(0.7)
@@ -46,22 +49,17 @@ class MessageBubble extends StatelessWidget {
                       : const Radius.circular(20),
                 ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              constraints: BoxConstraints(maxWidth: size.width * 0.8),
               child: Column(
                 crossAxisAlignment:
                     isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    alignment: isMe ? Alignment.topRight : Alignment.topLeft,
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 5, left: isMe ? 16 : 0, right: isMe ? 0 : 16),
                     child: Text(
                       message.sender!,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(height: 10),
                   messageWidget,
                 ],
               ),

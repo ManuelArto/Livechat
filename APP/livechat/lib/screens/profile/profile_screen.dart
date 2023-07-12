@@ -71,8 +71,10 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(authUser.username,
-                        style: theme.textTheme.headlineMedium),
+                    FittedBox(
+                      child: Text(authUser.username,
+                          style: theme.textTheme.headlineMedium),
+                    ),
                     Text(authUser.email,
                         style: theme.textTheme.bodyMedium),
                     const Divider(),

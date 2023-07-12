@@ -52,9 +52,10 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
     final chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages(widget.chatName);
 
-    return ListView.builder(
+    return ListView.separated(
       controller: _scrollController,
       itemCount: messages.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final message = messages[index];
         final isMe = authUser.username == message.sender;

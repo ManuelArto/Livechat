@@ -24,8 +24,8 @@ class ShareCard extends StatelessWidget {
           radius: 30.0,
           backgroundImage: NetworkImage(user.imageUrl),
         ),
-        title: const Text("Invite friends on Livechat"),
-        subtitle: Text("livechat/${user.username}"),
+        title: const FittedBox(child: Text("Invite friends on Livechat")),
+        subtitle: FittedBox(child: Text("livechat/${user.username}")),
         trailing: IconButton(
           onPressed: () {
             Share.share("Discover Livechat, the ultimate communication app. Download now!\n$DOWNLOAD_LINK");
