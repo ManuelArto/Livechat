@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:livechat/models/settings.dart';
 import 'package:livechat/providers/auth_provider.dart';
-import 'package:livechat/providers/settings_provider.dart';
 import 'package:livechat/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:livechat/screens/chat/components/single_chat/image_picker_button.dart';
