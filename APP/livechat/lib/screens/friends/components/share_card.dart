@@ -25,10 +25,15 @@ class ShareCard extends StatelessWidget {
           backgroundImage: NetworkImage(user.imageUrl),
         ),
         title: const FittedBox(child: Text("Invite friends on Livechat")),
-        subtitle: FittedBox(child: Text("livechat/${user.username}")),
+        subtitle: Text(
+          "livechat/${user.username}",
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
         trailing: IconButton(
           onPressed: () {
-            Share.share("Discover Livechat, the ultimate communication app. Download now!\n$DOWNLOAD_LINK");
+            Share.share(
+                "Discover Livechat, the ultimate communication app. Download now!\n$DOWNLOAD_LINK");
           },
           icon: const Icon(Icons.share_rounded),
         ),
