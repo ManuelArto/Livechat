@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:livechat/providers/settings_provider.dart';
 import 'package:livechat/services/isar_service.dart';
 import 'package:livechat/services/notification_service.dart';
-import 'package:livechat/services/permission_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:livechat/screens/app_screen.dart';
@@ -20,7 +19,6 @@ void main() {
 
 Future<void> _loadAllSettings(SettingsProvider settingsProvider) async {
   await settingsProvider.loadSettings();
-  await PermissionService.checkAllPermissions();
   IsarService.instance;
   NotificationService.instance.initNotification();
 }
