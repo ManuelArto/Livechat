@@ -52,7 +52,7 @@ class StepsProvider extends ChangeNotifier {
 
     await _loadStepsFromMemory();
 
-    _permission = _permission ?? await Permission.activityRecognition.status;
+    _permission = _permission ?? await Permission.activityRecognition.request();
     if (_permission == PermissionStatus.denied) {
       return Future.error('Pedometer permissions are denied');
     }
