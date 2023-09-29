@@ -7,7 +7,7 @@ services:
       # args:
         # ENV_FILE: .env.prod
     ports:
-      - 8000:80
+      - 8000:8000
     depends_on:
       - mongodb
 

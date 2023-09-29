@@ -106,10 +106,11 @@ All users images are store on Firebase Storage, so you have to create your stora
 Then follow this steps:
 1. Go to the /SERVER folder
 2. Run the following command
-```bash 
+	```bash 
 	docker-compose-up
-```
+	```
 
+Now go to http://127.0.0.1:8000/docs. You will see the automatic interactive API documentation (provided by Swagger UI)
 
 ## Additional Information
 For more information on the app's functionality, code structure, and design choices, please refer to the complete report provided in the "REPORT.pdf" file.
