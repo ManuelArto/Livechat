@@ -2,39 +2,52 @@
 <img src="images/logo_nobg.png" width=20%><br>
 
 Livechat is a mobile messaging application with advanced social features such as real-time chat, location sharing and a leaderboard based on daily step counts. <br>
+
 The app aims to create an interactive and engaging environment where users can communicate, organize conversations using labels, and share files, images, and audio messages.
 
 Link for the APK Android app: [link](https://drive.google.com/file/d/1p6CDsgj8xyJc192Gn4C1V3d5hR6L9yZV/view)
 
 <details>
 	<summary>Some screenshots of the application</summary>
-	<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-		<figure style="text-align: center; width: 40%;">
-			<img src="images/home/principale.jpg" alt="Home" width="49%">
-			<img src="images/home/darkMode.jpg" alt="Home Dark Mode" width="49%">
-			<figcaption>Home Light and Dark Mode</figcaption>
-		</figure>
-		<figure style="text-align: center; width: 40%;">
-			<img src="images/login/login.jpg" alt="Login" width="49%">
-			<img src="images/login/register.jpg" alt="Sign up" width="49%">
-			<figcaption>Login / Sign up</figcaption>
-		</figure>
-		<figure style="text-align: center; width: 40%;">
-			<img src="images/chats/principale.jpg" alt="Chats" width="49%">
-			<img src="images/chats/singleChat.jpg" alt="Single Chat" width="49%">
-			<figcaption>Chat Tab</figcaption>
-		</figure>
-		<figure style="text-align: center; width: 40%;">
-			<img src="images/friends/friends.jpg" alt="Chats" width="49%">
-			<img src="images/friends/sended.jpg" alt="Chats" width="49%">
-			<figcaption>Friends Tab</figcaption>
-		</figure>
-		<figure style="text-align: center; width: 40%;">
-			<img src="images/map/principale.jpg" alt="Map" width="49%">
-			<img src="images/map/friendsMap.jpg" alt="Friends Map" width="49%">
-			<figcaption>Map Tab</figcaption>
-		</figure>
-	</div>
+	<table style="text-align: center;">
+		<tr>
+			<td>Home Light and Dark Mode</td>
+			<td>Login / Sign up</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="images/home/principale.jpg" alt="Home" width="45%" hspace="10">
+				<img src="images/home/darkMode.jpg" alt="Home Dark" width="45%">
+			</td>
+			<td>
+				<img src="images/login/login.jpg" alt="Login" width="45%" hspace="10">
+				<img src="images/login/register.jpg" alt="Sign up" width="45%">
+			</td>
+		</tr>
+		<tr>
+			<td>Chat Tab</td>
+			<td>Friends Tab</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="images/chats/principale.jpg" alt="Chats" width="45%" hspace="10">
+				<img src="images/chats/singleChat.jpg" alt="Single Chat" width="45%">
+			</td>
+			<td>
+				<img src="images/friends/friends.jpg" alt="Friends" width="45%" hspace="10">
+				<img src="images/friends/sended.jpg" alt="Friends sended" width="45%">
+			</td>
+		</tr>
+		<tr>
+			<td>Map Tab</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="images/map/principale.jpg" alt="Map" width="45%" hspace="10">
+				<img src="images/map/friendsMap.jpg" alt="Friends Map"width="45%">
+			</td>
+		</tr>
+	</table>
 </details>
 
 ## Components
