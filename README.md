@@ -1,4 +1,4 @@
-# Livechat
+
 <img src="images/logo_nobg.png" width=20%><br>
 
 Livechat is a mobile messaging application with advanced social features such as real-time chat, location sharing and a leaderboard based on daily step counts. <br>
