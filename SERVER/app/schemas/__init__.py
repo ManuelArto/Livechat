@@ -3,6 +3,8 @@ from pydantic import BaseModel, EmailStr, constr, Field
 
 # HTTP SCHEMAS
 
+## Base - Input
+
 class UserSchema(BaseModel):
     username: constr(min_length=6, max_length=15)
     email: EmailStr
@@ -24,6 +26,15 @@ class UserLoginSchema(BaseModel):
     password: constr(min_length=8)
 
 
+class GroupSchema(BaseModel):
+    name: str
+    partecipants: list[str]
+    _created_at: datetime = datetime.utcnow()
+    _updated_at: datetime = datetime.utcnow()
+
+
+## Response
+
 class UserResponse(UserSchema):
     id: str
     imageUrl: str
@@ -37,6 +48,11 @@ class AuthUserResponse(UserResponse):
     refreshToken: str
     expInRefreshToken: int
     friends: list[UserResponse]
+
+
+class GroupResponse(GroupSchema):
+    id: str
+    admin: str
 
 
 class FriendRequestSendedResponse(BaseModel):
@@ -69,3 +85,6 @@ class UsersSteps(BaseModel):
     steps: int
     day: datetime
     user: str
+
+class GroupDocument(GroupResponse):
+    pass

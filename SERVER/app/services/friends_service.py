@@ -1,7 +1,5 @@
 from bson import ObjectId
-from app.schemas import (
-    UserDocument,
-)
+from app.schemas import UserDocument
 from app.db import db
 from app.services.steps_service import StepsService
 
