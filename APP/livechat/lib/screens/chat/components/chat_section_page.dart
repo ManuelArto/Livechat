@@ -6,16 +6,16 @@ import '../../../providers/sections_provider.dart';
 import 'chat_sections.dart';
 import 'chats_list.dart';
 
-class ChatPages extends StatefulWidget {
-  const ChatPages(this.screenSize, {Key? key}) : super(key: key);
+class ChatSectionPage extends StatefulWidget {
+  const ChatSectionPage(this.screenSize, {Key? key}) : super(key: key);
 
   final Size screenSize;
 
   @override
-  ChatPagesState createState() => ChatPagesState();
+  ChatSectionPageState createState() => ChatSectionPageState();
 }
 
-class ChatPagesState extends State<ChatPages> {
+class ChatSectionPageState extends State<ChatSectionPage> {
   final PageController _pageController = PageController(initialPage: 0);
 
   @override

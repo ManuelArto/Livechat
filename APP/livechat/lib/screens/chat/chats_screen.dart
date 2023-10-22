@@ -7,7 +7,7 @@ import '../../services/notification_service.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/top_bar.dart';
 import 'components/active_users.dart';
-import 'components/chat_pages.dart';
+import 'components/chat_section_page.dart';
 import 'single_chat_screen.dart';
 
 class ChatsScreen extends StatefulWidget {
@@ -71,7 +71,7 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ActiveUsers(screenSize),
-              Expanded(child: ChatPages(screenSize)),
+              Expanded(child: ChatSectionPage(screenSize)),
             ],
           ),
         ],

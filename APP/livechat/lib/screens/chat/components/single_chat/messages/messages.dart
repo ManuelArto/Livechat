@@ -47,8 +47,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
     super.build(context);
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
-    final friendsProvider =
-        Provider.of<FriendsProvider>(context, listen: false);
+    final friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
     final chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages(widget.chatName);
 

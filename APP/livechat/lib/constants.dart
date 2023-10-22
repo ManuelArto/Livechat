@@ -1,10 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
-// const PORT = 8000;
-// const SERVER_URL = kDebugMode ? "http://host:$PORT": "https://livechat-api.onrender.com";
-const SERVER_URL = "https://livechat-api.onrender.com";
+const PORT = 8000;
+const SERVER_URL = kDebugMode ? "http://host:$PORT": "https://livechat-api.onrender.com";
+// const SERVER_URL = "https://livechat-api.onrender.com";
 
 // AUTH
 const URL_AUTH_SIGN_UP = "$SERVER_URL/api/auth/register";
@@ -34,6 +34,14 @@ const URL_REQUESTS_LIST = "$SERVER_URL/api/requests/list?sended={}";
 const URL_ADD_REQUEST = "$SERVER_URL/api/requests/{}/send";
 const URL_ACCEPT_REQUEST = "$SERVER_URL/api/requests/{}/accept";
 const URL_REMOVE_REQUEST = "$SERVER_URL/api/requests/{}";
+
+// GROUPS
+const URL_CREATE_GROUP = "$SERVER_URL/api/groups/create";
+const URL_GROUPS_LIST = "$SERVER_URL/api/groups/list";
+const URL_GROUP_DELETE = "$SERVER_URL/api/groups/{}";
+const URL_GROUP_ADD = "$SERVER_URL/api/groups/{}/add";
+const URL_GROUP_REMOVE = "$SERVER_URL/api/groups/{}/remove";
+const URL_LEAVE_GROUP = "$SERVER_URL/api/groups/{}/leave";
 
 
 // FILE
