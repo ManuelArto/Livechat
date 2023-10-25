@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:livechat/constants.dart';
 import 'package:livechat/models/chat/chat.dart';
+import 'package:livechat/services/http_requester.dart';
 import 'package:livechat/services/isar_service.dart';
 import 'package:livechat/services/notification_service.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/auth/auth_user.dart';
+import '../models/chat/group_chat.dart';
 import '../models/chat/messages/content/content.dart';
 import '../models/chat/messages/content/image_content.dart';
 import '../models/chat/messages/message.dart';
+import '../models/friend.dart';
 
 class ChatProvider with ChangeNotifier {
   AuthUser? authUser;
@@ -33,19 +37,12 @@ class ChatProvider with ChangeNotifier {
   List<Chat> chatsBySection(String section) =>
       _chats.values.where((chat) => chat.sections.contains(section)).toList();
 
-  int get totalToRead =>
-      _chats.values.fold(0, (prev, chat) => prev + chat.toRead);
+  int get totalToRead => _chats.values.fold(0, (prev, chat) => prev + chat.toRead);
 
   // METHODS
 
-  void newUserChat(Map<String, dynamic> data) {
-    if (!_chats.containsKey(data["username"])) {
-      _chats[data["username"]] = Chat(
-        chatName: data["username"],
-        messages: [],
-        toRead: 0,
-      )..userId = authUser!.isarId;
-    }
+  void newFriendChat(Map<String, dynamic> data) {
+    _addFriendChatIfNotExists(data["username"]);
 
     notifyListeners();
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
@@ -65,9 +62,9 @@ class ChatProvider with ChangeNotifier {
     if (sender != authUser!.username && currentChat != chatName) {
       NotificationService.instance.showNotification(
         id: newMessage.id!.hashCode,
-        title: sender,
-        body: getContentMessage(content),
-        groupKey: sender,
+        title: chatName,
+        body: getContentMessage(content), // TODO: Check if is group then add "Sender:"
+        groupKey: chatName,
         imagePath: content.type == ContentType.image
             ? (content as ImageContent).get().path
             : null,
@@ -97,21 +94,54 @@ class ChatProvider with ChangeNotifier {
     // * Bisogna ricreare la list dei messaggi a causa di un errore di ISAR https://github.com/isar/isar/discussions/781
     _chats = {
       for (var chat in chatsList)
-        chat.chatName: chat..messages = List.from(chat.messages)
+        chat.chatName: chat
+          ..messages = List.from(chat.messages)
+          ..canChat = false
     };
 
-    // Add every new friend not in chatsList to _chats
-    for (var friend in authUser!.friends
-        .skipWhile((friend) => _chats.keys.contains(friend.username))) {
-      _chats[friend.username] = Chat(
-        chatName: friend.username,
-        messages: [],
-        toRead: 0,
-      )..userId = authUser!.isarId;
-    }
+    _updateFriendsChat();
+    await _loadGroupsChat();
 
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
     notifyListeners();
+  }
+
+  void _updateFriendsChat() {
+    List<Friend> friends = List.from(authUser!.friends);
+
+    for (var friend in friends.indexed) {
+      if (_chats.containsKey(friend.$2.username)) {
+        _chats[friend.$2.username]!.canChat = true;
+      } else {
+        _addFriendChatIfNotExists(friend.$2.username);
+      }
+    }
+  }
+
+  void _addFriendChatIfNotExists(String username) {
+    if (!_chats.containsKey(username)) {
+      _chats[username] = Chat(
+        chatName: username,
+        userId: authUser!.isarId
+      );
+    }
+  }
+
+  Future<void> _loadGroupsChat() async {
+    List<GroupChat> groupChats = (await HttpRequester.get(
+      URL_GROUPS_LIST,
+      authUser!.token,
+    ) as List)
+        .map((group) => GroupChat.fromJson(group, authUser!.isarId))
+        .toList();
+
+    for (var groupChat in groupChats) {
+      if (_chats.containsKey(groupChat.chatName)) {
+        _chats[groupChat.chatName]!.canChat = true;
+      } else {
+        _chats[groupChat.chatName] = groupChat;
+      }
+    }
   }
 
   String getContentMessage(Content content) {

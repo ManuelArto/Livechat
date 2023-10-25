@@ -101,7 +101,7 @@ class SocketProvider with ChangeNotifier {
 
   void _newFriend(jsonData) {
     friendsProvider.newFriend(jsonData);
-    chatProvider.newUserChat(jsonData);
+    chatProvider.newFriendChat(jsonData);
   }
 
   void _updatefriendLocation(jsonData) {

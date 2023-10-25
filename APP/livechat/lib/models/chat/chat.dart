@@ -12,12 +12,14 @@ class Chat implements Comparable<Chat> {
   int toRead;
   List<Message> messages = [];
   List<String> sections = ["All"];
+  bool canChat = true;
 
   int? userId;
 
   Chat({
     required this.chatName,
-    required this.messages,
+    required this.userId,
+    this.messages = const [],
     this.toRead = 0,
   });
   

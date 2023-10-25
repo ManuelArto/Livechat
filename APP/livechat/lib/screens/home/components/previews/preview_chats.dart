@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/chat/chat.dart';
+import '../../../../models/chat/group_chat.dart';
 import '../../../../models/chat/messages/content/audio_content.dart';
 import '../../../../models/chat/messages/content/content.dart';
 import '../../../../models/chat/messages/content/file_content.dart';
@@ -26,9 +27,7 @@ class _PreviewChatsState extends State<PreviewChats> {
     final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
 
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
-    final List<Chat> chats = chatProvider.chatsBySection("All")
-      ..removeWhere((chat) => !friendsProvider.isFriend(chat.chatName))
-      ..sort();
+    final List<Chat> chats = chatProvider.chatsBySection("All")..sort();
 
     NavbarNotifier navbarNotifier = Provider.of<NavbarNotifier>(context, listen: false);
 
@@ -72,11 +71,13 @@ class _PreviewChatsState extends State<PreviewChats> {
                       ? DateFormat("jm").format(lastMessage!.time!)
                       : "";
                   return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        friendsProvider.getFriend(chat.chatName).imageUrl,
-                      ),
-                    ),
+                    leading: chat is GroupChat
+                        ? null
+                        : CircleAvatar(
+                            backgroundImage: NetworkImage(
+                              friendsProvider.getFriend(chat.chatName).imageUrl,
+                            ),
+                          ),
                     title: Text(chat.chatName),
                     subtitle: getLastMessageContent(lastMessage),
                     trailing: Text(time),
