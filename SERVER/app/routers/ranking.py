@@ -3,7 +3,7 @@ from bson import ObjectId
 from fastapi import APIRouter, Depends
 
 from app.helpers import jwt_helper
-from app.schemas import UserResponse
+from app.schemas import FriendResponse
 from app.services.friends_service import FriendsService
 from app.services.steps_service import StepsService
 from app.services.user_service import UserService
@@ -14,7 +14,7 @@ router = APIRouter()
 @router.get("/daily")
 async def daily_ranking(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)]
-) -> dict[str, list[UserResponse]]:
+) -> dict[str, list[FriendResponse]]:
     user = UserService.retrieve_user_by("username", user_data["username"])
     friends = FriendsService.retrieve_user_friends(ObjectId(user_data["id"]))
 
@@ -26,7 +26,7 @@ async def daily_ranking(
 @router.get("/weekly")
 async def weekly_ranking(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)]
-) -> dict[str, list[UserResponse]]:
+) -> dict[str, list[FriendResponse]]:
     user = UserService.retrieve_user_by("username", user_data["username"])
     friends = FriendsService.retrieve_user_friends(ObjectId(user_data["id"]))
 

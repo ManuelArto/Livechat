@@ -35,33 +35,42 @@ class GroupSchema(BaseModel):
 
 ## Response
 
+
 class UserResponse(UserSchema):
     id: str
     imageUrl: str
+
+
+class FriendResponse(UserResponse):
     location: dict  # {"lat": 0.0, "long": 0.0}
     steps: int
 
 
-class AuthUserResponse(UserResponse):
+class GroupResponse(BaseModel):
+    id: str
+    name: str
+    admin: str
+    partecipants: list[UserResponse]
+    created_at: datetime
+    updated_at: datetime
+
+
+class AuthUserResponse(FriendResponse):
     token: str
     expInToken: int
     refreshToken: str
     expInRefreshToken: int
-    friends: list[UserResponse]
-
-
-class GroupResponse(GroupSchema):
-    id: str
-    admin: str
+    friends: list[FriendResponse]
+    groups: list[str]
 
 
 class FriendRequestSendedResponse(BaseModel):
     sender: str
-    receiver: UserResponse
+    receiver: FriendResponse
 
 
 class FriendRequestReceivedResponse(BaseModel):
-    sender: UserResponse
+    sender: FriendResponse
     receiver: str
 
 
@@ -74,6 +83,7 @@ class UserDocument(UserSchema):
     steps: int
     location: dict  # {"lat": 0.0, "long": 0.0}
     friends: list  # ObjectId | UserDocument
+    groups: list   # ObjectId | GroupSchema
 
 
 class FriendRequest(BaseModel):

@@ -1,6 +1,6 @@
 from bson import ObjectId
 from app.config import settings
-from app.schemas import UserCreateSchema, UserDocument, AuthUserResponse, UserResponse
+from app.schemas import UserCreateSchema, UserDocument, AuthUserResponse, FriendResponse, UserResponse
 from app.helpers import hashing, jwt_helper
 from app.db import db
 from app.services.steps_service import StepsService
@@ -70,10 +70,12 @@ class UserService:
     # DOCUMENT -> RESPONSE
 
     @staticmethod
-    def create_user_response(user: UserDocument) -> UserResponse:
-        return UserResponse(
-            **dict(user),
-            imageUrl=settings.FIREBASE_IMAGE_URL.format(user.id),
+    def create_user_response(user: UserDocument, is_friend: bool = True) -> FriendResponse:
+        image_url = settings.FIREBASE_IMAGE_URL.format(user.id)
+        return (
+            FriendResponse(**dict(user), imageUrl=image_url)
+            if is_friend
+            else UserResponse(**dict(user), imageUrl=image_url)
         )
 
     @staticmethod
@@ -87,6 +89,8 @@ class UserService:
             UserService.create_user_response(user)
             for user in UserService.retrieve_users(user.friends)
         ]
+
+        user.groups = [ str(group) for group in user.groups ]
 
         return AuthUserResponse(
             **dict(user),
