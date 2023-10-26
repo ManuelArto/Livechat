@@ -43,8 +43,13 @@ const FriendSchema = Schema(
       name: r'phoneNumber',
       type: IsarType.string,
     ),
-    r'username': PropertySchema(
+    r'steps': PropertySchema(
       id: 6,
+      name: r'steps',
+      type: IsarType.long,
+    ),
+    r'username': PropertySchema(
+      id: 7,
       name: r'username',
       type: IsarType.string,
     )
@@ -81,7 +86,8 @@ void _friendSerialize(
   writer.writeDouble(offsets[3], object.lat);
   writer.writeDouble(offsets[4], object.long);
   writer.writeString(offsets[5], object.phoneNumber);
-  writer.writeString(offsets[6], object.username);
+  writer.writeLong(offsets[6], object.steps);
+  writer.writeString(offsets[7], object.username);
 }
 
 Friend _friendDeserialize(
@@ -97,7 +103,8 @@ Friend _friendDeserialize(
     lat: reader.readDoubleOrNull(offsets[3]) ?? 0,
     long: reader.readDoubleOrNull(offsets[4]) ?? 0,
     phoneNumber: reader.readStringOrNull(offsets[5]) ?? '',
-    username: reader.readStringOrNull(offsets[6]) ?? '',
+    steps: reader.readLongOrNull(offsets[6]) ?? 0,
+    username: reader.readStringOrNull(offsets[7]) ?? '',
   );
   return object;
 }
@@ -122,6 +129,8 @@ P _friendDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 6:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 7:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -767,6 +776,58 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'phoneNumber',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> stepsEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'steps',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> stepsGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'steps',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> stepsLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'steps',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> stepsBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'steps',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }

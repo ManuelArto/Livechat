@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:livechat/models/chat/messages/content/text_content.dart';
-import 'package:livechat/providers/friends_provider.dart';
+import 'package:livechat/providers/users_provider.dart';
 import 'package:livechat/services/file_service.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -19,7 +19,7 @@ class SocketProvider with ChangeNotifier {
   Socket? _socketIO;
   late AuthUser authUser;
   late ChatProvider chatProvider;
-  late FriendsProvider friendsProvider;
+  late UsersProvider usersProvider;
 
   // Called everytime AuthProvider changes
   void update(AuthProvider auth) {
@@ -89,31 +89,31 @@ class SocketProvider with ChangeNotifier {
         .removeWhere((friend) => friend == authUser.username);
 
     debugPrint("UPDATE ONLINE USERS");
-    friendsProvider.updateOnlineFriends(jsonData);
+    usersProvider.updateOnlineFriends(jsonData);
   }
 
   void _userDisconnected(jsonData) {
     debugPrint("${jsonData['username']} DISCONNECTED");
     if (jsonData["username"] == authUser.username) return;
 
-    friendsProvider.userDisconnected(jsonData["username"]);
+    usersProvider.userDisconnected(jsonData["username"]);
   }
 
   void _newFriend(jsonData) {
-    friendsProvider.newFriend(jsonData);
+    usersProvider.newFriend(jsonData);
     chatProvider.newFriendChat(jsonData);
   }
 
   void _updatefriendLocation(jsonData) {
-    friendsProvider.updateFriendLocation(jsonData);
+    usersProvider.updateFriendLocation(jsonData);
   }
 
   void _updatefriendSteps(jsonData) {
-    friendsProvider.updateFriendSteps(jsonData);
+    usersProvider.updateFriendSteps(jsonData);
   }
 
   void _deleteFriend(jsonData) {
-    friendsProvider.deleteFriend(jsonData["id"]);
+    usersProvider.deleteFriend(jsonData["username"]);
   }
 
   void _receiveMessage(jsonData) async {

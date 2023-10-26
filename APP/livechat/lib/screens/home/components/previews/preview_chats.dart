@@ -11,7 +11,7 @@ import '../../../../models/chat/messages/content/image_content.dart';
 import '../../../../models/chat/messages/content/text_content.dart';
 import '../../../../models/chat/messages/message.dart';
 import '../../../../providers/chat_provider.dart';
-import '../../../../providers/friends_provider.dart';
+import '../../../../providers/users_provider.dart';
 import '../../../../providers/navbar_notifier.dart';
 
 class PreviewChats extends StatefulWidget {
@@ -24,7 +24,7 @@ class PreviewChats extends StatefulWidget {
 class _PreviewChatsState extends State<PreviewChats> {
   @override
   Widget build(BuildContext context) {
-    final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
+    final UsersProvider usersProvider = Provider.of<UsersProvider>(context);
 
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context);
     final List<Chat> chats = chatProvider.chatsBySection("All")..sort();
@@ -75,7 +75,7 @@ class _PreviewChatsState extends State<PreviewChats> {
                         ? null
                         : CircleAvatar(
                             backgroundImage: NetworkImage(
-                              friendsProvider.getFriend(chat.chatName).imageUrl,
+                              usersProvider.getUser(chat.chatName).imageUrl,
                             ),
                           ),
                     title: Text(chat.chatName),

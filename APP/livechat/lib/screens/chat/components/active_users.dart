@@ -4,7 +4,7 @@ import 'package:livechat/screens/chat/single_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/friends_provider.dart';
+import '../../../providers/users_provider.dart';
 
 class ActiveUsers extends StatelessWidget {
   final Size screenSize;
@@ -14,7 +14,7 @@ class ActiveUsers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatProvider>(context);
-    final usersProvider = Provider.of<FriendsProvider>(context);
+    final usersProvider = Provider.of<UsersProvider>(context);
     final activeUsers = usersProvider.onlineUsers;
     
     return Container(

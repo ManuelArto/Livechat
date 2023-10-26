@@ -61,7 +61,7 @@ class AuthUserResponse(FriendResponse):
     refreshToken: str
     expInRefreshToken: int
     friends: list[FriendResponse]
-    groups: list[str]
+    groups: list[GroupResponse]
 
 
 class FriendRequestSendedResponse(BaseModel):

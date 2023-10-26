@@ -90,7 +90,8 @@ class UserService:
             for user in UserService.retrieve_users(user.friends)
         ]
 
-        user.groups = [ str(group) for group in user.groups ]
+        from app.services.groups_service import GroupService
+        user.groups = GroupService.retrieve_user_groups(ObjectId(user.id))
 
         return AuthUserResponse(
             **dict(user),

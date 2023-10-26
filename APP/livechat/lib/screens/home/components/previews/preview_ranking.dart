@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/models/auth/auth_user.dart';
-import 'package:livechat/providers/friends_provider.dart';
+import 'package:livechat/providers/users_provider.dart';
 import 'package:livechat/screens/home/components/previews/ranking/user_rank_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -24,9 +24,9 @@ class _PreviewRankingState extends State<PreviewRanking> {
   Widget build(BuildContext context) {
     AuthUser authUser = Provider.of<AuthProvider>(context).authUser!;
     StepsProvider stepsProvider = Provider.of<StepsProvider>(context);
-    FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
+    UsersProvider usersProvider = Provider.of<UsersProvider>(context);
 
-    List<User> ranks = getDailyRanking(authUser, stepsProvider.steps, friendsProvider);
+    List<User> ranks = getDailyRanking(authUser, stepsProvider.steps, usersProvider);
 
     return Card(
       elevation: 2,
@@ -78,8 +78,8 @@ class _PreviewRankingState extends State<PreviewRanking> {
     );
   }
 
-  List<User> getDailyRanking(AuthUser authUser, int steps, FriendsProvider friendsProvider) {
-    List<User> ranks = List.from(friendsProvider.friends)
+  List<User> getDailyRanking(AuthUser authUser, int steps, UsersProvider usersProvider) {
+    List<User> ranks = List.from(usersProvider.friends)
       ..sort((a, b) => (b as Friend).steps.compareTo((a as Friend).steps));
 
     myRank = 0;

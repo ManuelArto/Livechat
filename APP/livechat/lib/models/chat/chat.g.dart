@@ -17,29 +17,34 @@ const ChatSchema = CollectionSchema(
   name: r'Chat',
   id: -4292359458225261721,
   properties: {
-    r'chatName': PropertySchema(
+    r'canChat': PropertySchema(
       id: 0,
+      name: r'canChat',
+      type: IsarType.bool,
+    ),
+    r'chatName': PropertySchema(
+      id: 1,
       name: r'chatName',
       type: IsarType.string,
     ),
     r'messages': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'messages',
       type: IsarType.objectList,
       target: r'Message',
     ),
     r'sections': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'sections',
       type: IsarType.stringList,
     ),
     r'toRead': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'toRead',
       type: IsarType.long,
     ),
     r'userId': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'userId',
       type: IsarType.long,
     )
@@ -89,16 +94,17 @@ void _chatSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.chatName);
+  writer.writeBool(offsets[0], object.canChat);
+  writer.writeString(offsets[1], object.chatName);
   writer.writeObjectList<Message>(
-    offsets[1],
+    offsets[2],
     allOffsets,
     MessageSchema.serialize,
     object.messages,
   );
-  writer.writeStringList(offsets[2], object.sections);
-  writer.writeLong(offsets[3], object.toRead);
-  writer.writeLong(offsets[4], object.userId);
+  writer.writeStringList(offsets[3], object.sections);
+  writer.writeLong(offsets[4], object.toRead);
+  writer.writeLong(offsets[5], object.userId);
 }
 
 Chat _chatDeserialize(
@@ -108,19 +114,20 @@ Chat _chatDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Chat(
-    chatName: reader.readString(offsets[0]),
+    chatName: reader.readString(offsets[1]),
     messages: reader.readObjectList<Message>(
-          offsets[1],
+          offsets[2],
           MessageSchema.deserialize,
           allOffsets,
           Message(),
         ) ??
-        [],
-    toRead: reader.readLongOrNull(offsets[3]) ?? 0,
+        const [],
+    toRead: reader.readLongOrNull(offsets[4]) ?? 0,
+    userId: reader.readLongOrNull(offsets[5]),
   );
+  object.canChat = reader.readBool(offsets[0]);
   object.id = id;
-  object.sections = reader.readStringList(offsets[2]) ?? [];
-  object.userId = reader.readLongOrNull(offsets[4]);
+  object.sections = reader.readStringList(offsets[3]) ?? [];
   return object;
 }
 
@@ -132,20 +139,22 @@ P _chatDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
       return (reader.readObjectList<Message>(
             offset,
             MessageSchema.deserialize,
             allOffsets,
             Message(),
           ) ??
-          []) as P;
-    case 2:
-      return (reader.readStringList(offset) ?? []) as P;
+          const []) as P;
     case 3:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 4:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 5:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -240,6 +249,15 @@ extension ChatQueryWhere on QueryBuilder<Chat, Chat, QWhereClause> {
 }
 
 extension ChatQueryFilter on QueryBuilder<Chat, Chat, QFilterCondition> {
+  QueryBuilder<Chat, Chat, QAfterFilterCondition> canChatEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'canChat',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<Chat, Chat, QAfterFilterCondition> chatNameEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -852,6 +870,18 @@ extension ChatQueryObject on QueryBuilder<Chat, Chat, QFilterCondition> {
 extension ChatQueryLinks on QueryBuilder<Chat, Chat, QFilterCondition> {}
 
 extension ChatQuerySortBy on QueryBuilder<Chat, Chat, QSortBy> {
+  QueryBuilder<Chat, Chat, QAfterSortBy> sortByCanChat() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'canChat', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterSortBy> sortByCanChatDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'canChat', Sort.desc);
+    });
+  }
+
   QueryBuilder<Chat, Chat, QAfterSortBy> sortByChatName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chatName', Sort.asc);
@@ -890,6 +920,18 @@ extension ChatQuerySortBy on QueryBuilder<Chat, Chat, QSortBy> {
 }
 
 extension ChatQuerySortThenBy on QueryBuilder<Chat, Chat, QSortThenBy> {
+  QueryBuilder<Chat, Chat, QAfterSortBy> thenByCanChat() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'canChat', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chat, Chat, QAfterSortBy> thenByCanChatDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'canChat', Sort.desc);
+    });
+  }
+
   QueryBuilder<Chat, Chat, QAfterSortBy> thenByChatName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chatName', Sort.asc);
@@ -940,6 +982,12 @@ extension ChatQuerySortThenBy on QueryBuilder<Chat, Chat, QSortThenBy> {
 }
 
 extension ChatQueryWhereDistinct on QueryBuilder<Chat, Chat, QDistinct> {
+  QueryBuilder<Chat, Chat, QDistinct> distinctByCanChat() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'canChat');
+    });
+  }
+
   QueryBuilder<Chat, Chat, QDistinct> distinctByChatName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -970,6 +1018,12 @@ extension ChatQueryProperty on QueryBuilder<Chat, Chat, QQueryProperty> {
   QueryBuilder<Chat, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Chat, bool, QQueryOperations> canChatProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'canChat');
     });
   }
 

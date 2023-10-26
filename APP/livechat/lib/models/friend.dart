@@ -6,9 +6,6 @@ part 'friend.g.dart';
 
 @embedded
 class Friend extends User {
-  @ignore
-  bool isOnline = false;
-
   int steps;
   double lat;
   double long;

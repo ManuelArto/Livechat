@@ -1,53 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:format/format.dart';
+import 'package:livechat/models/chat/group_chat.dart';
 import 'package:livechat/models/friend.dart';
+import 'package:livechat/models/user.dart';
 
 import '../constants.dart';
-import '../services/isar_service.dart';
 import '../models/auth/auth_user.dart';
 import '../services/http_requester.dart';
 
-class FriendsProvider with ChangeNotifier {
+class UsersProvider with ChangeNotifier {
   AuthUser? authUser;
-
-  List<Friend> get friends => authUser?.friends ?? [];
-  List<Friend> get onlineUsers => friends.where((friend) => friend.isOnline).toList();
-
+  final Map<String, User> _users = {};
   List<String> _onlineUsers = [];
+
+  List<Friend> get friends => _users.values.whereType<Friend>().toList();
+  List<User> get onlineUsers => friends.where((friend) => friend.isOnline).toList();
+  T getUser<T extends User>(String username) => _users[username]! as T;
 
   // Called everytime AuthProvider changes
   void update(AuthUser? authUser) {
     if (authUser == null) {
       this.authUser = null;
+      _users.clear();
     } else {
       this.authUser = authUser;
+      _loadUsers();
     }
   }
 
-  // FRIENDS
-
   void newFriend(Map<String, dynamic> data) {
     Friend friend = Friend.fromJson(data);
-
-    authUser!.friends.add(friend);
-    IsarService.instance.insertOrUpdate<AuthUser>(authUser!);
-
-    if (_onlineUsers.contains(friend.username)) {
-      friend.isOnline = true;
-    }
+    _users[friend.username] = friend
+      ..isOnline = _onlineUsers.contains(friend.username);
 
     notifyListeners();
   }
 
-  void deleteFriend(String id) {
-    authUser!.friends.removeWhere((friend) => friend.id == id);
-    IsarService.instance.insertOrUpdate<AuthUser>(authUser!);
-
+  void deleteFriend(String username) {
+    _users.remove(username);
     notifyListeners();
   }
 
   void updateOnlineFriends(List<dynamic> usernameList) {
-    for (Friend friend in authUser!.friends) {
+    for (Friend friend in friends) {
       friend.isOnline = usernameList.contains(friend.username);
     }
 
@@ -56,8 +51,7 @@ class FriendsProvider with ChangeNotifier {
   }
 
   void updateFriendLocation(Map<String, dynamic> friendLocation) {
-    authUser!.friends
-        .firstWhere((friend) => friend.username == friendLocation["username"])
+    friends.firstWhere((friend) => friend.username == friendLocation["username"])
       ..lat = friendLocation["lat"]
       ..long = friendLocation["long"];
 
@@ -65,7 +59,7 @@ class FriendsProvider with ChangeNotifier {
   }
 
   void updateFriendSteps(Map<String, dynamic> friendLocation) {
-    authUser!.friends
+    friends
         .firstWhere((friend) => friend.username == friendLocation["username"])
         .steps = friendLocation["steps"];
 
@@ -73,20 +67,25 @@ class FriendsProvider with ChangeNotifier {
   }
 
   void userDisconnected(String username) {
-    if (authUser!.friends.any((friend) => friend.username == username)) {
-      authUser!.friends
-          .firstWhere((friend) => friend.username == username)
-          .isOnline = false;
+    if (friends.any((friend) => friend.username == username)) {
+      friends.firstWhere((friend) => friend.username == username)
+        .isOnline = false;
     }
 
     _onlineUsers.remove(username);
     notifyListeners();
   }
 
-  Friend getFriend(String username) => friends.firstWhere((friend) => friend.username == username);
+  void _loadUsers() {
+    for (GroupChat group in authUser!.groupChats) {
+      for (User user in group.partecipants) {
+        
+      }
+    }
 
-  isFriend(String chatName) {
-    return authUser!.friends.any((friend) => friend.username == chatName);
+    for (Friend friend in authUser!.friends) {
+      _users[friend.username] = friend;
+    }
   }
 
   // REQUESTS

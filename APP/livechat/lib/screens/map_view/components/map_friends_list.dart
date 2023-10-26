@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../models/friend.dart';
-import '../../../providers/friends_provider.dart';
+import '../../../providers/users_provider.dart';
 
 class MapFriendsList extends StatefulWidget {
   const MapFriendsList({
@@ -27,7 +27,7 @@ class _MapFriendsListState extends State<MapFriendsList> {
   String _searchingString = "";
   final TextEditingController _searchController = TextEditingController();
 
-  late FriendsProvider _friendsProvider;
+  late UsersProvider _usersProvider;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _MapFriendsListState extends State<MapFriendsList> {
 
   @override
   Widget build(BuildContext context) {
-    _friendsProvider = Provider.of<FriendsProvider>(context);
+    _usersProvider = Provider.of<UsersProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -66,7 +66,7 @@ class _MapFriendsListState extends State<MapFriendsList> {
   }
 
   Widget _buildUsersTile() {
-    List<Friend> friendsFiltered = _friendsProvider.friends
+    List<Friend> friendsFiltered = _usersProvider.friends
         .where(
           (friends) => friends.username
               .toLowerCase()

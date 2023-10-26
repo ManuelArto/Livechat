@@ -9,7 +9,7 @@ import '../../../models/auth/auth_user.dart';
 import '../../../models/friend.dart';
 import '../../../models/user.dart';
 import '../../../providers/auth_provider.dart';
-import '../../../providers/friends_provider.dart';
+import '../../../providers/users_provider.dart';
 import '../../../providers/location_provider.dart';
 
 class MapMarkers extends StatefulWidget {
@@ -22,14 +22,14 @@ class MapMarkers extends StatefulWidget {
 class _MapMarkersState extends State<MapMarkers> {
   late LocationProvider locationProvider;
   late StepsProvider stepsProvider;
-  late FriendsProvider friendsProvider;
+  late UsersProvider usersProvider;
   late AuthUser authUser;
   late ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
     authUser = Provider.of<AuthProvider>(context, listen: false).authUser!;
-    friendsProvider = Provider.of<FriendsProvider>(context);
+    usersProvider = Provider.of<UsersProvider>(context);
     locationProvider = Provider.of<LocationProvider>(context);
     stepsProvider = Provider.of<StepsProvider>(context);
 
@@ -43,7 +43,7 @@ class _MapMarkersState extends State<MapMarkers> {
           location: LatLng(locationProvider.userLat, locationProvider.userLong),
           isMe: true,
         ),
-        for (var friend in friendsProvider.friends)
+        for (var friend in usersProvider.friends)
           _buildMarker(
             size: 40.0,
             user: friend,
@@ -84,7 +84,7 @@ class _MapMarkersState extends State<MapMarkers> {
           decoration: BoxDecoration(
             color: isMe
                 ? theme.primaryColor
-                : friendsProvider.getFriend(user.username).isOnline
+                : usersProvider.getUser(user.username).isOnline
                     ? Colors.green
                     : Colors.red,
             borderRadius: BorderRadius.circular(100.0),

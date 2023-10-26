@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/providers/location_provider.dart';
 import 'package:livechat/providers/navbar_notifier.dart';
-import 'package:livechat/providers/friends_provider.dart';
+import 'package:livechat/providers/users_provider.dart';
 import 'package:livechat/providers/steps_provider.dart';
 import 'package:livechat/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
@@ -47,11 +47,11 @@ class _AppScreenState extends State<AppScreen> {
         ChangeNotifierProvider<NavbarNotifier>(
           create: (_) => NavbarNotifier(keys),
         ),
-        ChangeNotifierProxyProvider<AuthProvider, FriendsProvider>(
+        ChangeNotifierProxyProvider<AuthProvider, UsersProvider>(
           create: (_) {
-              FriendsProvider friendsProvider = FriendsProvider();
-              socketProvider.friendsProvider = friendsProvider;
-              return friendsProvider;
+              UsersProvider usersProvider = UsersProvider();
+              socketProvider.usersProvider = usersProvider;
+              return usersProvider;
             },
           update:(context, auth, friends) => friends!..update(auth.authUser),
         ),

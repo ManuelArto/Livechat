@@ -6,6 +6,7 @@ import 'package:livechat/services/http_requester.dart';
 import '../constants.dart';
 import '../models/auth/auth_request.dart';
 import '../models/auth/auth_user.dart';
+import '../models/chat/group_chat.dart';
 import '../services/isar_service.dart';
 import '../models/friend.dart';
 
@@ -24,7 +25,13 @@ class AuthProvider with ChangeNotifier {
     ) as List)
         .map((user) => Friend.fromJson(user))
         .toList();
-    IsarService.instance.insertOrUpdate<AuthUser>(authUser!);
+    
+    authUser!.groupChats = (await HttpRequester.get(
+      URL_GROUPS_LIST,
+      authUser!.token,
+    ) as List)
+        .map((group) => GroupChat.fromJson(group, authUser!.isarId))
+        .toList();
 
     notifyListeners();
     return true;

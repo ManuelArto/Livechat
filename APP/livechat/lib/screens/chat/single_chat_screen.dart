@@ -1,9 +1,9 @@
 import 'package:livechat/providers/chat_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:livechat/providers/friends_provider.dart';
+import 'package:livechat/providers/users_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/friend.dart';
+import '../../models/user.dart';
 import 'components/single_chat/messages/messages.dart';
 import 'components/single_chat/send_message.dart';
 import 'components/profile_icon.dart';
@@ -19,19 +19,15 @@ class SingleChatScreen extends StatefulWidget {
 }
 
 class SingleChatScreenState extends State<SingleChatScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<ChatProvider>(context, listen: false).currentChat = widget.chatName;
-  }
 
   @override
   Widget build(BuildContext context) {
-    FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context);
+    ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    chatProvider.currentChat = widget.chatName;
+    bool canChat = chatProvider.canChat(widget.chatName);
 
-    Friend? user = friendsProvider.isFriend(widget.chatName)
-        ? Provider.of<FriendsProvider>(context).getFriend(widget.chatName)
-        : null;
+    User user = Provider.of<UsersProvider>(context).getUser(widget.chatName);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
@@ -45,7 +41,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
           Container(
             padding: const EdgeInsets.all(5.0),
             margin: const EdgeInsets.only(right: 10.0),
-            child: user != null ? ProfileIcon(user: user) : null,
+            child: ProfileIcon(user: user),
           ),
         ],
       ),
@@ -57,7 +53,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
               child: Messages(widget.chatName),
             ),
           ),
-          if (user != null)
+          if (canChat)
             SendMessage(widget.chatName),
         ],
       ),

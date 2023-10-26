@@ -59,11 +59,10 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const TopBar(),
-       // TODO: navigate to find chat and create group like whatsapp
-      // floatingActionButton: FloatingActionButton(
-        // onPressed: () {},
-        // child: const Icon(Icons.chat, color: Colors.white),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.group_add_rounded, color: Colors.white),
+      ),
       body: Stack(
         children: [
           GradienBackGround(MediaQuery.of(context).size.height * .3),

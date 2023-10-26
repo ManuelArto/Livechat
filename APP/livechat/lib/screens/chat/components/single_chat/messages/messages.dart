@@ -11,7 +11,7 @@ import '../../../../../models/chat/messages/content/file_content.dart';
 import '../../../../../models/chat/messages/message.dart';
 import '../../../../../providers/auth_provider.dart';
 import '../../../../../providers/chat_provider.dart';
-import '../../../../../providers/friends_provider.dart';
+import '../../../../../providers/users_provider.dart';
 import 'audio_message_player.dart';
 import 'file_message.dart';
 import 'message_bubble.dart';
@@ -47,7 +47,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
     super.build(context);
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
-    final friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
+    final usersProvider = Provider.of<UsersProvider>(context, listen: false);
     final chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages(widget.chatName);
 
@@ -66,7 +66,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
           isMe: isMe,
           imageUrl: isMe
               ? authUser.imageUrl
-              : friendsProvider.getFriend(message.sender!).imageUrl,
+              : usersProvider.getUser(message.sender!).imageUrl,
           key: ValueKey(message.id),
           messageWidget: messageWidget,
         );

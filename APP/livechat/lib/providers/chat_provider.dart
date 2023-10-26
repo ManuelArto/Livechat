@@ -37,6 +37,8 @@ class ChatProvider with ChangeNotifier {
   List<Chat> chatsBySection(String section) =>
       _chats.values.where((chat) => chat.sections.contains(section)).toList();
 
+  bool canChat(String chatName) => _chats[chatName]?.canChat ?? false;
+
   int get totalToRead => _chats.values.fold(0, (prev, chat) => prev + chat.toRead);
 
   // METHODS
@@ -55,15 +57,16 @@ class ChatProvider with ChangeNotifier {
       id: const Uuid().v1(),
       content: content,
     );
-    _chats[chatName]?.messages.add(newMessage);
+    Chat chats = _chats[chatName]!
+      ..messages.add(newMessage);
 
-    if (currentChat != chatName) _chats[chatName]?.toRead += 1;
+    if (currentChat != chatName) chats.toRead += 1;
 
     if (sender != authUser!.username && currentChat != chatName) {
       NotificationService.instance.showNotification(
         id: newMessage.id!.hashCode,
         title: chatName,
-        body: getContentMessage(content), // TODO: Check if is group then add "Sender:"
+        body: "${chats is GroupChat ? '$sender ' : ''}${getContentMessage(content)}",
         groupKey: chatName,
         imagePath: content.type == ContentType.image
             ? (content as ImageContent).get().path
@@ -107,13 +110,11 @@ class ChatProvider with ChangeNotifier {
   }
 
   void _updateFriendsChat() {
-    List<Friend> friends = List.from(authUser!.friends);
-
-    for (var friend in friends.indexed) {
-      if (_chats.containsKey(friend.$2.username)) {
-        _chats[friend.$2.username]!.canChat = true;
+    for (var friend in authUser!.friends) {
+      if (_chats.containsKey(friend.username)) {
+        _chats[friend.username]!.canChat = true;
       } else {
-        _addFriendChatIfNotExists(friend.$2.username);
+        _addFriendChatIfNotExists(friend.username);
       }
     }
   }
@@ -128,14 +129,7 @@ class ChatProvider with ChangeNotifier {
   }
 
   Future<void> _loadGroupsChat() async {
-    List<GroupChat> groupChats = (await HttpRequester.get(
-      URL_GROUPS_LIST,
-      authUser!.token,
-    ) as List)
-        .map((group) => GroupChat.fromJson(group, authUser!.isarId))
-        .toList();
-
-    for (var groupChat in groupChats) {
+    for (var groupChat in authUser!.groupChats) {
       if (_chats.containsKey(groupChat.chatName)) {
         _chats[groupChat.chatName]!.canChat = true;
       } else {
