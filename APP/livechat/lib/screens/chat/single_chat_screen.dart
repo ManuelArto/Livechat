@@ -1,6 +1,7 @@
 import 'package:livechat/providers/chat_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:livechat/providers/users_provider.dart';
+import 'package:livechat/screens/chat/group_info_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chat/chat.dart';
@@ -24,7 +25,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
   @override
   Widget build(BuildContext context) {
     ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false)
-          ..currentChat = widget.chatName;
+        ..currentChat = widget.chatName;
     Chat chat = chatProvider.chatByName(widget.chatName);
 
     User? user = Provider.of<UsersProvider>(context).getUser(widget.chatName);
@@ -42,7 +43,15 @@ class SingleChatScreenState extends State<SingleChatScreen> {
           Container(
             padding: const EdgeInsets.all(5.0),
             margin: const EdgeInsets.only(right: 10.0),
-            child: chat is GroupChat ? null : ProfileIcon(user: user!),
+            child: chat is GroupChat
+                ? IconButton(
+                    onPressed: () => Navigator.of(context).pushNamed(
+                      GroupInfoScreen.routeName,
+                      arguments: chat,
+                    ),
+                    icon: const Icon(Icons.info_rounded),
+                  )
+                : ProfileIcon(user: user!),
           ),
         ],
       ),

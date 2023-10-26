@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/socket_provider.dart';
 import '../../services/http_requester.dart';
 
 class AddGroupScreen extends StatefulWidget {
@@ -21,6 +20,8 @@ class AddGroupScreen extends StatefulWidget {
 class _AddGroupScreenState extends State<AddGroupScreen> {
   String groupName = "";
   Set<String> partecipantIds = {};
+
+  bool get canCreateGroup => groupName == "" || partecipantIds.isEmpty;
 
   Future<void> _createGroup () async {
     try {
@@ -87,8 +88,6 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
       ),
     );
   }
-
-  bool get canCreateGroup => groupName == "" || partecipantIds.isEmpty;
 
   ListTile _friendTile(Friend friend) {
     return ListTile(

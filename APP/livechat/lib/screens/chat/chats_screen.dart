@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:livechat/models/chat/group_chat.dart';
+import 'package:livechat/screens/chat/group_info_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/chat_provider.dart';
@@ -45,11 +47,13 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
     switch (settings.name) {
       case SingleChatScreen.routeName:
         return MaterialPageRoute(
-            builder: (context) =>
-                SingleChatScreen(settings.arguments as String));
+            builder: (context) => SingleChatScreen(settings.arguments as String));
       case AddGroupScreen.routeName:
         return MaterialPageRoute(
             builder: (context) => const AddGroupScreen());
+      case GroupInfoScreen.routeName:
+        return MaterialPageRoute(
+            builder: (context) => GroupInfoScreen(settings.arguments as GroupChat));
       default:
         return MaterialPageRoute(
           builder: (context) => _buildChatScreen(context),
