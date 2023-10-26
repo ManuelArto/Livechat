@@ -14,7 +14,7 @@ router = APIRouter()
 async def create_group(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
     body: GroupSchema
-) -> GroupResponse:
+) -> dict[str, GroupResponse]:
     try:
         group_response = GroupService.create(body, ObjectId(user_data["id"]))
 
@@ -24,14 +24,14 @@ async def create_group(
             detail="Group with the same name already exists",
         )
 
-    return group_response
+    return {"data": group_response}
 
 @router.get("/list")
 async def list_groups(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)],
-) -> list[GroupResponse]:
+) -> dict[str, list[GroupResponse]]:
     groups = GroupService.retrieve_user_groups(ObjectId(user_data["id"]))
-    return groups
+    return {"data": groups}
 
 @router.delete("/{group_id}")
 async def delete(

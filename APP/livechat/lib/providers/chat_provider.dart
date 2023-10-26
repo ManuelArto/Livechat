@@ -34,7 +34,7 @@ class ChatProvider with ChangeNotifier {
   List<Chat> chatsBySection(String section) =>
       _chats.values.where((chat) => chat.sections.contains(section)).toList();
 
-  bool canChat(String chatName) => _chats[chatName]?.canChat ?? false;
+  Chat chatByName(String chatName) => _chats[chatName]!;
 
   int get totalToRead => _chats.values.fold(0, (prev, chat) => prev + chat.toRead);
 
@@ -127,11 +127,7 @@ class ChatProvider with ChangeNotifier {
 
   void _loadGroupsChat() async {
     for (var groupChat in authUser!.groupChats) {
-      if (_chats.containsKey(groupChat.chatName)) {
-        _chats[groupChat.chatName]!.canChat = true;
-      } else {
-        _chats[groupChat.chatName] = groupChat;
-      }
+      _chats[groupChat.chatName] = groupChat;
     }
   }
 

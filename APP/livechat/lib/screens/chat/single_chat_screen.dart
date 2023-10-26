@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:livechat/providers/users_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/chat/chat.dart';
+import '../../models/chat/group_chat.dart';
 import '../../models/user.dart';
 import 'components/single_chat/messages/messages.dart';
 import 'components/single_chat/send_message.dart';
@@ -19,14 +21,13 @@ class SingleChatScreen extends StatefulWidget {
 }
 
 class SingleChatScreenState extends State<SingleChatScreen> {
-
   @override
   Widget build(BuildContext context) {
-    ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false);
-    chatProvider.currentChat = widget.chatName;
-    bool canChat = chatProvider.canChat(widget.chatName);
+    ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false)
+          ..currentChat = widget.chatName;
+    Chat chat = chatProvider.chatByName(widget.chatName);
 
-    User user = Provider.of<UsersProvider>(context).getUser(widget.chatName);
+    User? user = Provider.of<UsersProvider>(context).getUser(widget.chatName);
 
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +42,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
           Container(
             padding: const EdgeInsets.all(5.0),
             margin: const EdgeInsets.only(right: 10.0),
-            child: ProfileIcon(user: user),
+            child: chat is GroupChat ? null : ProfileIcon(user: user),
           ),
         ],
       ),
@@ -53,8 +54,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
               child: Messages(widget.chatName),
             ),
           ),
-          if (canChat)
-            SendMessage(widget.chatName),
+          if (chat.canChat) SendMessage(widget.chatName),
         ],
       ),
     );
