@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:livechat/models/chat/group_chat.dart';
 import 'package:livechat/models/chat/messages/content/audio_content.dart';
 import 'package:livechat/models/chat/messages/content/file_content.dart';
 import 'package:livechat/models/chat/messages/content/image_content.dart';
@@ -76,7 +77,7 @@ class ChatsList extends StatelessWidget {
                       chat.chatName,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: getLastMessageContent(lastMessage),
+                    subtitle: getLastMessageContent(lastMessage, chat is GroupChat),
                     trailing: Text(time),
                   ),
                 ),
@@ -85,9 +86,9 @@ class ChatsList extends StatelessWidget {
           );
   }
 
-  Widget getLastMessageContent(Message? lastMessage) {
+  Widget getLastMessageContent(Message? lastMessage, bool isGroupChat) {
     textWidget(message) => Text(
-          message,
+          "${isGroupChat && lastMessage?.sender != null ? '${lastMessage!.sender}: ' : '' }$message",
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );

@@ -19,7 +19,6 @@ class Chat implements Comparable<Chat> {
   Chat({
     required this.chatName,
     required this.userId,
-    this.messages = const [],
     this.toRead = 0,
   });
   

@@ -1,8 +1,10 @@
 import json
 import socketio
+from bson import ObjectId
 
 from app.config import settings
 from app.helpers import jwt_helper
+from app.services.groups_service import GroupService
 
 sio_server = socketio.AsyncServer(
     async_mode="asgi", cors_allowed_origins=[], logger=settings.DEBUG_MODE
@@ -25,6 +27,10 @@ async def connect(sid, _, auth):
 
     # Private room
     sio_server.enter_room(sid, room=username)
+    # Group rooms
+    for group in GroupService.retrieve_user_groups(ObjectId(user_id)):
+        sio_server.enter_room(sid, room=group.name)
+
     print(f"WEBSOCKET: [NEW USER] {username}")
 
     await sio_server.emit("user_connected", data=list(socket_clients))
@@ -60,6 +66,10 @@ async def handle_msg(sid, input_data):
 
     await sio_server.emit("receive_message", data=data, room=data["receiver"])
 
+@sio_server.on("join_group")
+async def handle_join_group(sid, input_data):
+    body = json.loads(input_data)
+    sio_server.enter_room(sid, room=body["name"])
 
 def data_from_token(token) -> tuple[str, str]:
     if not token:

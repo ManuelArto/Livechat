@@ -115,18 +115,18 @@ Chat _chatDeserialize(
 ) {
   final object = Chat(
     chatName: reader.readString(offsets[1]),
-    messages: reader.readObjectList<Message>(
-          offsets[2],
-          MessageSchema.deserialize,
-          allOffsets,
-          Message(),
-        ) ??
-        const [],
     toRead: reader.readLongOrNull(offsets[4]) ?? 0,
     userId: reader.readLongOrNull(offsets[5]),
   );
   object.canChat = reader.readBool(offsets[0]);
   object.id = id;
+  object.messages = reader.readObjectList<Message>(
+        offsets[2],
+        MessageSchema.deserialize,
+        allOffsets,
+        Message(),
+      ) ??
+      [];
   object.sections = reader.readStringList(offsets[3]) ?? [];
   return object;
 }
@@ -149,7 +149,7 @@ P _chatDeserializeProp<P>(
             allOffsets,
             Message(),
           ) ??
-          const []) as P;
+          []) as P;
     case 3:
       return (reader.readStringList(offset) ?? []) as P;
     case 4:

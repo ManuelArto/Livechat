@@ -5,7 +5,11 @@ import 'package:http/http.dart' as http;
 import '../models/http_exception.dart';
 
 class HttpRequester {
-  static Future<Map<String, dynamic>> post(Map<String, dynamic> body, String url, {String? token}) async {
+  static Future<Map<String, dynamic>> post(
+    Map<String, dynamic> body,
+    String url, {
+    String? token,
+  }) async {
     final response = await http.post(
       Uri.parse(url),
       body: json.encode(body),
@@ -20,7 +24,9 @@ class HttpRequester {
       throw HttpException(responseData["error"], response.statusCode);
     }
 
-    return responseData;
+    return responseData.containsKey("data")
+        ? responseData["data"]
+        : responseData;
   }
 
   static Future<dynamic> get(String url, String? token) async {

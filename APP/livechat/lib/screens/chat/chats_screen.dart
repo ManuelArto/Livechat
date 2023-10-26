@@ -6,6 +6,7 @@ import '../../providers/navbar_notifier.dart';
 import '../../services/notification_service.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/top_bar.dart';
+import 'add_group_screen.dart';
 import 'components/active_users.dart';
 import 'components/chat_section_page.dart';
 import 'single_chat_screen.dart';
@@ -46,6 +47,9 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
         return MaterialPageRoute(
             builder: (context) =>
                 SingleChatScreen(settings.arguments as String));
+      case AddGroupScreen.routeName:
+        return MaterialPageRoute(
+            builder: (context) => const AddGroupScreen());
       default:
         return MaterialPageRoute(
           builder: (context) => _buildChatScreen(context),
@@ -60,7 +64,7 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
       resizeToAvoidBottomInset: false,
       appBar: const TopBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => Navigator.of(context).pushNamed(AddGroupScreen.routeName),
         child: const Icon(Icons.group_add_rounded, color: Colors.white),
       ),
       body: Stack(

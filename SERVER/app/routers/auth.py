@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(body: UserCreateSchema, _: Request) -> AuthUserResponse:
+async def register(body: UserCreateSchema, _: Request) -> dict[str, AuthUserResponse]:
     try:
         user = UserService.save(body)
 
@@ -33,11 +33,11 @@ async def register(body: UserCreateSchema, _: Request) -> AuthUserResponse:
             detail="Internal server error",
         )
 
-    return user
+    return {"data": user}
 
 
 @router.post("/login")
-def login(body: UserLoginSchema, _: Response) -> AuthUserResponse:
+def login(body: UserLoginSchema, _: Response) -> dict[str, AuthUserResponse]:
     user = UserService.retrieve_user_by("email", body.email)
 
     if not user:
@@ -52,13 +52,13 @@ def login(body: UserLoginSchema, _: Response) -> AuthUserResponse:
 
     user_response = UserService.create_auth_user_response(user)
 
-    return user_response
+    return {"data": user_response}
 
 
 @router.get("/refreshToken")
 def refresh_token(
     user_data: Annotated[dict, Depends(jwt_helper.get_current_user)]
-) -> AuthUserResponse:
+) -> dict[str, AuthUserResponse]:
     user = UserService.retrieve_user_by("username", user_data["username"])
 
     if not user:
@@ -66,4 +66,4 @@ def refresh_token(
             status_code=status.HTTP_404_NOT_FOUND, detail="No user with that id"
         )
 
-    return UserService.create_auth_user_response(user)
+    return {"data": UserService.create_auth_user_response(user)}

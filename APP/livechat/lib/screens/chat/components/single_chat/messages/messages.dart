@@ -66,7 +66,7 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
           isMe: isMe,
           imageUrl: isMe
               ? authUser.imageUrl
-              : usersProvider.getUser(message.sender!).imageUrl,
+              : usersProvider.getUser(message.sender!)!.imageUrl,
           key: ValueKey(message.id),
           messageWidget: messageWidget,
         );
@@ -76,19 +76,19 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
 
   Widget _buildChildMessageWidget(Message<Content> message, bool isMe) {
     switch (message.content.runtimeType) {
-      case TextContent _:
+      case const (TextContent):
         return Text(
           message.content!.get(),
           textAlign: TextAlign.justify,
         );
-      case AudioContent _:
+      case const (AudioContent):
         return AudioMessagePlayer(
           audio: message.content as AudioContent,
           key: ValueKey(message.id),
         );
-      case ImageContent _:
+      case const (ImageContent):
         return ImageMessage(image: message.content as ImageContent);
-      case FileContent _:
+      case const (FileContent):
         return FileMessage(file: message.content as FileContent, sender: message.sender!);
       default:
         throw UnsupportedError(

@@ -82,6 +82,7 @@ class SocketProvider with ChangeNotifier {
     _socketIO?.on("friend_steps_update", _updatefriendSteps);
     // CHAT
     _socketIO?.on('receive_message', _receiveMessage);
+    _socketIO?.on('new_group', _newGroup);
   }
 
   void _userConnected(jsonData) {
@@ -116,8 +117,15 @@ class SocketProvider with ChangeNotifier {
     usersProvider.deleteFriend(jsonData["username"]);
   }
 
+  void _newGroup(jsonData) {
+    _socketIO?.emit("join_group", json.encode({ "name": jsonData["name"] }));
+
+    usersProvider.newGroupUsers(jsonData);
+    chatProvider.newGroupChat(jsonData);
+  }
+
   void _receiveMessage(jsonData) async {
-    if (jsonData["sender"] == authUser.username) return; // In teoria non serve, ma in caso di gruppi sì
+    if (jsonData["sender"] == authUser.username) return;
 
     _storeNewMessage(jsonData);
   }

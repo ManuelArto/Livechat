@@ -24,6 +24,9 @@ async def create_group(
             detail="Group with the same name already exists",
         )
 
+    for partecipant in group_response.partecipants:
+        await sio_server.emit("new_group", data=group_response, room=partecipant.username)
+
     return {"data": group_response}
 
 @router.get("/list")

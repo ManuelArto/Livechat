@@ -84,7 +84,7 @@ class _MapMarkersState extends State<MapMarkers> {
           decoration: BoxDecoration(
             color: isMe
                 ? theme.primaryColor
-                : usersProvider.getUser(user.username).isOnline
+                : usersProvider.getUser(user.username)!.isOnline
                     ? Colors.green
                     : Colors.red,
             borderRadius: BorderRadius.circular(100.0),

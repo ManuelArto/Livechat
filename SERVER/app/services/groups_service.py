@@ -1,7 +1,7 @@
 from bson import ObjectId
 from fastapi import HTTPException, status
 from app.schemas import GroupSchema, GroupResponse
-from app.services.user_service import UserService # ! To avoid circular import
+from app.services.user_service import UserService
 from app.db import db
 
 class GroupService:
@@ -21,13 +21,7 @@ class GroupService:
             update={"$push": {"groups": group_id}}
         )
 
-        return GroupResponse(
-            id=str(group_id),
-            admin=str(user_id),
-            created_at=group._created_at,
-            updated_at=group._updated_at,
-            **group.dict(),
-        )
+        return GroupService.create_group_response(document_group)
 
     @staticmethod
     def delete(group_id: ObjectId, user_id: ObjectId):

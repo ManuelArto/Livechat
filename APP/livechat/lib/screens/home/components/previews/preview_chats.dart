@@ -75,11 +75,11 @@ class _PreviewChatsState extends State<PreviewChats> {
                         ? null
                         : CircleAvatar(
                             backgroundImage: NetworkImage(
-                              usersProvider.getUser(chat.chatName).imageUrl,
+                              usersProvider.getUser(chat.chatName)!.imageUrl,
                             ),
                           ),
                     title: Text(chat.chatName),
-                    subtitle: getLastMessageContent(lastMessage),
+                    subtitle: getLastMessageContent(lastMessage, chat is GroupChat),
                     trailing: Text(time),
                   );
                 },
@@ -97,9 +97,9 @@ class _PreviewChatsState extends State<PreviewChats> {
     );
   }
 
-  Widget getLastMessageContent(Message? lastMessage) {
+  Widget getLastMessageContent(Message? lastMessage, bool isGroupChat) {
     textWidget(message) => Text(
-          message,
+          "${isGroupChat && lastMessage?.sender != null ? '${lastMessage!.sender}: ' : '' }$message",
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );

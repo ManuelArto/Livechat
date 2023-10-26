@@ -42,7 +42,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
           Container(
             padding: const EdgeInsets.all(5.0),
             margin: const EdgeInsets.only(right: 10.0),
-            child: chat is GroupChat ? null : ProfileIcon(user: user),
+            child: chat is GroupChat ? null : ProfileIcon(user: user!),
           ),
         ],
       ),

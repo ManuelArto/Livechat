@@ -15,7 +15,7 @@ class UsersProvider with ChangeNotifier {
 
   List<Friend> get friends => _users.values.whereType<Friend>().toList();
   List<User> get onlineUsers => friends.where((friend) => friend.isOnline).toList();
-  T getUser<T extends User>(String username) => _users[username] as T;
+  T getUser<T extends User?>(String username) => _users[username] as T;
 
   // Called everytime AuthProvider changes
   void update(AuthUser? authUser) {
@@ -74,6 +74,16 @@ class UsersProvider with ChangeNotifier {
 
     _onlineUsers.remove(username);
     notifyListeners();
+  }
+
+  void newGroupUsers(jsonData) {
+    GroupChat group = GroupChat.fromJson(jsonData, authUser!.isarId);
+    
+    for (User user in group.partecipants) {
+      if (!_users.containsKey(user.username)) {
+        _users[user.username] = user;
+      }
+    }
   }
 
   void _loadUsers() {

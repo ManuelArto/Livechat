@@ -36,12 +36,21 @@ class ChatProvider with ChangeNotifier {
 
   Chat chatByName(String chatName) => _chats[chatName]!;
 
+  bool chatExists(String chatName) => _chats.containsKey(chatName);
+
   int get totalToRead => _chats.values.fold(0, (prev, chat) => prev + chat.toRead);
 
   // METHODS
 
   void newFriendChat(Map<String, dynamic> data) {
     _addFriendChatIfNotExists(data["username"]);
+
+    notifyListeners();
+    IsarService.instance.saveAll<Chat>(_chats.values.toList());
+  }
+
+  Future<void> newGroupChat(Map<String, dynamic> data) async {
+    _chats[data["name"]] = GroupChat.fromJson(data, authUser!.isarId);
 
     notifyListeners();
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
@@ -127,6 +136,11 @@ class ChatProvider with ChangeNotifier {
 
   void _loadGroupsChat() async {
     for (var groupChat in authUser!.groupChats) {
+      if (_chats.containsKey(groupChat.chatName)) {
+        groupChat.messages = _chats[groupChat.chatName]!.messages;
+        groupChat.sections = _chats[groupChat.chatName]!.sections;
+        groupChat.toRead = _chats[groupChat.chatName]!.toRead;
+      }
       _chats[groupChat.chatName] = groupChat;
     }
   }
