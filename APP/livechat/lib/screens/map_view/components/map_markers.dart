@@ -66,7 +66,7 @@ class _MapMarkersState extends State<MapMarkers> {
       width: size,
       height: size,
       point: location,
-      builder: (ctx) => Tooltip(
+      child: Tooltip(
         triggerMode: TooltipTriggerMode.tap,
         message: '${user.username}\n$steps steps',
         preferBelow: false,

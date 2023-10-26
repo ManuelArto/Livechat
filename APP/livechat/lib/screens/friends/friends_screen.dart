@@ -16,7 +16,7 @@ import 'components/tabs/suggested_friends_tab.dart';
 class FriendsScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  const FriendsScreen({required this.navigatorKey, Key? key}) : super(key: key);
+  const FriendsScreen({required this.navigatorKey, super.key});
 
   @override
   State<FriendsScreen> createState() => _FriendsScreenState();

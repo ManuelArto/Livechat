@@ -1,8 +1,9 @@
+import '../user.dart';
 import 'chat.dart';
 
 class GroupChat extends Chat {
   String groupId;
-  List<String> partecipants;
+  List<User> partecipants;
   String admin;
   DateTime createdAt;
 
@@ -12,8 +13,8 @@ class GroupChat extends Chat {
   factory GroupChat.fromJson(Map<String, dynamic> data, int userId) =>
       GroupChat(
         data["id"],
-        [for (var user in data["partecipants"]) user["username"]],
-        data["created_at"],
+        [ for (var user in data["partecipants"]) User.fromJson(user) ],
+        DateTime.parse(data["created_at"]),
         data["admin"],
         data["name"],
         userId,

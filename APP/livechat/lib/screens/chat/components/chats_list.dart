@@ -16,7 +16,7 @@ import '../single_chat_screen.dart';
 class ChatsList extends StatelessWidget {
   final String section;
 
-  const ChatsList({Key? key, required this.section}) : super(key: key);
+  const ChatsList({super.key, required this.section});
 
   @override
   Widget build(BuildContext context) {

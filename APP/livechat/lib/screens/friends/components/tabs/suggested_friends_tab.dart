@@ -12,7 +12,7 @@ import '../user_tile.dart';
 import '../user_tiles.dart';
 
 class SuggestedFriendsTab extends StatefulWidget {
-  const SuggestedFriendsTab({Key? key}) : super(key: key);
+  const SuggestedFriendsTab({super.key});
 
   @override
   State<SuggestedFriendsTab> createState() => _SuggestedFriendsTabState();

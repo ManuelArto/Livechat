@@ -6,7 +6,7 @@ import '../user_tile.dart';
 import '../user_tiles.dart';
 
 class FriendsRequestsTab extends StatefulWidget {
-  const FriendsRequestsTab({Key? key}) : super(key: key);
+  const FriendsRequestsTab({super.key});
 
   @override
   State<FriendsRequestsTab> createState() => _FriendsRequestsTabState();

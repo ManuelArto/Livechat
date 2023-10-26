@@ -9,7 +9,7 @@ import '../../../models/auth/auth_request.dart';
 import '../../../providers/settings_provider.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({Key? key}) : super(key: key);
+  const AuthForm({super.key});
 
   @override
   AuthFormState createState() => AuthFormState();

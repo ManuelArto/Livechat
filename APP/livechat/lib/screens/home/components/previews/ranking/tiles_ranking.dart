@@ -3,7 +3,7 @@ import 'package:livechat/models/friend.dart';
 import 'package:livechat/screens/home/components/previews/ranking/user_rank_tile.dart';
 
 class TilesRanking extends StatelessWidget {
-  const TilesRanking({Key? key, required this.ranking}) : super(key: key);
+  const TilesRanking({super.key, required this.ranking});
 
   final List<Friend> ranking;
 

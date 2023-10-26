@@ -10,7 +10,7 @@ import '../../../services/http_requester.dart';
 import 'user_tile.dart';
 
 class DynamicUserTiles extends StatefulWidget {
-  const DynamicUserTiles({Key? key}) : super(key: key);
+  const DynamicUserTiles({super.key});
 
   @override
   State<DynamicUserTiles> createState() => _DynamicUserTilesState();

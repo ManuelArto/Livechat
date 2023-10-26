@@ -15,8 +15,8 @@ class MessageBubble extends StatelessWidget {
     required this.isMe,
     required this.imageUrl,
     required this.messageWidget,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

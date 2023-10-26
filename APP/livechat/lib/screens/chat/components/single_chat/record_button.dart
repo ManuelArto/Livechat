@@ -3,10 +3,10 @@ import 'package:record/record.dart';
 
 class RecordButton extends StatefulWidget {
   const RecordButton({
-    Key? key,
+    super.key,
     required this.recordingStartedCallback,
     required this.recordingFinishedCallback,
-  }) : super(key: key);
+  });
 
   final void Function() recordingStartedCallback;
   final void Function(String) recordingFinishedCallback;

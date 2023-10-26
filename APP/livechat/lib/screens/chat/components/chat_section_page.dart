@@ -7,7 +7,7 @@ import 'chat_sections.dart';
 import 'chats_list.dart';
 
 class ChatSectionPage extends StatefulWidget {
-  const ChatSectionPage(this.screenSize, {Key? key}) : super(key: key);
+  const ChatSectionPage(this.screenSize, {super.key});
 
   final Size screenSize;
 

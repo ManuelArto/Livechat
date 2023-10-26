@@ -16,7 +16,7 @@ import 'home/home_screen.dart';
 import 'map_view/map_view_screen.dart';
 
 class AppScreen extends StatefulWidget {
-  const AppScreen({Key? key}) : super(key: key);
+  const AppScreen({super.key});
 
   @override
   State<AppScreen> createState() => _AppScreenState();

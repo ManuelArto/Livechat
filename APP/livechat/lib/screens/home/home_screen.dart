@@ -9,7 +9,7 @@ import 'components/previews/previews_page_view.dart';
 class HomeScreen extends StatefulWidget {
   final GlobalKey navigatorKey;
 
-  const HomeScreen({required this.navigatorKey, Key? key}) : super(key: key);
+  const HomeScreen({required this.navigatorKey, super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();

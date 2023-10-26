@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 
 class UserRankTile extends StatelessWidget {
   const UserRankTile({
-    Key? key,
+    super.key,
     required this.username,
     required this.position,
     required this.totalSteps,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   final String username;
   final int position;

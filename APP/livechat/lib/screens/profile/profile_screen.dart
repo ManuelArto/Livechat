@@ -13,7 +13,7 @@ import 'components/profile_menu.dart';
 class ProfileScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  const ProfileScreen({required this.navigatorKey, Key? key}) : super(key: key);
+  const ProfileScreen({required this.navigatorKey, super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();

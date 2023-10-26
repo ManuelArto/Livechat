@@ -5,11 +5,11 @@ import '../../../providers/navbar_notifier.dart';
 
 class CardHome extends StatefulWidget {
   const CardHome({
-    Key? key,
+    super.key,
     required this.imgPath,
     required this.nameCard,
     required this.description,
-  }) : super(key: key);
+  });
 
   final String imgPath;
   final String nameCard;

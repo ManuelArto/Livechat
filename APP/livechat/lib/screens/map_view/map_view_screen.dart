@@ -12,7 +12,7 @@ import 'components/reposition_button.dart';
 
 class MapViewScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
-  const MapViewScreen({required this.navigatorKey, Key? key}) : super(key: key);
+  const MapViewScreen({required this.navigatorKey, super.key});
 
   @override
   State<MapViewScreen> createState() => _MapViewScreenState();

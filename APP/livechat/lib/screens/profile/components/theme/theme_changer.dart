@@ -7,7 +7,7 @@ import '../../../../models/settings.dart';
 import '../../../../providers/settings_provider.dart';
 
 class ThemeChanger extends StatefulWidget {
-  const ThemeChanger({Key? key}) : super(key: key);
+  const ThemeChanger({super.key});
 
   @override
   State<ThemeChanger> createState() => _ThemeChangerState();

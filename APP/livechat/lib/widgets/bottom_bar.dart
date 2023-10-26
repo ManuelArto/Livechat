@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../providers/navbar_notifier.dart';
 
 class BottomBar extends StatelessWidget {
-  const BottomBar({Key? key}) : super(key: key);
+  const BottomBar({super.key});
 
   final tabItemsList = const <TabItem>[
     TabItem("Home", Icons.home_rounded),

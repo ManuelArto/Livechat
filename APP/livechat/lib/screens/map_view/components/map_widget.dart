@@ -20,8 +20,8 @@ class MapWidget extends StatelessWidget {
 
     return FlutterMap(
       options: MapOptions(
-        center: LatLng(locationProvider.userLat, locationProvider.userLong),
-        zoom: 8,
+        initialCenter: LatLng(locationProvider.userLat, locationProvider.userLong),
+        initialZoom: 8,
         minZoom: 3,
         maxZoom: 18,
       ),

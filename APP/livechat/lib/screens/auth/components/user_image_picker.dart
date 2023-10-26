@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 class UserImagePicker extends StatefulWidget {
   final Future<void> Function(Uint8List imageBytes) setUserImage;
 
-  const UserImagePicker(this.setUserImage, {Key? key}) : super(key: key);
+  const UserImagePicker(this.setUserImage, {super.key});
 
   @override
   UserImagePickerState createState() => UserImagePickerState();

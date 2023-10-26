@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:livechat/constants.dart';
 import 'package:livechat/models/chat/chat.dart';
-import 'package:livechat/services/http_requester.dart';
 import 'package:livechat/services/isar_service.dart';
 import 'package:livechat/services/notification_service.dart';
 import 'package:uuid/uuid.dart';
@@ -11,7 +9,6 @@ import '../models/chat/group_chat.dart';
 import '../models/chat/messages/content/content.dart';
 import '../models/chat/messages/content/image_content.dart';
 import '../models/chat/messages/message.dart';
-import '../models/friend.dart';
 
 class ChatProvider with ChangeNotifier {
   AuthUser? authUser;
@@ -103,7 +100,7 @@ class ChatProvider with ChangeNotifier {
     };
 
     _updateFriendsChat();
-    await _loadGroupsChat();
+    _loadGroupsChat();
 
     IsarService.instance.saveAll<Chat>(_chats.values.toList());
     notifyListeners();
@@ -128,7 +125,7 @@ class ChatProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _loadGroupsChat() async {
+  void _loadGroupsChat() async {
     for (var groupChat in authUser!.groupChats) {
       if (_chats.containsKey(groupChat.chatName)) {
         _chats[groupChat.chatName]!.canChat = true;

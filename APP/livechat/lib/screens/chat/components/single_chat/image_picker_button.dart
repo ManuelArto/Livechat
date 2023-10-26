@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 class ImagePickerButton extends StatefulWidget {
   final void Function(File image) sendImage;
 
-  const ImagePickerButton(this.sendImage, {Key? key}) : super(key: key);
+  const ImagePickerButton(this.sendImage, {super.key});
 
   @override
   ImagePickerButtonState createState() => ImagePickerButtonState();

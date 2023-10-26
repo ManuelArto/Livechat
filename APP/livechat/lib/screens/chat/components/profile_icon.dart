@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../models/user.dart';
 
 class ProfileIcon extends StatelessWidget {
-  const ProfileIcon({required this.user, Key? key}) : super(key: key);
+  const ProfileIcon({required this.user, super.key});
 
   final User user;
 

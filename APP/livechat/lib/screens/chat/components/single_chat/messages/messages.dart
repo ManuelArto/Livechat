@@ -19,7 +19,7 @@ import 'message_bubble.dart';
 class Messages extends StatefulWidget {
   final String chatName;
 
-  const Messages(this.chatName, {Key? key}) : super(key: key);
+  const Messages(this.chatName, {super.key});
 
   @override
   MessagesState createState() => MessagesState();
@@ -76,19 +76,19 @@ class MessagesState extends State<Messages> with AutomaticKeepAliveClientMixin {
 
   Widget _buildChildMessageWidget(Message<Content> message, bool isMe) {
     switch (message.content.runtimeType) {
-      case TextContent:
+      case TextContent _:
         return Text(
           message.content!.get(),
           textAlign: TextAlign.justify,
         );
-      case AudioContent:
+      case AudioContent _:
         return AudioMessagePlayer(
           audio: message.content as AudioContent,
           key: ValueKey(message.id),
         );
-      case ImageContent:
+      case ImageContent _:
         return ImageMessage(image: message.content as ImageContent);
-      case FileContent:
+      case FileContent _:
         return FileMessage(file: message.content as FileContent, sender: message.sender!);
       default:
         throw UnsupportedError(

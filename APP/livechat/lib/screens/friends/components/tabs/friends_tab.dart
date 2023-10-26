@@ -5,7 +5,7 @@ import 'package:livechat/screens/friends/components/user_tiles.dart';
 import 'package:provider/provider.dart';
 
 class FriendsTab extends StatelessWidget {
-  const FriendsTab({Key? key}) : super(key: key);
+  const FriendsTab({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import 'package:livechat/screens/auth/components/user_image_picker.dart';
 class UserImageSection extends StatefulWidget {
   final AuthRequest authRequest;
 
-  const UserImageSection(this.authRequest, {Key? key}) : super(key: key);
+  const UserImageSection(this.authRequest, {super.key});
 
   @override
   State<UserImageSection> createState() => _UserImageSectionState();

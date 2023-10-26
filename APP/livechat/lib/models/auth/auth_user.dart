@@ -27,7 +27,7 @@ class AuthUser extends User {
         friends =
             (map["friends"] as List).map((e) => Friend.fromJson(e)).toList(),
         groupChats =
-            (map["groups"] as List).map((e) => GroupChat.fromJson(e, map["id"])).toList(),
+            (map["groups"] as List).map((e) => GroupChat.fromJson(e, fastHash(map["id"]))).toList(),
         super(
           map["id"],
           map["username"],

@@ -12,7 +12,7 @@ import 'single_chat_screen.dart';
 
 class ChatsScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
-  const ChatsScreen({required this.navigatorKey, Key? key}) : super(key: key);
+  const ChatsScreen({required this.navigatorKey, super.key});
 
   @override
   State<ChatsScreen> createState() => _ChatsScreenState();

@@ -15,7 +15,7 @@ import '../../../../constants.dart';
 class SendMessage extends StatefulWidget {
   final String chatName;
 
-  const SendMessage(this.chatName, {Key? key}) : super(key: key);
+  const SendMessage(this.chatName, {super.key});
 
   @override
   SendMessageState createState() => SendMessageState();

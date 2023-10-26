@@ -9,7 +9,7 @@ import '../../../providers/users_provider.dart';
 class ActiveUsers extends StatelessWidget {
   final Size screenSize;
 
-  const ActiveUsers(this.screenSize, {Key? key}) : super(key: key);
+  const ActiveUsers(this.screenSize, {super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -79,7 +79,7 @@ class UsersProvider with ChangeNotifier {
   void _loadUsers() {
     for (GroupChat group in authUser!.groupChats) {
       for (User user in group.partecipants) {
-        
+        _users[user.username] = user;
       }
     }
 

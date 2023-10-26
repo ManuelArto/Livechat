@@ -10,8 +10,8 @@ class AudioMessagePlayer extends StatefulWidget {
 
   const AudioMessagePlayer({
     required this.audio,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   AudioMessagePlayerState createState() => AudioMessagePlayerState();
