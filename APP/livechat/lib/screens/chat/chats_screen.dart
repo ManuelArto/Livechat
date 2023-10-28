@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/group_chat.dart';
+import 'package:livechat/models/chat/messages/message.dart';
+import 'package:livechat/screens/chat/forward_msg_screen.dart';
 import 'package:livechat/screens/chat/group_info_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +56,9 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
       case GroupInfoScreen.routeName:
         return MaterialPageRoute(
             builder: (context) => GroupInfoScreen(settings.arguments as GroupChat));
+      case ForwardMsgScreen.routeName:
+        return MaterialPageRoute(
+            builder: (context) => ForwardMsgScreen(settings.arguments as Message));
       default:
         return MaterialPageRoute(
           builder: (context) => _buildChatScreen(context),

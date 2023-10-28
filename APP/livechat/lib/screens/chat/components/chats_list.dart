@@ -88,7 +88,7 @@ class ChatsList extends StatelessWidget {
 
   Widget getLastMessageContent(Message? lastMessage, bool isGroupChat) {
     textWidget(message) => Text(
-          "${isGroupChat && lastMessage?.sender != null ? '${lastMessage!.sender}: ' : '' }$message",
+          message,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );
@@ -118,6 +118,8 @@ class ChatsList extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        if (isGroupChat && lastMessage.sender != null)
+          Text("${lastMessage.sender}: "),
         if (icon != null) Icon(icon, size: 16),
         textWidget(message),
       ],

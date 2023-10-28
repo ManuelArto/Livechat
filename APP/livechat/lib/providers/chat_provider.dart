@@ -66,7 +66,7 @@ class ChatProvider with ChangeNotifier {
     Chat chats = _chats[chatName]!
       ..messages.add(newMessage);
 
-    if (currentChat != chatName) chats.toRead += 1;
+    if (currentChat != chatName && sender != authUser!.username) chats.toRead += 1;
 
     if (sender != authUser!.username && currentChat != chatName) {
       NotificationService.instance.showNotification(

@@ -76,8 +76,9 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
               itemCount: friends.length,
+              separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (context, index) {
                 final friend = friends[index];
                 return _friendTile(friend);

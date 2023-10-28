@@ -71,15 +71,16 @@ class _PreviewChatsState extends State<PreviewChats> {
                       ? DateFormat("jm").format(lastMessage!.time!)
                       : "";
                   return ListTile(
-                    leading: chat is GroupChat
-                        ? null
-                        : CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              usersProvider.getUser(chat.chatName)!.imageUrl,
-                            ),
-                          ),
+                    leading: CircleAvatar(
+                      backgroundImage: chat is GroupChat
+                          ? const AssetImage('assets/images/group_icon.png')
+                              as ImageProvider
+                          : NetworkImage(
+                              usersProvider.getUser(chat.chatName)!.imageUrl),
+                    ),
                     title: Text(chat.chatName),
-                    subtitle: getLastMessageContent(lastMessage, chat is GroupChat),
+                    subtitle:
+                        getLastMessageContent(lastMessage, chat is GroupChat),
                     trailing: Text(time),
                   );
                 },
@@ -99,7 +100,7 @@ class _PreviewChatsState extends State<PreviewChats> {
 
   Widget getLastMessageContent(Message? lastMessage, bool isGroupChat) {
     textWidget(message) => Text(
-          "${isGroupChat && lastMessage?.sender != null ? '${lastMessage!.sender}: ' : '' }$message",
+          message,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );
@@ -129,6 +130,8 @@ class _PreviewChatsState extends State<PreviewChats> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        if (isGroupChat && lastMessage.sender != null)
+          Text("${lastMessage.sender}: "),
         if (icon != null) Icon(icon, size: 16),
         textWidget(message),
       ],

@@ -46,11 +46,11 @@ class SocketProvider with ChangeNotifier {
     _initListeners();
   }
 
-  void sendMessage(dynamic raw, String type, String receiver, {String? filename}) {
+  void sendMessage(dynamic raw, ContentType type, String receiver, {String? filename}) {
     debugPrint("Sending $type to $receiver");
-    String message = type == "text"
+    String message = type == ContentType.text
         ? raw
-        : type == "file"
+        : type == ContentType.file
             ? base64Encode((raw as PlatformFile).bytes!)
             : base64Encode((raw as File).readAsBytesSync());
 
@@ -58,7 +58,7 @@ class SocketProvider with ChangeNotifier {
       "sender": authUser.username,
       "message": message,
       "receiver": receiver,
-      "type": type,
+      "type": type.name,
       if (filename != null) "filename": filename
     };
     _socketIO?.emit("send_message", json.encode(data));

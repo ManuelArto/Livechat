@@ -10,6 +10,7 @@ import 'package:livechat/screens/chat/components/single_chat/record_button.dart'
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../models/chat/messages/content/content.dart'; 
 import '../../../../constants.dart';
 
 class SendMessage extends StatefulWidget {
@@ -38,13 +39,13 @@ class SendMessageState extends State<SendMessage> {
   }
 
   void _sendMessage() async {
-    socketProvider.sendMessage(_controller.text, "text", widget.chatName);
+    socketProvider.sendMessage(_controller.text, ContentType.text, widget.chatName);
     setState(() => _controller.text = "");
   }
 
   void _sendImage(File image) async {
     String filename = image.path.split('/').last;
-    socketProvider.sendMessage(image, "image", widget.chatName, filename: filename);
+    socketProvider.sendMessage(image, ContentType.image, widget.chatName, filename: filename);
   }
 
   Future<void> _selectAndSendFile() async {
@@ -62,7 +63,7 @@ class SendMessageState extends State<SendMessage> {
       }
 
       String filename = file.name;
-      socketProvider.sendMessage(file, "file", widget.chatName, filename: filename);
+      socketProvider.sendMessage(file, ContentType.file, widget.chatName, filename: filename);
     }
   }
 
@@ -95,7 +96,7 @@ class SendMessageState extends State<SendMessage> {
 
   void _sendAudio() async {
     String filename = audio!.path.split('/').last;
-    socketProvider.sendMessage(audio!, "audio", widget.chatName, filename: filename);
+    socketProvider.sendMessage(audio!, ContentType.audio, widget.chatName, filename: filename);
     _cleanAudio();
   }
 

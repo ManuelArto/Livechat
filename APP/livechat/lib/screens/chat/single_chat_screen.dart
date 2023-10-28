@@ -1,12 +1,12 @@
 import 'package:livechat/providers/chat_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:livechat/providers/users_provider.dart';
-import 'package:livechat/screens/chat/group_info_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chat/chat.dart';
 import '../../models/chat/group_chat.dart';
 import '../../models/user.dart';
+import 'components/group_icon.dart';
 import 'components/single_chat/messages/messages.dart';
 import 'components/single_chat/send_message.dart';
 import 'components/profile_icon.dart';
@@ -24,8 +24,9 @@ class SingleChatScreen extends StatefulWidget {
 class SingleChatScreenState extends State<SingleChatScreen> {
   @override
   Widget build(BuildContext context) {
-    ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false)
-        ..currentChat = widget.chatName;
+    ChatProvider chatProvider =
+        Provider.of<ChatProvider>(context, listen: false)
+          ..currentChat = widget.chatName;
     Chat chat = chatProvider.chatByName(widget.chatName);
 
     User? user = Provider.of<UsersProvider>(context).getUser(widget.chatName);
@@ -44,13 +45,7 @@ class SingleChatScreenState extends State<SingleChatScreen> {
             padding: const EdgeInsets.all(5.0),
             margin: const EdgeInsets.only(right: 10.0),
             child: chat is GroupChat
-                ? IconButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                      GroupInfoScreen.routeName,
-                      arguments: chat,
-                    ),
-                    icon: const Icon(Icons.info_rounded),
-                  )
+                ? GroupIcon(chat: chat)
                 : ProfileIcon(user: user!),
           ),
         ],
