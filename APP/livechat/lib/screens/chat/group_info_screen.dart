@@ -45,7 +45,16 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
               itemCount: partecipants.length,
               itemBuilder: (context, index) {
                 final partecipant = partecipants[index];
-                return _partecipantTile(partecipant);
+                if (index != partecipants.length - 1) {
+                  return _partecipantTile(partecipant);
+                } else {
+                  return Column(
+                    children: [
+                      _partecipantTile(partecipant),
+                      const SizedBox(height: 250),
+                    ],
+                  );
+                }
               },
             ),
           ),

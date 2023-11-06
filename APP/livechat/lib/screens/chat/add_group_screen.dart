@@ -23,11 +23,13 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
 
   bool get canCreateGroup => groupName == "" || partecipantIds.isEmpty;
 
-  Future<void> _createGroup () async {
+  Future<void> _createGroup() async {
     try {
-      ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false);
+      ChatProvider chatProvider =
+          Provider.of<ChatProvider>(context, listen: false);
 
-      final String token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
+      final String token =
+          Provider.of<AuthProvider>(context, listen: false).authUser!.token;
       Map<String, dynamic> data = await HttpRequester.post(
         {"name": groupName, "partecipants": partecipantIds.toList()},
         URL_CREATE_GROUP,
@@ -55,9 +57,7 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: canCreateGroup
-            ? null
-            : _createGroup,
+        onPressed: canCreateGroup ? null : _createGroup,
         backgroundColor: canCreateGroup
             ? Colors.red
             : Theme.of(context).colorScheme.secondary,
@@ -81,7 +81,16 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
               separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (context, index) {
                 final friend = friends[index];
-                return _friendTile(friend);
+                if (index != friends.length - 1) {
+                  return _friendTile(friend);
+                } else {
+                  return Column(
+                    children: [
+                      _friendTile(friend),
+                      const SizedBox(height: 250),
+                    ],
+                  );
+                }
               },
             ),
           ),
@@ -101,9 +110,7 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
           partecipantIds.contains(friend.id)
               ? Icons.remove_circle_rounded
               : Icons.add_circle_rounded,
-          color: partecipantIds.contains(friend.id)
-              ? Colors.red
-              : Colors.green,
+          color: partecipantIds.contains(friend.id) ? Colors.red : Colors.green,
         ),
         onPressed: partecipantIds.contains(friend.id)
             ? () => setState(() => partecipantIds.remove(friend.id))

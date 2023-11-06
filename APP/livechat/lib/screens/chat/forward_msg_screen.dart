@@ -64,7 +64,16 @@ class _ForwardMsgScreenState extends State<ForwardMsgScreen> {
             const Divider(thickness: 0, height: 10),
         itemBuilder: (context, index) {
           final chat = chats[index];
-          return _chatTile(chat);
+          if (index != chats.length - 1) {
+            return _chatTile(chat);
+          } else {
+            return Column(
+              children: [
+                _chatTile(chat),
+                const SizedBox(height: 250),
+              ],
+            );
+          }
         },
       ),
     );

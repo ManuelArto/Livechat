@@ -1,14 +1,19 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/providers/location_provider.dart';
 import 'package:livechat/providers/navbar_notifier.dart';
 import 'package:livechat/providers/users_provider.dart';
 import 'package:livechat/providers/steps_provider.dart';
+import 'package:livechat/providers/web3/news_sharing_provider.dart';
 import 'package:livechat/screens/profile/profile_screen.dart';
+import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 import '../providers/socket_provider.dart';
+import '../providers/web3/news_evaluation_provider.dart';
 import '../widgets/bottom_bar.dart';
 import 'chat/chats_screen.dart';
 import 'friends/friends_screen.dart';
@@ -23,7 +28,8 @@ class AppScreen extends StatefulWidget {
 }
 
 class _AppScreenState extends State<AppScreen> {
-  final List<GlobalKey<NavigatorState>> keys = List.generate(5, (index) => GlobalKey());
+  final List<GlobalKey<NavigatorState>> keys =
+      List.generate(5, (index) => GlobalKey());
   late final List<Widget> _tabScreens;
 
   @override
@@ -40,52 +46,62 @@ class _AppScreenState extends State<AppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final SocketProvider socketProvider = Provider.of<SocketProvider>(context, listen: false);
+    final SocketProvider socketProvider =
+        Provider.of<SocketProvider>(context, listen: false);
 
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NavbarNotifier>(
-          create: (_) => NavbarNotifier(keys),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, UsersProvider>(
-          create: (_) {
-              UsersProvider usersProvider = UsersProvider();
-              socketProvider.usersProvider = usersProvider;
-              return usersProvider;
-            },
-          update:(context, auth, friends) => friends!..update(auth.authUser),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, ChatProvider>(
-          create: (_) {
-              ChatProvider chatProvider = ChatProvider();
-              socketProvider.chatProvider = chatProvider;
-              return chatProvider;
-            },
-          update:(context, auth, chat) => chat!..update(auth.authUser),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, LocationProvider>(
-          create: (_) => LocationProvider(),
-          update:(context, auth, location) => location!..update(auth.authUser),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, StepsProvider>(
-          create: (_) => StepsProvider(),
-          update:(context, auth, steps) => steps!..update(auth.authUser),
-        ),
-      ],
-      builder: (context, child) {
-        NavbarNotifier navbarNotifier = context.watch<NavbarNotifier>();
+        providers: _buildProviders(socketProvider),
+        builder: (context, child) {
+          NavbarNotifier navbarNotifier = context.watch<NavbarNotifier>();
 
-        return WillPopScope(
-        onWillPop: () async => await navbarNotifier.onBackButtonPressed(),
-        child: Scaffold(
-          bottomNavigationBar: const BottomBar(),
-          body: IndexedStack(
-            index: navbarNotifier.tabIndex,
-            children: _tabScreens,
-          ),
-        ),
-      );
-      }
-    );
+          return WillPopScope(
+            onWillPop: () async => await navbarNotifier.onBackButtonPressed(),
+            child: Scaffold(
+              bottomNavigationBar: const BottomBar(),
+              body: IndexedStack(
+                index: navbarNotifier.tabIndex,
+                children: _tabScreens,
+              ),
+            ),
+          );
+        });
+  }
+
+  List<SingleChildWidget> _buildProviders(SocketProvider socketProvider) {
+    return [
+      ChangeNotifierProvider<NavbarNotifier>(
+        create: (_) => NavbarNotifier(keys),
+      ),
+      ChangeNotifierProxyProvider<AuthProvider, UsersProvider>(
+        create: (_) {
+          UsersProvider usersProvider = UsersProvider();
+          socketProvider.usersProvider = usersProvider;
+          return usersProvider;
+        },
+        update: (context, auth, friends) => friends!..update(auth.authUser),
+      ),
+      ChangeNotifierProxyProvider<AuthProvider, ChatProvider>(
+        create: (_) {
+          ChatProvider chatProvider = ChatProvider();
+          socketProvider.chatProvider = chatProvider;
+          return chatProvider;
+        },
+        update: (context, auth, chat) => chat!..update(auth.authUser),
+      ),
+      ChangeNotifierProxyProvider<AuthProvider, LocationProvider>(
+        create: (_) => LocationProvider(),
+        update: (context, auth, location) => location!..update(auth.authUser),
+      ),
+      ChangeNotifierProxyProvider<AuthProvider, StepsProvider>(
+        create: (_) => StepsProvider(),
+        update: (context, auth, steps) => steps!..update(auth.authUser),
+      ),
+      ChangeNotifierProvider<NewsSharingProvider>(
+        create: (_) => NewsSharingProvider(),
+      ),
+      ChangeNotifierProvider<NewsEvaluationProvider>(
+        create: (_) => NewsEvaluationProvider(),
+      ),
+    ];
   }
 }

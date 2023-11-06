@@ -14,6 +14,7 @@ import 'add_group_screen.dart';
 import 'components/active_users.dart';
 import 'components/chat_section_page.dart';
 import 'single_chat_screen.dart';
+import 'trusted_screen.dart';
 
 class ChatsScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -59,6 +60,9 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
       case ForwardMsgScreen.routeName:
         return MaterialPageRoute(
             builder: (context) => ForwardMsgScreen(settings.arguments as Message));
+      case TrustedScreen.routeName:
+        return MaterialPageRoute(
+            builder: (context) => const TrustedScreen());
       default:
         return MaterialPageRoute(
           builder: (context) => _buildChatScreen(context),
@@ -72,9 +76,10 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const TopBar(),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.of(context).pushNamed(AddGroupScreen.routeName),
-        child: const Icon(Icons.group_add_rounded, color: Colors.white),
+        label: const Text("New group"),
+        icon: const Icon(Icons.group_add_rounded),
       ),
       body: Stack(
         children: [
