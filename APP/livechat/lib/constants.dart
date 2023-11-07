@@ -58,6 +58,9 @@ const NEWS_SHARING_CONTRACT_ADDRESS = kDebugMode ? '0x33757B5FC136c81fC0EBf31Ae4
 const NEWS_EVALUATION_CONTRACT_ADDRESS = kDebugMode ? '0x4b7a050711c9d99aB01fcf8d68777bfA9A3590D3' : '';
 const PRIVATE_KEY = '0x17007591ef80f494cc650e7e99bc50d5666bf38f0b35262ba80849ec4282fd13';
 
+// GRAPHQL
+const GRAPHQL_URL = "http://192.168.0.105:8000/subgraphs/name/socialtrustr";
+
 // APP INFO
 const APP_INFO_NAME = 'Livechat';
 const APP_INFO_DESCRIPTION = 'Livechat is a chat app that allows you to send messages and shares your location and steps with your friends.';

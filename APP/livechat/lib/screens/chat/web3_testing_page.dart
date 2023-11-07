@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/providers/web3/news_sharing_provider.dart';
 import 'package:livechat/providers/web3/wallet_provider.dart';
+import 'package:livechat/screens/chat/components/trusted/news_entries_list.dart';
 import 'package:provider/provider.dart';
 import 'package:web3modal_flutter/web3modal_flutter.dart';
 
@@ -44,7 +45,8 @@ class _Web3TestingPageState extends State<Web3TestingPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       // ..._buildWalletConnectSection(),
-                      ..._buildNewsSharingInteractions()
+                      ..._buildNewsSharingInteractions(),
+                      const Expanded(child: NewsEntriesList()),
                     ],
                   ),
                 );
@@ -64,8 +66,7 @@ class _Web3TestingPageState extends State<Web3TestingPage> {
         child: const Text("Get news by id 1"),
       ),
       ElevatedButton(
-        onPressed: () =>
-            newsSharingProvider.createNews("TITLE", "CHATNAME", 0),
+        onPressed: () => newsSharingProvider.createNews("TITLE", "CHATNAME", 0),
         child: const Text("Create a static news"),
       ),
     ];

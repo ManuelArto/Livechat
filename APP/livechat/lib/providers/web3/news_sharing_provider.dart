@@ -75,6 +75,4 @@ class NewsSharingProvider with ChangeNotifier {
     return newsEvent[0].toInt();
   }
 
-
-
 }
