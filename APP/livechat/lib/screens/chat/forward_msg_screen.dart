@@ -31,9 +31,9 @@ class _ForwardMsgScreenState extends State<ForwardMsgScreen> {
     NewsSharingProvider newsSharingProvider = Provider.of<NewsSharingProvider>(context, listen: false);
 
     String username = Provider.of<AuthProvider>(context, listen: false).authUser!.username;
-    
+
     for (String chatName in chatNames) {
-      int id = await newsSharingProvider.createNews("$username-$chatName", chatName, 0);
+      int id = await newsSharingProvider.createNews( "$username-$chatName", chatName, 0);
 
       socketProvider.sendMessage(
         widget.message.content!.get(),
@@ -49,7 +49,10 @@ class _ForwardMsgScreenState extends State<ForwardMsgScreen> {
   Widget build(BuildContext context) {
     usersProvider = Provider.of<UsersProvider>(context);
 
-    List<Chat> chats = Provider.of<ChatProvider>(context).chatsBySection("All");
+    List<Chat> chats = Provider.of<ChatProvider>(context)
+        .chatsBySection("All")
+        .where((chat) => chat.canChat)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(

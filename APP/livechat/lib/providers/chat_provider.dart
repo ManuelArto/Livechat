@@ -84,6 +84,12 @@ class ChatProvider with ChangeNotifier {
     IsarService.instance.insertOrUpdate<Chat>(_chats[chatName]!);
   }
 
+  void disableCanChat(String chatName) {
+    _chats[chatName]?.canChat = false;
+    notifyListeners();
+    IsarService.instance.insertOrUpdate<Chat>(_chats[chatName]!);
+  }
+
   void readChat(String chatName) {
     _chats[chatName]?.toRead = 0;
     notifyListeners();

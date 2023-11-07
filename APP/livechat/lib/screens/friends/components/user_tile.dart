@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:format/format.dart';
+import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/providers/users_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +55,7 @@ class _UserTileState extends State<UserTile> {
   }
 
   Future<void> _delete() async {
+    ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false);
     final String token = Provider.of<AuthProvider>(context, listen: false).authUser!.token;
 
     try {
@@ -62,9 +64,12 @@ class _UserTileState extends State<UserTile> {
               ? URL_REMOVE_FRIEND.format(widget._friend.id)
               : URL_REMOVE_REQUEST.format(widget._friend.id),
           token);
-      widget._action == null
-          ? usersProvider.deleteFriend(widget._friend.username)
-          : usersProvider.deleteRequest(widget._friend.id);
+      if (widget._action == null) {
+        usersProvider.deleteFriend(widget._friend.username);
+        chatProvider.disableCanChat(widget._friend.username);
+      } else {
+        usersProvider.deleteRequest(widget._friend.id);
+      }
 
       if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
       _showSnackBar("Removed");

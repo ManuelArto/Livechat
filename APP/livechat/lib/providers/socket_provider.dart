@@ -115,6 +115,7 @@ class SocketProvider with ChangeNotifier {
 
   void _deleteFriend(jsonData) {
     usersProvider.deleteFriend(jsonData["username"]);
+    chatProvider.disableCanChat(jsonData["username"]);
   }
 
   void _newGroup(jsonData) {

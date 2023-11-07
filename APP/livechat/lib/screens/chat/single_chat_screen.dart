@@ -24,9 +24,7 @@ class SingleChatScreen extends StatefulWidget {
 class SingleChatScreenState extends State<SingleChatScreen> {
   @override
   Widget build(BuildContext context) {
-    ChatProvider chatProvider =
-        Provider.of<ChatProvider>(context, listen: false)
-          ..currentChat = widget.chatName;
+    ChatProvider chatProvider = Provider.of<ChatProvider>(context)..currentChat = widget.chatName;
     Chat chat = chatProvider.chatByName(widget.chatName);
 
     User? user = Provider.of<UsersProvider>(context).getUser(widget.chatName);
@@ -46,7 +44,9 @@ class SingleChatScreenState extends State<SingleChatScreen> {
             margin: const EdgeInsets.only(right: 10.0),
             child: chat is GroupChat
                 ? GroupIcon(chat: chat)
-                : ProfileIcon(user: user!),
+                : user != null
+                ? ProfileIcon(user: user)
+                : Container(),
           ),
         ],
       ),
