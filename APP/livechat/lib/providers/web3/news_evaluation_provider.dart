@@ -1,23 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:web3dart/web3dart.dart';
 
-import '../../blockchain/NewsEvaluation.g.dart';
 import '../../constants.dart';
 
 class NewsEvaluationProvider with ChangeNotifier {
-  Web3Client? web3client;
+  late DeployedContract _newsEvaluationContract;
 
-  late NewsEvaluation newsEvaluation;
+  NewsEvaluationProvider() {
+    init();
+  }
 
-  // Called everytime WalletProvider changes
-  void update(Web3Client? web3client) {
-    this.web3client = web3client;
-    if (web3client != null) {
-      newsEvaluation = NewsEvaluation(
-        address: EthereumAddress.fromHex(NEWS_EVALUATION_CONTRACT_ADDRESS),
-        client: this.web3client!,
-      );
-    }
+  void init() async {
+    // Load ABI from assets folder
+    String abiString = await rootBundle.loadString("assets/abis/NewsEvaluation.abi.json");
+    List abi = jsonDecode(abiString)["abi"];
+    _newsEvaluationContract = DeployedContract(
+        ContractAbi.fromJson(jsonEncode(abi), "NewsEvaluation"),
+        EthereumAddress.fromHex(NEWS_SHARING_CONTRACT_ADDRESS));
   }
 
 }

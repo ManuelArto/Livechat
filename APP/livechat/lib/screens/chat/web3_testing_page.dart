@@ -4,15 +4,15 @@ import 'package:livechat/providers/web3/wallet_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:web3modal_flutter/web3modal_flutter.dart';
 
-class TrustedScreen extends StatefulWidget {
+class Web3TestingPage extends StatefulWidget {
   static const routeName = "/trusted";
-  const TrustedScreen({super.key});
+  const Web3TestingPage({super.key});
 
   @override
-  State<TrustedScreen> createState() => _TrustedScreenState();
+  State<Web3TestingPage> createState() => _Web3TestingPageState();
 }
 
-class _TrustedScreenState extends State<TrustedScreen> {
+class _Web3TestingPageState extends State<Web3TestingPage> {
   late WalletProvider walletProvider;
   late NewsSharingProvider newsSharingProvider;
 
@@ -61,11 +61,11 @@ class _TrustedScreenState extends State<TrustedScreen> {
       const Text("News sharing"),
       ElevatedButton(
         onPressed: () => newsSharingProvider.getNews(1),
-        child: const Text("Get 0 id news"),
+        child: const Text("Get news by id 1"),
       ),
       ElevatedButton(
         onPressed: () =>
-            newsSharingProvider.createNews("TITLE", "IPFSCID", "CHATNAME", 0),
+            newsSharingProvider.createNews("TITLE", "CHATNAME", 0),
         child: const Text("Create a static news"),
       ),
     ];

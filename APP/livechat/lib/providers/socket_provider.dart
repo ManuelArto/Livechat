@@ -47,7 +47,7 @@ class SocketProvider with ChangeNotifier {
   }
 
   void sendMessage(dynamic raw, ContentType type, String receiver, {String? filename}) {
-    debugPrint("Sending $type to $receiver");
+    debugPrint("Sending ${type.name} to $receiver");
     String message = type == ContentType.text
         ? raw
         : type == ContentType.file

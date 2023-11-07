@@ -14,7 +14,7 @@ import 'add_group_screen.dart';
 import 'components/active_users.dart';
 import 'components/chat_section_page.dart';
 import 'single_chat_screen.dart';
-import 'trusted_screen.dart';
+import 'web3_testing_page.dart';
 
 class ChatsScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -60,9 +60,9 @@ class _ChatsScreenState extends State<ChatsScreen> with AutomaticKeepAliveClient
       case ForwardMsgScreen.routeName:
         return MaterialPageRoute(
             builder: (context) => ForwardMsgScreen(settings.arguments as Message));
-      case TrustedScreen.routeName:
+      case Web3TestingPage.routeName:
         return MaterialPageRoute(
-            builder: (context) => const TrustedScreen());
+            builder: (context) => const Web3TestingPage());
       default:
         return MaterialPageRoute(
           builder: (context) => _buildChatScreen(context),

@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 
-const PORT = 8000;
+const PORT = 8080;
 const SERVER_URL = kDebugMode ? "http://192.168.0.105:$PORT": "https://livechat-api.onrender.com";
 // const SERVER_URL = "https://livechat-api.onrender.com";
 
@@ -53,9 +53,10 @@ const DOWNLOAD_LINK = "https://drive.google.com/file/d/1p6CDsgj8xyJc192Gn4C1V3d5
 const WALLET_CONNECT_ID = 'b656d8592362048cbf80efbd52d0e529';
 const CHAIN_ID = kDebugMode ? 1377 : 1; // Test is Ganache Chain Id
 const RPC_URL = kDebugMode ? 'http://192.168.0.105:7545' : '';
-const NEWS_SHARING_CONTRACT_ADDRESS = kDebugMode ? '0xf89b4d2dD71bD340259885Cf8ae2b37519Ab5311' : '';
-const NEWS_EVALUATION_CONTRACT_ADDRESS = kDebugMode ? '0xc110DB6A49275219B6E8486745E2a9F4c3E08041' : '';
-const PRIVATE_KEY = '0xdf4bc55fade503ecb120565e60c4142f9e843d5cf5cd76a16e656b35860315c1';
+const WS_URL = kDebugMode ? 'ws://192.168.0.105:7545' : '';
+const NEWS_SHARING_CONTRACT_ADDRESS = kDebugMode ? '0x33757B5FC136c81fC0EBf31Ae424b5E2aB0dD000' : '';
+const NEWS_EVALUATION_CONTRACT_ADDRESS = kDebugMode ? '0x4b7a050711c9d99aB01fcf8d68777bfA9A3590D3' : '';
+const PRIVATE_KEY = '0x17007591ef80f494cc650e7e99bc50d5666bf38f0b35262ba80849ec4282fd13';
 
 // APP INFO
 const APP_INFO_NAME = 'Livechat';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/providers/navbar_notifier.dart';
-import 'package:livechat/screens/chat/trusted_screen.dart';
+import 'package:livechat/screens/chat/web3_testing_page.dart';
 import 'package:provider/provider.dart';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
@@ -31,7 +31,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
           visible: navbarNotifier.tabIndex == Pages.chatsScreen.index,
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(TrustedScreen.routeName);
+              Navigator.of(context).pushNamed(Web3TestingPage.routeName);
             },
             icon: const Icon(Icons.key_rounded)
           ),

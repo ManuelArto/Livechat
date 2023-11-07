@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:livechat/models/chat/group_chat.dart';
 import 'package:livechat/models/chat/messages/message.dart';
+import 'package:livechat/providers/auth_provider.dart';
 import 'package:livechat/providers/chat_provider.dart';
 import 'package:livechat/providers/users_provider.dart';
+import 'package:livechat/providers/web3/news_sharing_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chat/chat.dart';
@@ -24,16 +26,22 @@ class _ForwardMsgScreenState extends State<ForwardMsgScreen> {
 
   late UsersProvider usersProvider;
 
-  void _sendMessages() {
-    SocketProvider socketProvider =
-        Provider.of<SocketProvider>(context, listen: false);
+  void _sendMessages() async {
+    SocketProvider socketProvider = Provider.of<SocketProvider>(context, listen: false);
+    NewsSharingProvider newsSharingProvider = Provider.of<NewsSharingProvider>(context, listen: false);
+
+    String username = Provider.of<AuthProvider>(context, listen: false).authUser!.username;
+    
     for (String chatName in chatNames) {
+      int id = await newsSharingProvider.createNews("$username-$chatName", chatName, 0);
+
       socketProvider.sendMessage(
         widget.message.content!.get(),
         widget.message.content!.type,
         chatName,
       );
     }
+
     Navigator.of(context).pop();
   }
 

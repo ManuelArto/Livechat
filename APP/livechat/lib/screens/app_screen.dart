@@ -98,9 +98,11 @@ class _AppScreenState extends State<AppScreen> {
       ),
       ChangeNotifierProvider<NewsSharingProvider>(
         create: (_) => NewsSharingProvider(),
+        lazy: false,
       ),
       ChangeNotifierProvider<NewsEvaluationProvider>(
         create: (_) => NewsEvaluationProvider(),
+        lazy: false,
       ),
     ];
   }
